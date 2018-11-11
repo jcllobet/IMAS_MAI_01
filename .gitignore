@@ -1,1 +1,23 @@
 /IMAS_Project/nbproject/private/
+
+# MAC
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Project
+IMAS_project/nbproject/private/
+IMAS_project/build/
+IMAS_project/nbbuild/
+IMAS_project/dist/
+IMAS_project/nbdist/
+IMAS_project/.nb-gradle/
+
+IMAS_project/.idea/
+IMAS_project/out/
+IMAS_project/IMAS_project.iml
+
+# JADE
+APDescription.txt
+MTPs-Main-Container.txt
