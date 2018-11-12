@@ -31,7 +31,7 @@ public class Main {
 
         // Add the system agent
         try {
-            AgentController coordinatorAgent = cc.createNewAgent("CoordinatorAGent", "cat.urv.imas.agent.CoordinatorAgent", null);
+            AgentController coordinatorAgent = cc.createNewAgent("CoordinatorAgent", "cat.urv.imas.agent.CoordinatorAgent", null);
             coordinatorAgent.start();
             AgentController systemAgent = cc.createNewAgent("SystemAgent", "cat.urv.imas.agent.SystemAgent", null);
             systemAgent.start();
