@@ -31,7 +31,13 @@ public class Main {
 
         // Add the system agent
         try {
-            AgentController systemAgent = cc.createNewAgent("SystemAgent", "cat.urv.imas.agent.SystemAgent", null);
+        	AgentController coordinatorAgent = cc.createNewAgent("CoordinatorAgent", 
+												        		 "cat.urv.imas.agent.CoordinatorAgent", null);
+            AgentController systemAgent = cc.createNewAgent("SystemAgent", 
+            												"cat.urv.imas.agent.SystemAgent", null);
+
+
+            coordinatorAgent.start();
             systemAgent.start();
         } catch (StaleProxyException e) {
             e.printStackTrace();
