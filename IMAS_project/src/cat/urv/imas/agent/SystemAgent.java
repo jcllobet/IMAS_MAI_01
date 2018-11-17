@@ -104,6 +104,16 @@ public class SystemAgent extends ImasAgent {
         this.game.addElementsForThisSimulationStep();
     }
 
+    private void loadGUI() {
+        try {
+            this.gui = new GraphicInterface(game);
+            gui.setVisible(true);
+            log("GUI loaded");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Agent setup method - called when it first come on-line. Configuration of
      * language to use, ontology and initialization of behaviours.
@@ -115,40 +125,17 @@ public class SystemAgent extends ImasAgent {
         this.setEnabledO2ACommunication(true, 1);
 
         // 1. Register the agent to the DF
-        ServiceDescription sd1 = new ServiceDescription();
-        sd1.setType(AgentType.SYSTEM.toString());
-        sd1.setName(getLocalName());
-        sd1.setOwnership(OWNER);
-
-        DFAgentDescription dfd = new DFAgentDescription();
-        dfd.addServices(sd1);
-        dfd.setName(getAID());
-        try {
-            DFService.register(this, dfd);
-            log("Registered to the DF");
-        } catch (FIPAException e) {
-            System.err.println(getLocalName() + " failed registration to DF [ko]. Reason: " + e.getMessage());
-            doDelete();
-        }
+        registerToDF();
 
         // 2. Load game settings.
         this.game = InitialGameSettings.load("game.settings");
         log("Initial configuration settings loaded");
 
         // 3. Load GUI
-        try {
-            this.gui = new GraphicInterface(game);
-            gui.setVisible(true);
-            log("GUI loaded");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        loadGUI();
 
-        // search CoordinatorAgent
-        ServiceDescription searchCriterion = new ServiceDescription();
-        searchCriterion.setType(AgentType.COORDINATOR.toString());
-        this.coordinatorAgent = UtilsAgents.searchAgent(this, searchCriterion);
-        // searchAgent is a blocking method, so we will obtain always a correct AID
+        // search CoordinatorAgent (is a blocking method, so we will obtain always a correct AID)
+        this.coordinatorAgent = UtilsAgents.searchAgentType(this, AgentType.COORDINATOR);
 
         // add behaviours
         // we wait for the initialization of the game

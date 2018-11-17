@@ -17,7 +17,15 @@
  */
 package cat.urv.imas.agent;
 
+import cat.urv.imas.ontology.MessageContent;
+import jade.core.AID;
 import jade.core.Agent;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
+import jade.domain.FIPANames;
+import jade.lang.acl.ACLMessage;
 
 /**
  * Agent abstraction used in this practical work.
@@ -77,5 +85,37 @@ public class ImasAgent extends Agent {
     public void errorLog(String str) {
         System.err.println(getLocalName() + ": " + str);
     }
-    
+
+    protected void registerToDF() {
+        ServiceDescription sd1 = new ServiceDescription();
+        sd1.setType(type.toString());
+        sd1.setName(getLocalName());
+        sd1.setOwnership(OWNER);
+
+        DFAgentDescription dfd = new DFAgentDescription();
+        dfd.addServices(sd1);
+        dfd.setName(getAID());
+        try {
+            DFService.register(this, dfd);
+            log("Registered to the DF");
+        } catch (FIPAException e) {
+            System.err.println(getLocalName() + " registration with DF unsucceeded. Reason: " + e.getMessage());
+            doDelete();
+        }
+    }
+
+    public ACLMessage generateMsg(int performative, AID receiver, String protocol, String content) {
+        ACLMessage msg = new ACLMessage(performative);
+        msg.clearAllReceiver();
+        msg.addReceiver(receiver);
+        msg.setProtocol(protocol);
+        log("Request message to agent");
+        try {
+            msg.setContent(content);
+            log("Request message content:" + msg.getContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return msg;
+    }
 }

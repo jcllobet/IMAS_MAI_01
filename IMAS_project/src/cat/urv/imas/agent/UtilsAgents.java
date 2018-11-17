@@ -17,6 +17,7 @@
  */
 package cat.urv.imas.agent;
 
+import cat.urv.imas.ontology.MessageContent;
 import jade.core.Agent;
 import jade.core.AID;
 import jade.core.Profile;
@@ -26,6 +27,8 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPANames;
+import jade.lang.acl.ACLMessage;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
@@ -44,6 +47,12 @@ public class UtilsAgents {
      * To prevent being instanced.
      */
     private UtilsAgents() {
+    }
+
+    public static AID searchAgentType(Agent parent, AgentType type) {
+        ServiceDescription searchCriterion = new ServiceDescription();
+        searchCriterion.setType(type.toString());
+        return UtilsAgents.searchAgent(parent, searchCriterion);
     }
 
 
@@ -71,8 +80,7 @@ public class UtilsAgents {
                     searchedAgent = dfd.getName();
                     break;
                 }
-                Thread.sleep(DELAY);
-
+                    Thread.sleep(DELAY);
             }
         } catch (Exception fe) {
             System.err.println("ERROR: Cannot search the expected agent from parent " + parent.getLocalName());

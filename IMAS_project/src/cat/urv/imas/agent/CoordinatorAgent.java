@@ -17,12 +17,11 @@
  */
 package cat.urv.imas.agent;
 
+import cat.urv.imas.behaviour.coordinator.RequestResponseBehaviour;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.behaviour.coordinator.RequesterBehaviour;
 import cat.urv.imas.ontology.MessageContent;
 import jade.core.*;
-import jade.domain.*;
-import jade.domain.FIPAAgentManagement.*;
 import jade.domain.FIPANames.InteractionProtocol;
 import jade.lang.acl.*;
 
@@ -61,43 +60,19 @@ public class CoordinatorAgent extends ImasAgent {
         /* ********************************************************************/
 
         // Register the agent to the DF
-        ServiceDescription sd1 = new ServiceDescription();
-        sd1.setType(AgentType.COORDINATOR.toString());
-        sd1.setName(getLocalName());
-        sd1.setOwnership(OWNER);
-        
-        DFAgentDescription dfd = new DFAgentDescription();
-        dfd.addServices(sd1);
-        dfd.setName(getAID());
-        try {
-            DFService.register(this, dfd);
-            log("Registered to the DF");
-        } catch (FIPAException e) {
-            System.err.println(getLocalName() + " registration with DF unsucceeded. Reason: " + e.getMessage());
-            doDelete();
-        }
+        registerToDF();
 
-        // search SystemAgent
-        ServiceDescription searchCriterion = new ServiceDescription();
-        searchCriterion.setType(AgentType.SYSTEM.toString());
-        this.systemAgent = UtilsAgents.searchAgent(this, searchCriterion);
-        // searchAgent is a blocking method, so we will obtain always a correct AID
+        // search SystemAgent (is a blocking method, so we will obtain always a correct AID)
+        this.systemAgent = UtilsAgents.searchAgentType(this, AgentType.SYSTEM);
 
         /* ********************************************************************/
-        ACLMessage initialRequest = new ACLMessage(ACLMessage.REQUEST);
-        initialRequest.clearAllReceiver();
-        initialRequest.addReceiver(this.systemAgent);
-        initialRequest.setProtocol(InteractionProtocol.FIPA_REQUEST);
-        log("Request message to agent");
-        try {
-            initialRequest.setContent(MessageContent.GET_MAP);
-            log("Request message content:" + initialRequest.getContent());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        MessageTemplate mt = MessageTemplate.and(
+                MessageTemplate.MatchProtocol(InteractionProtocol.FIPA_REQUEST),
+                MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+        ACLMessage initialRequest = generateMsg(ACLMessage.REQUEST, systemAgent, InteractionProtocol.FIPA_REQUEST, MessageContent.GET_MAP);
 
-        //we add a behaviour that sends the message and waits for an answer
         this.addBehaviour(new RequesterBehaviour(this, initialRequest));
+        this.addBehaviour(new RequestResponseBehaviour(this, mt));
 
         // setup finished. When we receive the last inform, the agent itself will add
         // a behaviour to send/receive actions

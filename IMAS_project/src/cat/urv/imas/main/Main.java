@@ -35,8 +35,11 @@ public class Main {
 												        		 "cat.urv.imas.agent.CoordinatorAgent", null);
             AgentController systemAgent = cc.createNewAgent("SystemAgent", 
             												"cat.urv.imas.agent.SystemAgent", null);
+            AgentController searchCoordinatorAgent = cc.createNewAgent("SearcherCoordinatorAgent",
+                    "cat.urv.imas.agent.SearcherCoordinatorAgent", null);
 
 
+            searchCoordinatorAgent.start();
             coordinatorAgent.start();
             systemAgent.start();
         } catch (StaleProxyException e) {
