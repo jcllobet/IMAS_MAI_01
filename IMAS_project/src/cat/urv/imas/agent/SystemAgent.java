@@ -17,6 +17,7 @@
  */
 package cat.urv.imas.agent;
 
+import cat.urv.imas.map.Cell;
 import cat.urv.imas.ontology.InitialGameSettings;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.gui.GraphicInterface;
@@ -26,6 +27,12 @@ import jade.domain.*;
 import jade.domain.FIPAAgentManagement.*;
 import jade.domain.FIPANames.InteractionProtocol;
 import jade.lang.acl.*;
+import jade.wrapper.AgentController;
+import jade.wrapper.ContainerController;
+import jade.wrapper.StaleProxyException;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -134,6 +141,9 @@ public class SystemAgent extends ImasAgent {
         // 3. Load GUI
         loadGUI();
 
+        // 4. Create other agents
+        createAgents();
+
         // search CoordinatorAgent (is a blocking method, so we will obtain always a correct AID)
         this.coordinatorAgent = UtilsAgents.searchAgentType(this, AgentType.COORDINATOR);
 
@@ -149,8 +159,53 @@ public class SystemAgent extends ImasAgent {
         // a behaviour to send/receive actions
     }
 
+    private void createAgents() {
+        ContainerController cc = this.getContainerController();
+        try {
+            AgentController cleanerCoordinatorAgent = cc.createNewAgent("CleanerCoordinatorAgent",
+                    "cat.urv.imas.agent.CleanerCoordinatorAgent", null);
+            AgentController coordinatorAgent = cc.createNewAgent("CoordinatorAgent",
+                    "cat.urv.imas.agent.CoordinatorAgent", null);
+            AgentController searchCoordinatorAgent = cc.createNewAgent("SearcherCoordinatorAgent",
+                    "cat.urv.imas.agent.SearcherCoordinatorAgent", null);
+
+            coordinatorAgent.start();
+            searchCoordinatorAgent.start();
+            cleanerCoordinatorAgent.start();
+
+            int numSearchers = 0;
+            int numCleaners = 0;
+            for (Map.Entry<AgentType, List<Cell>> entry : this.getGame().getAgentList().entrySet()) {
+                if (entry.getKey().name().equals(AgentType.SEARCHER.toString())) {
+                    numSearchers = entry.getValue().size();
+                }
+                if (entry.getKey().name().equals(AgentType.CLEANER.toString())) {
+                    numCleaners = entry.getValue().size();
+                }
+            }
+            // Create searchers
+            for (int i = 0; i < numSearchers; ++i) {
+                AgentController searcher = cc.createNewAgent("Searcher-" + i,
+                        "cat.urv.imas.agent.SearcherAgent", null);
+                searcher.start();
+            }
+            // Create cleaners
+            for (int i = 0; i < numCleaners; ++i) {
+                AgentController searcher = cc.createNewAgent("Cleaner-" + i,
+                        "cat.urv.imas.agent.CleanerAgent", null);
+                searcher.start();
+            }
+
+        } catch (StaleProxyException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void updateGUI() {
         this.gui.updateGame();
     }
 
+    public void setGame(InitialGameSettings game) {
+        this.game = game;
+    }
 }

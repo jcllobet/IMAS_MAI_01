@@ -18,6 +18,7 @@
 package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.coordinator.RequestResponseBehaviour;
+import cat.urv.imas.map.Cell;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.behaviour.coordinator.RequesterBehaviour;
 import cat.urv.imas.ontology.MessageContent;
@@ -25,12 +26,19 @@ import jade.core.*;
 import jade.domain.FIPANames.InteractionProtocol;
 import jade.lang.acl.*;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * The main Coordinator agent. 
  * TODO: This coordinator agent should get the game settings from the System
  * agent every round and share the necessary information to other coordinators.
  */
 public class CoordinatorAgent extends ImasAgent {
+
+    private Map<AID, Boolean> newPositionReceived;
+    private boolean mapRequestInProgress;
 
     /**
      * Game settings in use.
@@ -40,6 +48,8 @@ public class CoordinatorAgent extends ImasAgent {
      * System agent id.
      */
     private AID systemAgent;
+    private AID searcherCoordinator;
+    private AID cleanerCoordinator;
 
     /**
      * Builds the coordinator agent.
@@ -54,6 +64,8 @@ public class CoordinatorAgent extends ImasAgent {
      */
     @Override
     protected void setup() {
+        this.mapRequestInProgress = false;
+        this.newPositionReceived = new HashMap<>();
 
         /* ** Very Important Line (VIL) ***************************************/
         this.setEnabledO2ACommunication(true, 1);
@@ -64,6 +76,8 @@ public class CoordinatorAgent extends ImasAgent {
 
         // search SystemAgent (is a blocking method, so we will obtain always a correct AID)
         this.systemAgent = UtilsAgents.searchAgentType(this, AgentType.SYSTEM);
+        this.searcherCoordinator = UtilsAgents.searchAgentType(this, AgentType.ESEARCHER_COORDINATOR);
+        this.cleanerCoordinator = UtilsAgents.searchAgentType(this, AgentType.CLEANER_COORDINATOR);
 
         /* ********************************************************************/
         MessageTemplate mt = MessageTemplate.and(
@@ -76,6 +90,34 @@ public class CoordinatorAgent extends ImasAgent {
 
         // setup finished. When we receive the last inform, the agent itself will add
         // a behaviour to send/receive actions
+    }
+
+    public AID getSystemAgent() {
+        return systemAgent;
+    }
+
+    public AID getSearcherCoordinator() {
+        return searcherCoordinator;
+    }
+
+    public AID getCleanerCoordinator() {
+        return cleanerCoordinator;
+    }
+
+    public Map<AID, Boolean> getNewPositionReceived() {
+        return newPositionReceived;
+    }
+
+    public void setNewPositionReceived(Map<AID, Boolean> newPositionReceived) {
+        this.newPositionReceived = newPositionReceived;
+    }
+
+    public boolean isMapRequestInProgress() {
+        return mapRequestInProgress;
+    }
+
+    public void setMapRequestInProgress(boolean mapRequestInProgress) {
+        this.mapRequestInProgress = mapRequestInProgress;
     }
 
     /**

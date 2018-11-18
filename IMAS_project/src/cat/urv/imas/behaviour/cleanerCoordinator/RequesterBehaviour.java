@@ -15,10 +15,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package cat.urv.imas.behaviour.searchCoordinator;
+package cat.urv.imas.behaviour.cleanerCoordinator;
 
-import cat.urv.imas.agent.CoordinatorAgent;
-import cat.urv.imas.agent.SearcherCoordinatorAgent;
+import cat.urv.imas.agent.CleanerCoordinatorAgent;
 import cat.urv.imas.ontology.GameSettings;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
@@ -37,7 +36,7 @@ public class RequesterBehaviour extends AchieveREInitiator {
 
     Integer RETRY_TIME_MS = 3000;
 
-    public RequesterBehaviour(SearcherCoordinatorAgent agent, ACLMessage requestMsg) {
+    public RequesterBehaviour(CleanerCoordinatorAgent agent, ACLMessage requestMsg) {
         super(agent, requestMsg);
         agent.log("Started behaviour to deal with AGREEs");
     }
@@ -49,7 +48,7 @@ public class RequesterBehaviour extends AchieveREInitiator {
      */
     @Override
     protected void handleAgree(ACLMessage msg) {
-        SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent) this.getAgent();
+        CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) this.getAgent();
         agent.log("AGREE received from " + ((AID) msg.getSender()).getLocalName());
     }
 
@@ -60,7 +59,7 @@ public class RequesterBehaviour extends AchieveREInitiator {
      */
     @Override
     protected void handleInform(ACLMessage msg) {
-        SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent) this.getAgent();
+        CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) this.getAgent();
         agent.log("INFORM received from " + ((AID) msg.getSender()).getLocalName());
         try {
             GameSettings game = (GameSettings) msg.getContentObject();
@@ -78,7 +77,7 @@ public class RequesterBehaviour extends AchieveREInitiator {
      */
     @Override
     protected void handleNotUnderstood(ACLMessage msg) {
-        SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent) this.getAgent();
+        CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) this.getAgent();
         agent.log("This message NOT UNDERSTOOD.");
     }
 
@@ -89,7 +88,7 @@ public class RequesterBehaviour extends AchieveREInitiator {
      */
     @Override
     protected void handleFailure(ACLMessage msg) {
-        SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent) this.getAgent();
+        CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) this.getAgent();
         agent.log("The action has failed.");
 
     } //End of handleFailure
@@ -101,7 +100,7 @@ public class RequesterBehaviour extends AchieveREInitiator {
      */
     @Override
     protected void handleRefuse(ACLMessage msg) {
-        SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent) this.getAgent();
+        CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) this.getAgent();
         agent.log("Action refused. Retrying in " + RETRY_TIME_MS + "...");
         try {
             Thread.sleep(RETRY_TIME_MS);

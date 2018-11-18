@@ -15,15 +15,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package cat.urv.imas.behaviour.coordinator;
+package cat.urv.imas.behaviour.searchCoordinator;
 
-import cat.urv.imas.agent.CoordinatorAgent;
-import cat.urv.imas.agent.SystemAgent;
+import cat.urv.imas.agent.SearcherCoordinatorAgent;
 import cat.urv.imas.ontology.MessageContent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREResponder;
-import sun.plugin2.message.Message;
 
 /**
  * A request-responder behaviour for System agent, answering to queries
@@ -39,7 +37,7 @@ public class RequestResponseBehaviour extends AchieveREResponder {
      * @param agent The agent owning this behaviour
      * @param mt Template to receive future responses in this conversation
      */
-    public RequestResponseBehaviour(CoordinatorAgent agent, MessageTemplate mt) {
+    public RequestResponseBehaviour(SearcherCoordinatorAgent agent, MessageTemplate mt) {
         super(agent, mt);
         agent.log("Waiting REQUESTs from authorized agents");
     }
@@ -54,7 +52,7 @@ public class RequestResponseBehaviour extends AchieveREResponder {
     @Override
     @SuppressWarnings("CallToPrintStackTrace")
     protected ACLMessage handleRequest(ACLMessage msg) {
-        CoordinatorAgent agent = (CoordinatorAgent)this.getAgent();
+        SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent)this.getAgent();
         ACLMessage reply = msg.createReply();
         try {
             Object content = msg.getContent();
@@ -109,7 +107,7 @@ public class RequestResponseBehaviour extends AchieveREResponder {
 
         // it is important to make the createReply in order to keep the same context of
         // the conversation
-        CoordinatorAgent agent = (CoordinatorAgent)this.getAgent();
+        SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent)this.getAgent();
         ACLMessage reply = msg.createReply();
         reply.setPerformative(ACLMessage.INFORM);
 

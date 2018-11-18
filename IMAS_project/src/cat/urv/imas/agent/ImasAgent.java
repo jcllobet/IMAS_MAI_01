@@ -109,7 +109,7 @@ public class ImasAgent extends Agent {
         msg.clearAllReceiver();
         msg.addReceiver(receiver);
         msg.setProtocol(protocol);
-        log("Request message to agent");
+        log("Request message to agent " + receiver.getName());
         try {
             msg.setContent(content);
             log("Request message content:" + msg.getContent());

@@ -1,13 +1,21 @@
 package cat.urv.imas.agent;
 
+import cat.urv.imas.behaviour.searchCoordinator.RequestResponseBehaviour;
 import cat.urv.imas.behaviour.searchCoordinator.RequesterBehaviour;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
 import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SearcherCoordinatorAgent extends ImasAgent {
+
+    private Map<AID, Boolean> newPositionReceived;
+    private boolean mapRequestInProgress;
 
     private AID coordinatorAgent;
     private GameSettings game;
@@ -18,6 +26,8 @@ public class SearcherCoordinatorAgent extends ImasAgent {
 
     @Override
     protected void setup() {
+        this.mapRequestInProgress = false;
+        this.newPositionReceived = new HashMap<>();
 
         /* ** Very Important Line (VIL) ***************************************/
         this.setEnabledO2ACommunication(true, 1);
@@ -31,11 +41,32 @@ public class SearcherCoordinatorAgent extends ImasAgent {
 
         /* ********************************************************************/
         launchInitialRequest();
+        MessageTemplate mt = MessageTemplate.and(
+                MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+                MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+
+        this.addBehaviour(new RequestResponseBehaviour(this, mt));
     }
 
     public void launchInitialRequest() {
         ACLMessage initialRequest = generateMsg(ACLMessage.REQUEST, coordinatorAgent, FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.GET_MAP);
         addBehaviour(new RequesterBehaviour(this, initialRequest));
+    }
+
+    public Map<AID, Boolean> getNewPositionReceived() {
+        return newPositionReceived;
+    }
+
+    public void setNewPositionReceived(Map<AID, Boolean> newPositionReceived) {
+        this.newPositionReceived = newPositionReceived;
+    }
+
+    public boolean isMapRequestInProgress() {
+        return mapRequestInProgress;
+    }
+
+    public void setMapRequestInProgress(boolean mapRequestInProgress) {
+        this.mapRequestInProgress = mapRequestInProgress;
     }
 
     /**

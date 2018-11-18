@@ -80,7 +80,7 @@ public class UtilsAgents {
                     searchedAgent = dfd.getName();
                     break;
                 }
-                    Thread.sleep(DELAY);
+                Thread.sleep(DELAY);
             }
         } catch (Exception fe) {
             System.err.println("ERROR: Cannot search the expected agent from parent " + parent.getLocalName());

@@ -1,5 +1,11 @@
 package cat.urv.imas.main;
 
+import cat.urv.imas.agent.SystemAgent;
+import cat.urv.imas.map.Cell;
+import jade.core.AID;
+import cat.urv.imas.agent.AgentType;
+import cat.urv.imas.agent.ImasAgent;
+import cat.urv.imas.agent.UtilsAgents;
 import jade.core.Profile;
 import jade.core.Runtime;
 import jade.wrapper.AgentController;
@@ -7,6 +13,9 @@ import jade.wrapper.ContainerController;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
 import jade.Boot;
+
+import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -31,17 +40,10 @@ public class Main {
 
         // Add the system agent
         try {
-        	AgentController coordinatorAgent = cc.createNewAgent("CoordinatorAgent", 
-												        		 "cat.urv.imas.agent.CoordinatorAgent", null);
             AgentController systemAgent = cc.createNewAgent("SystemAgent", 
             												"cat.urv.imas.agent.SystemAgent", null);
-            AgentController searchCoordinatorAgent = cc.createNewAgent("SearcherCoordinatorAgent",
-                    "cat.urv.imas.agent.SearcherCoordinatorAgent", null);
-
-
-            searchCoordinatorAgent.start();
-            coordinatorAgent.start();
             systemAgent.start();
+
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
