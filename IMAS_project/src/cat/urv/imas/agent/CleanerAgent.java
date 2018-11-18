@@ -13,7 +13,7 @@ public class CleanerAgent extends ImasAgent {
         super(AgentType.CLEANER);
     }
 
-    private AID searcherCoordinator;
+    private AID cleanerCoordinator;
     private GameSettings game;
 
     @Override
@@ -26,14 +26,14 @@ public class CleanerAgent extends ImasAgent {
         registerToDF();
 
         // search CoordinatorAgent (is a blocking method, so we will obtain always a correct AID)
-        this.searcherCoordinator = UtilsAgents.searchAgentType(this, AgentType.ESEARCHER_COORDINATOR);
+        this.cleanerCoordinator = UtilsAgents.searchAgentType(this, AgentType.CLEANER_COORDINATOR);
 
         /* ********************************************************************/
         launchInitialRequest();
     }
 
     public void launchInitialRequest() {
-        ACLMessage initialRequest = generateMsg(ACLMessage.REQUEST, searcherCoordinator, FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.GET_MAP);
+        ACLMessage initialRequest = generateMsg(ACLMessage.REQUEST, cleanerCoordinator, FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.GET_MAP);
         addBehaviour(new RequesterBehaviour(this, initialRequest));
     }
 

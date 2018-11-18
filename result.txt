@@ -1,0 +1,258 @@
+"C:\Program Files\Java\jdk1.8.0_144\bin\java" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2017.2.4\lib\idea_rt.jar=60052:C:\Program Files\JetBrains\IntelliJ IDEA 2017.2.4\bin" -Dfile.encoding=UTF-8 -classpath "C:\Program Files\Java\jdk1.8.0_144\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\deploy.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\access-bridge-64.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\cldrdata.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\dnsns.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\jaccess.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\jfxrt.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\localedata.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\nashorn.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\sunec.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\sunjce_provider.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\sunmscapi.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\sunpkcs11.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\ext\zipfs.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\javaws.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\jfxswt.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\management-agent.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\plugin.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_144\jre\lib\rt.jar;C:\Users\jsier\Desktop\MAI\IMAS_MAI_01\IMAS_project\build\classes;C:\Users\jsier\Desktop\MAI\IMAS_MAI_01\IMAS_project\lib\commons-codec\commons-codec-1.3.jar;C:\Users\jsier\Desktop\MAI\IMAS_MAI_01\IMAS_project\lib\jade.jar;C:\Users\jsier\Desktop\MAI\IMAS_MAI_01\IMAS_project\lib\jadeExamples.jar" cat.urv.imas.main.Main
+nov 18, 2018 5:41:27 PM jade.core.Runtime beginContainer
+INFO: ----------------------------------
+    This is JADE 4.3.2 - revision 6708 of 2014/03/28 15:19:44
+    downloaded in Open Source, under LGPL restrictions,
+    at http://jade.tilab.com/
+----------------------------------------
+nov 18, 2018 5:41:28 PM jade.imtp.leap.LEAPIMTPManager initialize
+INFO: Listening for intra-platform commands on address:
+- jicp://192.168.43.199:1099
+
+nov 18, 2018 5:41:29 PM jade.core.BaseService init
+INFO: Service jade.core.management.AgentManagement initialized
+nov 18, 2018 5:41:29 PM jade.core.BaseService init
+INFO: Service jade.core.messaging.Messaging initialized
+nov 18, 2018 5:41:29 PM jade.core.BaseService init
+INFO: Service jade.core.resource.ResourceManagement initialized
+nov 18, 2018 5:41:29 PM jade.core.BaseService init
+INFO: Service jade.core.mobility.AgentMobility initialized
+nov 18, 2018 5:41:29 PM jade.core.BaseService init
+INFO: Service jade.core.event.Notification initialized
+nov 18, 2018 5:41:29 PM jade.mtp.http.HTTPServer <init>
+INFO: HTTP-MTP Using XML parser com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser
+nov 18, 2018 5:41:29 PM jade.core.messaging.MessagingService boot
+INFO: MTP addresses:
+http://DESKTOP-28A57G9:7778/acc
+nov 18, 2018 5:41:29 PM jade.core.AgentContainerImpl joinPlatform
+INFO: --------------------------------------
+Agent container Main-Container@192.168.43.199 is ready.
+--------------------------------------------
+nov 18, 2018 5:41:30 PM jade.core.Runtime beginContainer
+INFO: ----------------------------------
+    This is JADE 4.3.2 - revision 6708 of 2014/03/28 15:19:44
+    downloaded in Open Source, under LGPL restrictions,
+    at http://jade.tilab.com/
+----------------------------------------
+nov 18, 2018 5:41:30 PM jade.imtp.leap.LEAPIMTPManager initialize
+INFO: Listening for intra-platform commands on address:
+- jicp://192.168.43.199:1099
+
+nov 18, 2018 5:41:30 PM jade.core.BaseService init
+INFO: Service jade.core.management.AgentManagement initialized
+nov 18, 2018 5:41:30 PM jade.core.BaseService init
+INFO: Service jade.core.messaging.Messaging initialized
+nov 18, 2018 5:41:30 PM jade.core.BaseService init
+INFO: Service jade.core.resource.ResourceManagement initialized
+nov 18, 2018 5:41:30 PM jade.core.BaseService init
+INFO: Service jade.core.mobility.AgentMobility initialized
+nov 18, 2018 5:41:30 PM jade.core.BaseService init
+INFO: Service jade.core.event.Notification initialized
+nov 18, 2018 5:41:30 PM jade.core.PlatformManagerImpl localAddNode
+INFO: Adding node <IMAS-Container> to the platform
+nov 18, 2018 5:41:30 PM jade.core.AgentContainerImpl startBootstrapAgents
+SEVERE: Cannot create agent rma: Name-clash Agent rma@192.168.43.199:1099/JADE already present in the platform 
+nov 18, 2018 5:41:30 PM jade.core.AgentContainerImpl joinPlatform
+INFO: --------------------------------------
+Agent container IMAS-Container@192.168.43.199 is ready.
+--------------------------------------------
+nov 18, 2018 5:41:30 PM jade.core.PlatformManagerImpl$1 nodeAdded
+INFO: --- Node <IMAS-Container> ALIVE ---
+SystemAgent: Registered to the DF
+cat.urv.imas.ontology.InitialGameSettings : Adding 10 elements (10 of them visible) on a map with 192 cells (192 of them candidate).
+SystemAgent: Initial configuration settings loaded
+SystemAgent: GUI loaded
+CoordinatorAgent: Registered to the DF
+CleanerCoordinatorAgent: Registered to the DF
+SearcherCoordinatorAgent: Registered to the DF
+Searcher-1: Registered to the DF
+Searcher-0: Registered to the DF
+SystemAgent: Waiting REQUESTs from authorized agents
+Searcher-2: Registered to the DF
+Cleaner-0: Registered to the DF
+Searcher-3: Registered to the DF
+Cleaner-2: Registered to the DF
+Cleaner-1: Registered to the DF
+CleanerCoordinatorAgent: Request message to agent CoordinatorAgent@192.168.43.199:1099/JADE
+CleanerCoordinatorAgent: Request message content:Get map
+CleanerCoordinatorAgent: Started behaviour to deal with AGREEs
+CleanerCoordinatorAgent: Waiting REQUESTs from authorized agents
+SearcherCoordinatorAgent: Request message to agent CoordinatorAgent@192.168.43.199:1099/JADE
+SearcherCoordinatorAgent: Request message content:Get map
+SearcherCoordinatorAgent: Started behaviour to deal with AGREEs
+SearcherCoordinatorAgent: Waiting REQUESTs from authorized agents
+Searcher-1: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-1: Request message content:Get map
+Searcher-1: Started behaviour to deal with AGREEs
+SearcherCoordinatorAgent: Request received but game is null
+SearcherCoordinatorAgent: Response being prepared
+Searcher-1: Action refused. Retrying in 3000...
+Searcher-0: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-0: Request message content:Get map
+Searcher-0: Started behaviour to deal with AGREEs
+SearcherCoordinatorAgent: Request received but game is null
+SearcherCoordinatorAgent: Response being prepared
+Searcher-0: Action refused. Retrying in 3000...
+Searcher-2: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-2: Request message content:Get map
+Searcher-2: Started behaviour to deal with AGREEs
+SearcherCoordinatorAgent: Request received but game is null
+SearcherCoordinatorAgent: Response being prepared
+Searcher-2: Action refused. Retrying in 3000...
+Cleaner-0: Request message to agent CleanerCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-0: Request message content:Get map
+Cleaner-0: Started behaviour to deal with AGREEs
+CleanerCoordinatorAgent: Request received but game is null
+CleanerCoordinatorAgent: Response being prepared
+Searcher-3: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-3: Request message content:Get map
+Searcher-3: Started behaviour to deal with AGREEs
+Cleaner-0: Action refused. Retrying in 3000...
+SearcherCoordinatorAgent: Request received but game is null
+SearcherCoordinatorAgent: Response being prepared
+Searcher-3: Action refused. Retrying in 3000...
+Cleaner-2: Request message to agent CleanerCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-2: Request message content:Get map
+Cleaner-2: Started behaviour to deal with AGREEs
+CleanerCoordinatorAgent: Request received but game is null
+CleanerCoordinatorAgent: Response being prepared
+Cleaner-2: Action refused. Retrying in 3000...
+Cleaner-1: Request message to agent CleanerCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-1: Request message content:Get map
+Cleaner-1: Started behaviour to deal with AGREEs
+CleanerCoordinatorAgent: Request received but game is null
+CleanerCoordinatorAgent: Response being prepared
+Cleaner-1: Action refused. Retrying in 3000...
+CoordinatorAgent: Request message to agent SystemAgent@192.168.43.199:1099/JADE
+CoordinatorAgent: Request message content:Get map
+CoordinatorAgent: Started behaviour to deal with AGREEs
+CoordinatorAgent: Waiting REQUESTs from authorized agents
+CoordinatorAgent: Request received but game is null
+CoordinatorAgent: Response being prepared
+SystemAgent: Request received
+SystemAgent: Response being prepared
+CoordinatorAgent: Request received but game is null
+CoordinatorAgent: Response being prepared
+CleanerCoordinatorAgent: Action refused. Retrying in 3000...
+cat.urv.imas.ontology.InitialGameSettings : 36 < 40 (step probability for new elements < probability of new elements)
+SearcherCoordinatorAgent: Action refused. Retrying in 3000...
+CoordinatorAgent: AGREE received from SystemAgent
+SystemAgent: Game settings sent
+CoordinatorAgent: INFORM received from SystemAgent
+CoordinatorAgent: 4 agents of type SEARCHER, 3 agents of type CLEANER
+Searcher-1: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-1: Request message content:Get map
+Searcher-1: Started behaviour to deal with AGREEs
+Searcher-0: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-0: Request message content:Get map
+Searcher-0: Started behaviour to deal with AGREEs
+Searcher-2: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-2: Request message content:Get map
+Searcher-2: Started behaviour to deal with AGREEs
+Cleaner-0: Request message to agent CleanerCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-0: Request message content:Get map
+Cleaner-0: Started behaviour to deal with AGREEs
+Searcher-3: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-3: Request message content:Get map
+Searcher-3: Started behaviour to deal with AGREEs
+Cleaner-2: Request message to agent CleanerCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-2: Request message content:Get map
+Cleaner-2: Started behaviour to deal with AGREEs
+Cleaner-1: Request message to agent CleanerCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-1: Request message content:Get map
+Cleaner-1: Started behaviour to deal with AGREEs
+CleanerCoordinatorAgent: Request message to agent CoordinatorAgent@192.168.43.199:1099/JADE
+CleanerCoordinatorAgent: Request message content:Get map
+CleanerCoordinatorAgent: Started behaviour to deal with AGREEs
+CleanerCoordinatorAgent: Request received but game is null
+CleanerCoordinatorAgent: Response being prepared
+SearcherCoordinatorAgent: Request message to agent CoordinatorAgent@192.168.43.199:1099/JADE
+SearcherCoordinatorAgent: Request message content:Get map
+SearcherCoordinatorAgent: Started behaviour to deal with AGREEs
+CoordinatorAgent: Agent sent new position before (or it's the first time), and the map is updated
+CoordinatorAgent: Response being prepared
+Cleaner-0: Action refused. Retrying in 3000...
+SearcherCoordinatorAgent: Request received but game is null
+SearcherCoordinatorAgent: Response being prepared
+CleanerCoordinatorAgent: Request received but game is null
+CleanerCoordinatorAgent: Response being prepared
+CleanerCoordinatorAgent: AGREE received from CoordinatorAgent
+Cleaner-2: Action refused. Retrying in 3000...
+Searcher-1: Action refused. Retrying in 3000...
+CleanerCoordinatorAgent: Request received but game is null
+CleanerCoordinatorAgent: Response being prepared
+SearcherCoordinatorAgent: Request received but game is null
+SearcherCoordinatorAgent: Response being prepared
+Cleaner-1: Action refused. Retrying in 3000...
+Searcher-0: Action refused. Retrying in 3000...
+SearcherCoordinatorAgent: Request received but game is null
+SearcherCoordinatorAgent: Response being prepared
+Searcher-2: Action refused. Retrying in 3000...
+SearcherCoordinatorAgent: Request received but game is null
+SearcherCoordinatorAgent: Response being prepared
+Searcher-3: Action refused. Retrying in 3000...
+CoordinatorAgent: Game settings sent
+CoordinatorAgent: Agent sent new position before (or it's the first time), and the map is updated
+CoordinatorAgent: Response being prepared
+CleanerCoordinatorAgent: INFORM received from CoordinatorAgent
+CoordinatorAgent: Game settings sent
+CleanerCoordinatorAgent: 4 agents of type SEARCHER, 3 agents of type CLEANER
+SearcherCoordinatorAgent: AGREE received from CoordinatorAgent
+SearcherCoordinatorAgent: INFORM received from CoordinatorAgent
+SearcherCoordinatorAgent: 4 agents of type SEARCHER, 3 agents of type CLEANER
+Cleaner-0: Request message to agent CleanerCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-0: Request message content:Get map
+Cleaner-0: Started behaviour to deal with AGREEs
+CleanerCoordinatorAgent: Agent sent new position before (or it's the first time), and the map is updated
+CleanerCoordinatorAgent: Response being prepared
+Cleaner-2: Request message to agent CleanerCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-1: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-2: Request message content:Get map
+Searcher-1: Request message content:Get map
+Cleaner-2: Started behaviour to deal with AGREEs
+Searcher-1: Started behaviour to deal with AGREEs
+Cleaner-0: AGREE received from CleanerCoordinatorAgent
+Searcher-2: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-1: Request message to agent CleanerCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-0: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Cleaner-1: Request message content:Get map
+Searcher-2: Request message content:Get map
+Cleaner-1: Started behaviour to deal with AGREEs
+Searcher-0: Request message content:Get map
+Searcher-2: Started behaviour to deal with AGREEs
+Searcher-0: Started behaviour to deal with AGREEs
+SearcherCoordinatorAgent: Agent sent new position before (or it's the first time), and the map is updated
+SearcherCoordinatorAgent: Response being prepared
+CleanerCoordinatorAgent: Game settings sent
+Searcher-3: Request message to agent SearcherCoordinatorAgent@192.168.43.199:1099/JADE
+Searcher-3: Request message content:Get map
+Searcher-3: Started behaviour to deal with AGREEs
+CleanerCoordinatorAgent: Agent sent new position before (or it's the first time), and the map is updated
+CleanerCoordinatorAgent: Response being prepared
+SearcherCoordinatorAgent: Game settings sent
+Cleaner-0: INFORM received from CleanerCoordinatorAgent
+Searcher-1: AGREE received from SearcherCoordinatorAgent
+SearcherCoordinatorAgent: Agent sent new position before (or it's the first time), and the map is updated
+Cleaner-2: AGREE received from CleanerCoordinatorAgent
+CleanerCoordinatorAgent: Game settings sent
+SearcherCoordinatorAgent: Response being prepared
+SearcherCoordinatorAgent: Game settings sent
+Searcher-1: INFORM received from SearcherCoordinatorAgent
+CleanerCoordinatorAgent: Agent sent new position before (or it's the first time), and the map is updated
+CleanerCoordinatorAgent: Response being prepared
+Searcher-2: AGREE received from SearcherCoordinatorAgent
+SearcherCoordinatorAgent: Agent sent new position before (or it's the first time), and the map is updated
+SearcherCoordinatorAgent: Response being prepared
+Cleaner-2: INFORM received from CleanerCoordinatorAgent
+CleanerCoordinatorAgent: Game settings sent
+Cleaner-1: AGREE received from CleanerCoordinatorAgent
+SearcherCoordinatorAgent: Game settings sent
+Searcher-0: AGREE received from SearcherCoordinatorAgent
+Searcher-2: INFORM received from SearcherCoordinatorAgent
+SearcherCoordinatorAgent: Agent sent new position before (or it's the first time), and the map is updated
+SearcherCoordinatorAgent: Response being prepared
+Cleaner-1: INFORM received from CleanerCoordinatorAgent
+SearcherCoordinatorAgent: Game settings sent
+Searcher-3: AGREE received from SearcherCoordinatorAgent
+Searcher-0: INFORM received from SearcherCoordinatorAgent
+Searcher-3: INFORM received from SearcherCoordinatorAgent

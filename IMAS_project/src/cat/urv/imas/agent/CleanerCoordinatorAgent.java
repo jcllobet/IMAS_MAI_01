@@ -1,11 +1,13 @@
 package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.cleanerCoordinator.RequesterBehaviour;
+import cat.urv.imas.behaviour.cleanerCoordinator.RequestResponseBehaviour;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
 import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +41,11 @@ public class CleanerCoordinatorAgent extends ImasAgent {
 
         /* ********************************************************************/
         launchInitialRequest();
+        MessageTemplate mt = MessageTemplate.and(
+                MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
+                MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+
+        this.addBehaviour(new RequestResponseBehaviour(this, mt));
     }
 
     public void launchInitialRequest() {
@@ -62,5 +69,13 @@ public class CleanerCoordinatorAgent extends ImasAgent {
      */
     public GameSettings getGame() {
         return this.game;
+    }
+
+    public Map<AID, Boolean> getNewPositionReceived() {
+        return newPositionReceived;
+    }
+
+    public void setNewPositionReceived(Map<AID, Boolean> newPositionReceived) {
+        this.newPositionReceived = newPositionReceived;
     }
 }
