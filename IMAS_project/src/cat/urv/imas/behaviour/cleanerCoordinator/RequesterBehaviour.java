@@ -34,7 +34,7 @@ import jade.proto.AchieveREInitiator;
  */
 public class RequesterBehaviour extends AchieveREInitiator {
 
-    Integer RETRY_TIME_MS = 3000;
+    Integer RETRY_TIME_MS = 2000;
 
     public RequesterBehaviour(CleanerCoordinatorAgent agent, ACLMessage requestMsg) {
         super(agent, requestMsg);

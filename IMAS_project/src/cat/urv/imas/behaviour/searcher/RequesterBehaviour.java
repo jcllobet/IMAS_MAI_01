@@ -34,7 +34,7 @@ import jade.proto.AchieveREInitiator;
  */
 public class RequesterBehaviour extends AchieveREInitiator {
 
-    Integer RETRY_TIME_MS = 3000;
+    Integer RETRY_TIME_MS = 2000;
 
     public RequesterBehaviour(SearcherAgent agent, ACLMessage requestMsg) {
         super(agent, requestMsg);
@@ -63,7 +63,7 @@ public class RequesterBehaviour extends AchieveREInitiator {
         agent.log("INFORM received from " + ((AID) msg.getSender()).getLocalName());
         try {
             GameSettings game = (GameSettings) msg.getContentObject();
-            agent.setGame(game);
+            agent.setParameters(game);
         } catch (Exception e) {
             agent.errorLog("Incorrect content: " + e.toString());
         }
