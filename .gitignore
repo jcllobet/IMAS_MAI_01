@@ -18,6 +18,13 @@ IMAS_project/.idea/
 IMAS_project/out/
 IMAS_project/IMAS_project.iml
 
+IMAS_project/.settings/
+IMAS_project/local.properties
+IMAS_project/.loadpath
+IMAS_project/.recommenders
+IMAS_project/.project
+IMAS_project/.classpath
+
 # JADE
 APDescription.txt
 MTPs-*.txt
