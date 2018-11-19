@@ -24,10 +24,10 @@ import jade.lang.acl.ACLMessage;
 import jade.proto.AchieveREInitiator;
 
 /**
- * Behaviour for the Coordinator agent to deal with AGREE messages.
- * The Coordinator Agent sends a REQUEST for the
+ * Behaviour for the Cleaner Coordinator agent to deal with AGREE messages.
+ * The Cleaner Coordinator agent sends a REQUEST for the
  * information of the game settings. The System Agent sends an AGREE and 
- * then it informs of this information which is stored by the Coordinator Agent. 
+ * then it informs of this information which is stored by the Cleaner Coordinator agent.
  * 
  * NOTE: The game is processed by another behaviour that we add after the 
  * INFORM has been processed.

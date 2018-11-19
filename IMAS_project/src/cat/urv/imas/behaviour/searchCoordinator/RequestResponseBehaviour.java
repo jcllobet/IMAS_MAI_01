@@ -25,7 +25,7 @@ import jade.proto.AchieveREResponder;
 
 /**
  * A request-responder behaviour for System agent, answering to queries
- * from the Coordinator agent. The Coordinator Agent sends a REQUEST of the whole
+ * from the Search Coordinator agent. The Search Coordinator agent sends a REQUEST of the whole
  * game information and the System Agent sends an AGREE and then an INFORM
  * with the city information.
  */
