@@ -23,7 +23,6 @@ import cat.urv.imas.ontology.MessageContent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.AchieveREResponder;
-import sun.plugin2.message.Message;
 
 /**
  * A request-responder behaviour for System agent, answering to queries

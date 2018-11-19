@@ -146,7 +146,8 @@ public class SearcherAgent extends ImasAgent {
         counter = 0;
         for (int i = position[0] - 1; i <= position[0] + 1; i++){
             for (int j = position[1] - 1; j <= position[1] + 1; j++){
-                if (i != j) {
+                if ((i != this.position[0] || j != this.position[1]) 
+                        && i > 0 && j > 0) {
                     surroundingCells[counter] = game.getMap()[i][j];
                     counter++;
                 }
