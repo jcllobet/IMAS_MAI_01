@@ -30,9 +30,12 @@ import jade.lang.acl.*;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
+import java.io.IOException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -162,10 +165,10 @@ public class SystemAgent extends ImasAgent {
     private void createAgents() {
         ContainerController cc = this.getContainerController();
         try {
-            AgentController cleanerCoordinatorAgent = cc.createNewAgent("CleanerCoordinatorAgent",
-                    "cat.urv.imas.agent.CleanerCoordinatorAgent", null);
             AgentController coordinatorAgent = cc.createNewAgent("CoordinatorAgent",
                     "cat.urv.imas.agent.CoordinatorAgent", null);
+            AgentController cleanerCoordinatorAgent = cc.createNewAgent("CleanerCoordinatorAgent",
+                    "cat.urv.imas.agent.CleanerCoordinatorAgent", null);
             AgentController searchCoordinatorAgent = cc.createNewAgent("SearcherCoordinatorAgent",
                     "cat.urv.imas.agent.SearcherCoordinatorAgent", null);
 

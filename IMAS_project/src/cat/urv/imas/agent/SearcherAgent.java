@@ -1,5 +1,6 @@
 package cat.urv.imas.agent;
 
+import cat.urv.imas.behaviour.searcher.ListenerBehaviour;
 import cat.urv.imas.behaviour.searcher.RequesterBehaviour;
 import cat.urv.imas.map.Cell;
 import cat.urv.imas.map.CellType;
@@ -9,19 +10,33 @@ import cat.urv.imas.ontology.MessageContent;
 import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SearcherAgent extends ImasAgent {
 
     private AID searcherCoordinator;
     private int[] position;
+    private int[] newPos;
+    private int[] maxRowColum;
     private List<int[]> chargingPoints;
     private List<int[]> walls;
     private Cell[] surroundingCells;
     private boolean startingTurn;
+    
+    private boolean waitingForMap;
 
+    // Messages
+    private ACLMessage requestMapMsg;
+    private ACLMessage informNewPosMsg;
+    
     public SearcherAgent() {
         super(AgentType.SEARCHER);
     }
@@ -36,7 +51,9 @@ public class SearcherAgent extends ImasAgent {
         registerToDF();
 
         // Array [row, col]
-        position = new int[2];
+        position    = new int[2];
+        newPos      = new int[2];
+        maxRowColum = new int[2];
 
         // Position of the Battery Charging points
         chargingPoints = new ArrayList<>();
@@ -46,15 +63,28 @@ public class SearcherAgent extends ImasAgent {
 
         // Boolean for location initialization
         startingTurn = true;
+        
+        waitingForMap = false;
 
         // Array of the eSearcher surrounding Cells
         surroundingCells = new Cell[8];
 
         // search CoordinatorAgent (is a blocking method, so we will obtain always a correct AID)
         this.searcherCoordinator = UtilsAgents.searchAgentType(this, AgentType.ESEARCHER_COORDINATOR);
+        
+        requestMapMsg = generateMsg(ACLMessage.REQUEST, 
+                                    searcherCoordinator, 
+                                    FIPANames.InteractionProtocol.FIPA_REQUEST, 
+                                    MessageContent.GET_MAP);
+        informNewPosMsg = new ACLMessage(ACLMessage.INFORM);
+        informNewPosMsg.addReceiver(searcherCoordinator);
 
         /* ********************************************************************/
-        launchInitialRequest();
+        //launchInitialRequest();
+        
+        this.addBehaviour(new ListenerBehaviour(this));
+        this.send(requestMapMsg);
+        this.waitingForMap = true;
     }
 
     public void launchInitialRequest() {
@@ -116,6 +146,10 @@ public class SearcherAgent extends ImasAgent {
                     }
                 }
             }
+            
+            // Set limits of the map
+            maxRowColum[0] = map.length - 1;
+            maxRowColum[1] = map[0].length - 1;
 
             System.out.println(this.getLocalName() + " starts at row " + String.valueOf(position[0]) + " and column " +
                     String.valueOf(position[1]));
@@ -151,6 +185,70 @@ public class SearcherAgent extends ImasAgent {
                     surroundingCells[counter] = game.getMap()[i][j];
                     counter++;
                 }
+            }
+        }
+    }
+
+    public boolean isWaitingForMap() {
+        return waitingForMap;
+    }
+
+    public void setWaitingForMap(boolean waitingForMap) {
+        this.waitingForMap = waitingForMap;
+    }
+    
+    public ACLMessage getReqMapMsg() {
+        return requestMapMsg;
+    }
+    
+    public void computeNewPosition() {
+        boolean valid = false;
+        while (!valid){
+            newPos = Move.newPos(position, Move.randomMove());
+            if (isValidPos(newPos)){
+                valid = true;
+            }
+        }
+        
+        /*try {
+            informNewPosMsg.setContentObject(newPos);
+            this.send(informNewPosMsg);
+        } catch (IOException ex) {
+            Logger.getLogger(CleanerAgent.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+    }
+    
+    private boolean isValidPos(int[] pos){
+        if (pos[0] < 0 || 
+                pos[1] < 0 || 
+                pos[0] > maxRowColum[0] || 
+                pos[1] > maxRowColum[1]){
+            return false;
+        }
+        return true;
+    }
+    
+    private enum Move{
+        UP,
+        LEFT,
+        RIGHT,
+        DOWN;
+        
+        private static final List<Move> VALUES = Collections.unmodifiableList(Arrays.asList(values()));
+        private static final int SIZE = VALUES.size();
+        private static final Random RANDOM = new Random();
+
+        public static Move randomMove() {
+            return VALUES.get(RANDOM.nextInt(SIZE));
+        }
+        
+        public static int[] newPos(int[] pos, Move move) {
+            switch(move){
+                case UP:    return new int[]{pos[0]-1, pos[1]};
+                case DOWN:  return new int[]{pos[0]+1, pos[1]};
+                case RIGHT: return new int[]{pos[0], pos[1]+1};
+                case LEFT:  return new int[]{pos[0], pos[1]-1};
+                default:    return null;
             }
         }
     }

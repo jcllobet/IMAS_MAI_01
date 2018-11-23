@@ -17,6 +17,7 @@
  */
 package cat.urv.imas.agent;
 
+import cat.urv.imas.behaviour.coordinator.ListenerBehaviour;
 import cat.urv.imas.behaviour.coordinator.RequestResponseBehaviour;
 import cat.urv.imas.map.Cell;
 import cat.urv.imas.ontology.GameSettings;
@@ -25,10 +26,13 @@ import cat.urv.imas.ontology.MessageContent;
 import jade.core.*;
 import jade.domain.FIPANames.InteractionProtocol;
 import jade.lang.acl.*;
+import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The main Coordinator agent. 
@@ -39,6 +43,7 @@ public class CoordinatorAgent extends ImasAgent {
 
     private Map<AID, Boolean> newPositionReceived;
     private boolean mapRequestInProgress;
+    private boolean mapUpdated;
 
     /**
      * Game settings in use.
@@ -50,6 +55,9 @@ public class CoordinatorAgent extends ImasAgent {
     private AID systemAgent;
     private AID searcherCoordinator;
     private AID cleanerCoordinator;
+    
+    // Messages
+    ACLMessage requestMapMsg;
 
     /**
      * Builds the coordinator agent.
@@ -65,6 +73,7 @@ public class CoordinatorAgent extends ImasAgent {
     @Override
     protected void setup() {
         this.mapRequestInProgress = false;
+        this.mapUpdated = false;
         this.newPositionReceived = new HashMap<>();
 
         /* ** Very Important Line (VIL) ***************************************/
@@ -83,10 +92,15 @@ public class CoordinatorAgent extends ImasAgent {
         MessageTemplate mt = MessageTemplate.and(
                 MessageTemplate.MatchProtocol(InteractionProtocol.FIPA_REQUEST),
                 MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
-        ACLMessage initialRequest = generateMsg(ACLMessage.REQUEST, systemAgent, InteractionProtocol.FIPA_REQUEST, MessageContent.GET_MAP);
+        requestMapMsg = generateMsg(ACLMessage.REQUEST, 
+                                    systemAgent, 
+                                    InteractionProtocol.FIPA_REQUEST, 
+                                    MessageContent.GET_MAP);
 
-        this.addBehaviour(new RequesterBehaviour(this, initialRequest));
-        this.addBehaviour(new RequestResponseBehaviour(this, mt));
+        this.addBehaviour(new ListenerBehaviour(this));
+        //this.send(requestMapMsg);
+        //this.addBehaviour(new RequesterBehaviour(this, requestMapMsg));
+        //this.addBehaviour(new RequestResponseBehaviour(this, mt));
 
         // setup finished. When we receive the last inform, the agent itself will add
         // a behaviour to send/receive actions
@@ -127,6 +141,8 @@ public class CoordinatorAgent extends ImasAgent {
      */
     public void setGame(GameSettings game) {
         this.game = game;
+        this.setMapRequestInProgress(false);
+        this.setMapUpdated(true);
     }
 
     /**
@@ -136,6 +152,29 @@ public class CoordinatorAgent extends ImasAgent {
      */
     public GameSettings getGame() {
         return this.game;
+    }
+
+    public ACLMessage getReqMapMsg() {
+        return requestMapMsg;
+    }
+    
+    public boolean isMapUpdated() {
+        return mapUpdated;
+    }
+
+    public void setMapUpdated(boolean mapUpdated) {
+        this.mapUpdated = mapUpdated;
+    }
+    
+    public void sendMap(AID sender) {
+        ACLMessage sendMapMsg = new ACLMessage(ACLMessage.INFORM);
+        sendMapMsg.addReceiver(sender);
+        try {
+            sendMapMsg.setContentObject(this.game);
+            this.send(sendMapMsg);
+        } catch (IOException ex) {
+            Logger.getLogger(SearcherCoordinatorAgent.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }
