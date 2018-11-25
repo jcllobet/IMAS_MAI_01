@@ -22,12 +22,16 @@ public class BaseCoordinator extends ImasAgent {
     private boolean mapUpdated;
     private List<AgentPosition> newPositions;
     private Integer numChildren;
+    private int newPosMsgCount;
+    protected ACLMessage informNewPosMsg;
 
     public BaseCoordinator(AgentType type) {
         super(type);
         this.mapUpdated = false;
         this.newPositions = new ArrayList<>();
         this.numChildren = null;
+        this.newPosMsgCount = 0;
+        this.informNewPosMsg = new ACLMessage(ACLMessage.INFORM);
     }
 
     public void setGame(GameSettings game) {
@@ -80,11 +84,17 @@ public class BaseCoordinator extends ImasAgent {
     }
 
     public void addNewPosition(AgentPosition newPos){
-        ACLMessage informNewPosMsg = new ACLMessage(ACLMessage.INFORM);
-        informNewPosMsg.addReceiver(getParent());
-
         newPositions.add(newPos);
-        if (newPositions.size() == numChildren && getParent() != null) {
+    }
+
+    public void addNewPositions(List<AgentPosition> positions) {
+        for (AgentPosition agentPosition : positions) {
+            addNewPosition(agentPosition);
+        }
+    }
+    
+    public void sendNewPositions(){
+        if (newPosMsgCount == numChildren && getParent() != null) {
             try {
                 informNewPosMsg.setContentObject(newPositions.toArray(new AgentPosition[newPositions.size()]));
                 this.send(informNewPosMsg);
@@ -93,12 +103,7 @@ public class BaseCoordinator extends ImasAgent {
             }
             setMapUpdated(false);
             resetNewPositions();
-        }
-    }
-
-    public void addNewPositions(List<AgentPosition> positions) {
-        for (AgentPosition agentPosition : positions) {
-            addNewPosition(agentPosition);
+            resetNewPosMsgCount();
         }
     }
 
@@ -113,5 +118,13 @@ public class BaseCoordinator extends ImasAgent {
 
     public List<AgentPosition> getNewPositions() {
         return newPositions;
+    }
+
+    private void resetNewPosMsgCount() {
+        newPosMsgCount = 0;
+    }
+    
+    public void addNewPosMsgCount() {
+        newPosMsgCount++;
     }
 }

@@ -29,10 +29,7 @@ public class CleanerCoordinatorAgent extends BaseCoordinator {
         setParent(UtilsAgents.searchAgentType(this, AgentType.COORDINATOR));
 
         /* ********************************************************************/
-        //launchInitialRequest();
-        MessageTemplate mt = MessageTemplate.and(
-                MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
-                MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+        this.informNewPosMsg.addReceiver(getParent());
         
         this.addBehaviour(new ListenerBehaviour(this));
     }

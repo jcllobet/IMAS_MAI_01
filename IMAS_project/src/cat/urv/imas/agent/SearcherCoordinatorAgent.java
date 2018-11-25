@@ -29,10 +29,7 @@ public class SearcherCoordinatorAgent extends BaseCoordinator {
         setParent(UtilsAgents.searchAgentType(this, AgentType.COORDINATOR));
 
         /* ********************************************************************/
-        //launchInitialRequest();
-        MessageTemplate mt = MessageTemplate.and(
-                MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
-                MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+        this.informNewPosMsg.addReceiver(getParent());
         
         this.addBehaviour(new ListenerBehaviour(this));
     }
@@ -42,7 +39,7 @@ public class SearcherCoordinatorAgent extends BaseCoordinator {
         super.setGame(game);
         if (getNumChildren() == null && getGame() != null) {
             for (Map.Entry<AgentType, List<Cell>> entry : this.getGame().getAgentList().entrySet()) {
-                if (entry.getKey().name().equals(AgentType.CLEANER.toString())) {
+                if (entry.getKey().name().equals(AgentType.SEARCHER.toString())) {
                     setNumChildren(entry.getValue().size());
                     break;
                 }

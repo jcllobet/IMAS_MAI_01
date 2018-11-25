@@ -45,6 +45,8 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavoir {
         } else {
             try {
                 agent.addNewPosition((AgentPosition)msg.getContentObject());
+                agent.addNewPosMsgCount();
+                agent.sendNewPositions();
             } catch (UnreadableException ex) {
                 Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -19,6 +19,7 @@ package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.coordinator.ListenerBehaviour;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.utils.AgentPosition;
 import jade.core.*;
 import jade.domain.FIPANames.InteractionProtocol;
 import jade.lang.acl.*;
@@ -59,6 +60,8 @@ public class CoordinatorAgent extends BaseCoordinator {
         this.cleanerCoordinator = UtilsAgents.searchAgentType(this, AgentType.CLEANER_COORDINATOR);
 
         /* ********************************************************************/
+        this.informNewPosMsg.addReceiver(getParent());
+        
         this.addBehaviour(new ListenerBehaviour(this));
     }
 
@@ -74,5 +77,5 @@ public class CoordinatorAgent extends BaseCoordinator {
 
     public AID getCleanerCoordinator() {
         return cleanerCoordinator;
-    }
+    }    
 }
