@@ -32,17 +32,15 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavoir {
     protected void onInform() {
         CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) getImasAgent();
         ACLMessage msg = getMsg();
-        agent.log("INFORM message received");
+        agent.log("INFORM message received from " + msg.getSender().getLocalName());
         if (msg.getSender().equals(agent.getParent())){
             try {
                 agent.setGame((GameSettings) msg.getContentObject());
                 agent.log("Map received");
             } catch (UnreadableException ex) {
                 Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
-
             }
         } else {
-            agent.setNewPositionReceived(msg.getSender(), true);
             try {
                 agent.addNewPosition((AgentPosition)msg.getContentObject());
             } catch (UnreadableException ex) {

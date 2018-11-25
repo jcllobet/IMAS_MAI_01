@@ -33,6 +33,7 @@ public class ListenerBehaviour extends BaseListenerBehavoir {
     protected void onInform() {
         SearcherAgent agent = (SearcherAgent)getImasAgent();
         ACLMessage msg = getMsg();
+        agent.log("INFORM message received from " + msg.getSender().getLocalName());
         try {
             if (msg.getContentObject() instanceof GameSettings){
                 agent.setParameters((GameSettings) msg.getContentObject());

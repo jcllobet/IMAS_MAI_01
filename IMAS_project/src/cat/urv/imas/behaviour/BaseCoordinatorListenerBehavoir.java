@@ -15,8 +15,6 @@ public class BaseCoordinatorListenerBehavoir extends BaseListenerBehavoir {
         BaseCoordinator agent = (BaseCoordinator) getImasAgent();
         ACLMessage msg = getMsg();
         if (msg.getContent().equals(MessageContent.GET_MAP)){
-            // If map is not updated and not updating...
-            agent.getNewPositionReceived().put(msg.getSender(), false);
             // If map has been requested
             if (agent.isWaitingForMap()){
                 agent.log("Request received from " + msg.getSender().getLocalName() + " but waiting for the map");

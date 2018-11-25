@@ -29,4 +29,5 @@ public class MessageContent {
     public static final String GET_MAP = "Get map";
 
     public static final String NEW_POS = "New pos";
+    public static final String MAP_UPDATED = "Map updated";
 }

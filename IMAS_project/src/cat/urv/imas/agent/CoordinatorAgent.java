@@ -18,6 +18,7 @@
 package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.coordinator.ListenerBehaviour;
+import cat.urv.imas.ontology.GameSettings;
 import jade.core.*;
 import jade.domain.FIPANames.InteractionProtocol;
 import jade.lang.acl.*;
@@ -58,17 +59,13 @@ public class CoordinatorAgent extends BaseCoordinator {
         this.cleanerCoordinator = UtilsAgents.searchAgentType(this, AgentType.CLEANER_COORDINATOR);
 
         /* ********************************************************************/
-        MessageTemplate mt = MessageTemplate.and(
-                MessageTemplate.MatchProtocol(InteractionProtocol.FIPA_REQUEST),
-                MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
-
         this.addBehaviour(new ListenerBehaviour(this));
-        //this.send(requestMapMsg);
-        //this.addBehaviour(new RequesterBehaviour(this, requestMapMsg));
-        //this.addBehaviour(new RequestResponseBehaviour(this, mt));
+    }
 
-        // setup finished. When we receive the last inform, the agent itself will add
-        // a behaviour to send/receive actions
+    @Override
+    public void setGame(GameSettings game) {
+        super.setGame(game);
+        setNumChildren(2); // TODO constant
     }
 
     public AID getSearcherCoordinator() {

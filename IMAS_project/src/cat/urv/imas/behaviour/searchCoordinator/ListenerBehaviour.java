@@ -34,7 +34,7 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavoir {
     protected void onInform() {
         SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent) getImasAgent();
         ACLMessage msg = getMsg();
-        agent.log("INFORM message received");
+        agent.log("INFORM message received from " + msg.getSender().getLocalName());
         if (msg.getSender().equals(agent.getParent())){
             try {
                 agent.setGame((GameSettings) msg.getContentObject());
@@ -43,7 +43,6 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavoir {
                 Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            agent.setNewPositionReceived(msg.getSender(), true);
             try {
                 agent.addNewPosition((AgentPosition)msg.getContentObject());
             } catch (UnreadableException ex) {

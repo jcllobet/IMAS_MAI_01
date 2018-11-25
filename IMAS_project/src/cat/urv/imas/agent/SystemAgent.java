@@ -17,21 +17,19 @@
  */
 package cat.urv.imas.agent;
 
+import cat.urv.imas.behaviour.system.ListenerBehaviour;
 import cat.urv.imas.map.Cell;
 import cat.urv.imas.ontology.InitialGameSettings;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.gui.GraphicInterface;
-import cat.urv.imas.behaviour.system.RequestResponseBehaviour;
+import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.AgentPosition;
 import jade.core.*;
-import jade.domain.*;
-import jade.domain.FIPAAgentManagement.*;
-import jade.domain.FIPANames.InteractionProtocol;
-import jade.lang.acl.*;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
-import java.io.IOException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -43,17 +41,13 @@ import java.util.logging.Logger;
  * TODO: You have to decide the onthology and protocol when interacting among
  * the Coordinator agent.
  */
-public class SystemAgent extends ImasAgent {
+public class SystemAgent extends BaseCoordinator {
 
     /**
      * GUI with the map, system agent log and statistics.
      */
     private GraphicInterface gui;
-    /**
-     * Game settings. At the very beginning, it will contain the loaded
-     * initial configuration settings.
-     */
-    private InitialGameSettings game;
+
     /**
      * The Coordinator agent with which interacts sharing game settings every
      * round.
@@ -96,27 +90,19 @@ public class SystemAgent extends ImasAgent {
     }
 
     /**
-     * Gets the game settings.
-     *
-     * @return game settings.
-     */
-    public GameSettings getGame() {
-        return this.game;
-    }
-
-    /**
      * Adds (if probability matches) new elements onto the map
      * for every simulation step.
      * This method is expected to be run from the corresponding Behaviour
      * to add new elements onto the map at each simulation step.
      */
     public void addElementsForThisSimulationStep() {
-        this.game.addElementsForThisSimulationStep();
+        InitialGameSettings iniGame = (InitialGameSettings)getGame();
+        iniGame.addElementsForThisSimulationStep();
     }
 
     private void loadGUI() {
         try {
-            this.gui = new GraphicInterface(game);
+            this.gui = new GraphicInterface(getGame());
             gui.setVisible(true);
             log("GUI loaded");
         } catch (Exception e) {
@@ -138,8 +124,9 @@ public class SystemAgent extends ImasAgent {
         registerToDF();
 
         // 2. Load game settings.
-        this.game = InitialGameSettings.load("game.settings");
+        setGame(InitialGameSettings.load("game.settings"));
         log("Initial configuration settings loaded");
+        setMapUpdated(true);
 
         // 3. Load GUI
         loadGUI();
@@ -150,16 +137,13 @@ public class SystemAgent extends ImasAgent {
         // search CoordinatorAgent (is a blocking method, so we will obtain always a correct AID)
         this.coordinatorAgent = UtilsAgents.searchAgentType(this, AgentType.COORDINATOR);
 
-        // add behaviours
-        // we wait for the initialization of the game
-        MessageTemplate mt = MessageTemplate.and(
-                MessageTemplate.MatchProtocol(InteractionProtocol.FIPA_REQUEST), 
-                MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
+        this.addBehaviour(new ListenerBehaviour(this));
+    }
 
-        this.addBehaviour(new RequestResponseBehaviour(this, mt));
-
-        // Setup finished. When the last inform is received, the agent itself will add
-        // a behaviour to send/receive actions
+    @Override
+    public void setGame(GameSettings game) {
+        super.setGame(game);
+        setNumChildren(1); // TODO constant
     }
 
     private void createAgents() {
@@ -204,11 +188,22 @@ public class SystemAgent extends ImasAgent {
         }
     }
 
+    /*@Override
+    public void addNewPosition(AgentPosition newPos){
+        getNewPositions().add(newPos);
+        log("All positions received");
+        if (getNewPositions().size() == getNumChildren()) {
+            informToAllChildren(MessageContent.MAP_UPDATED);
+            setMapUpdated(false);
+            resetNewPositions();
+        }
+    }*/
+
     public void updateGUI() {
         this.gui.updateGame();
     }
 
-    public void setGame(InitialGameSettings game) {
-        this.game = game;
+    public void updateMap(List<AgentPosition> positions) {
+
     }
 }

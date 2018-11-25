@@ -2,8 +2,10 @@ package cat.urv.imas.agent;
 
 import cat.urv.imas.map.Cell;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
 import jade.core.AID;
+import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;
@@ -18,33 +20,38 @@ public class BaseCoordinator extends ImasAgent {
 
     private GameSettings game;
     private boolean mapUpdated;
-    private Map<AID, Boolean> newPositionReceived;
     private List<AgentPosition> newPositions;
     private Integer numChildren;
 
     public BaseCoordinator(AgentType type) {
         super(type);
         this.mapUpdated = false;
-        this.newPositionReceived = new HashMap<>();
         this.newPositions = new ArrayList<>();
-        this.numChildren = 0;
+        this.numChildren = null;
     }
 
     public void setGame(GameSettings game) {
-        this.game = game;
-        this.mapUpdated = true;
-        clearWaitingForMap();
-        if (numChildren == null){
-            for (Map.Entry<AgentType, List<Cell>> entry : this.getGame().getAgentList().entrySet()) {
-                if (entry.getKey().name().equals(AgentType.CLEANER.toString())) {
-                    numChildren = entry.getValue().size();
-                }
-            }
+        if (game != null) {
+            this.game = game;
+            this.mapUpdated = true;
+            clearWaitingForMap();
         }
+    }
+
+    public Integer getNumChildren() {
+        return numChildren;
+    }
+
+    public void setNumChildren(Integer numChildren) {
+        this.numChildren = numChildren;
     }
 
     public boolean isMapUpdated() {
         return mapUpdated;
+    }
+
+    public void setMapUpdated(boolean mapUpdated) {
+        this.mapUpdated = mapUpdated;
     }
 
     public GameSettings getGame() {
@@ -54,6 +61,8 @@ public class BaseCoordinator extends ImasAgent {
     public void sendMap(AID sender) {
         ACLMessage sendMapMsg = new ACLMessage(ACLMessage.INFORM);
         sendMapMsg.addReceiver(sender);
+        Boolean isNull = game == null;
+        System.out.println("SENDING MAP TO " + sender.getLocalName() + " FROM " + getLocalName() + " AND IS NULL: " + isNull);
         try {
             sendMapMsg.setContentObject(game);
             this.send(sendMapMsg);
@@ -62,12 +71,8 @@ public class BaseCoordinator extends ImasAgent {
         }
     }
 
-    public Map<AID, Boolean> getNewPositionReceived() {
-        return newPositionReceived;
-    }
-
-    public void setNewPositionReceived(AID agent, boolean received) {
-        this.newPositionReceived.put(agent, received);
+    public void setNewPositions(List<AgentPosition> positions) {
+        newPositions = positions;
     }
 
     public void resetNewPositions(){
@@ -78,14 +83,35 @@ public class BaseCoordinator extends ImasAgent {
         ACLMessage informNewPosMsg = new ACLMessage(ACLMessage.INFORM);
         informNewPosMsg.addReceiver(getParent());
 
-        if (!this.newPositionReceived.values().contains(false)){
+        newPositions.add(newPos);
+        if (newPositions.size() == numChildren && getParent() != null) {
             try {
-                informNewPosMsg.setContentObject(newPositions.toArray());
+                informNewPosMsg.setContentObject(newPositions.toArray(new AgentPosition[newPositions.size()]));
                 this.send(informNewPosMsg);
             } catch (IOException ex) {
                 Logger.getLogger(CleanerCoordinatorAgent.class.getName()).log(Level.SEVERE, null, ex);
             }
-            this.send(informNewPosMsg);
+            setMapUpdated(false);
+            resetNewPositions();
         }
+    }
+
+    public void addNewPositions(List<AgentPosition> positions) {
+        for (AgentPosition agentPosition : positions) {
+            addNewPosition(agentPosition);
+        }
+    }
+
+    public void informToAllChildren(String messageContent) {
+        for (AgentPosition agentPosition : newPositions) {
+            ACLMessage informUpdatedMsg = new ACLMessage(ACLMessage.INFORM);
+            informUpdatedMsg.addReceiver(agentPosition.getAgent());
+            informUpdatedMsg.setContent(messageContent);
+            send(informUpdatedMsg);
+        }
+    }
+
+    public List<AgentPosition> getNewPositions() {
+        return newPositions;
     }
 }

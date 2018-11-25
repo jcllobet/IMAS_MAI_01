@@ -55,7 +55,6 @@ public class UtilsAgents {
         return UtilsAgents.searchAgent(parent, searchCriterion);
     }
 
-
     /**
      * To search an agent of a certain type
      *
