@@ -6,22 +6,27 @@ import cat.urv.imas.map.CellType;
 import cat.urv.imas.map.PathCell;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.Position;
 import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SearcherAgent extends ImasAgent {
 
     private AID searcherCoordinator;
-    private int[] position;
-    private int[] newPos;
-    private int[] maxRowColum;
+    private AgentPosition position;
+    private AgentPosition newPos;
+    private Position maxRowColum;
     private List<int[]> chargingPoints;
     private List<int[]> walls;
     private Cell[] surroundingCells;
@@ -47,9 +52,9 @@ public class SearcherAgent extends ImasAgent {
         registerToDF();
 
         // Array [row, col]
-        position    = new int[2];
-        newPos      = new int[2];
-        maxRowColum = new int[2];
+        position    = new AgentPosition(this.getAID());
+        newPos      = new AgentPosition(this.getAID());
+        maxRowColum = new Position();
 
         // Position of the Battery Charging points
         chargingPoints = new ArrayList<>();
@@ -117,8 +122,8 @@ public class SearcherAgent extends ImasAgent {
                                     if (counter == searcherIdx) {
                                         // Initial set of the Cell Agent AID
                                         curr_cell.getAgents().getFirst().setAID(this.getAID());
-                                        position[0] = i;
-                                        position[1] = j;
+                                        position.setRow(i);
+                                        position.setColumn(j);
                                         located = true;
                                     } else {
                                         counter++;
@@ -140,11 +145,11 @@ public class SearcherAgent extends ImasAgent {
             }
             
             // Set limits of the map
-            maxRowColum[0] = map.length - 1;
-            maxRowColum[1] = map[0].length - 1;
+            maxRowColum.setRow(map.length - 1);
+            maxRowColum.setColumn(map[0].length - 1);
 
-            System.out.println(this.getLocalName() + " starts at row " + String.valueOf(position[0]) + " and column " +
-                    String.valueOf(position[1]));
+            System.out.println(this.getLocalName() + " starts at row " + String.valueOf(position.getRow()) + " and column " +
+                    String.valueOf(position.getColumn()));
 
         } else {
             // This loop will be stopped once the agent finds itself
@@ -156,8 +161,8 @@ public class SearcherAgent extends ImasAgent {
                         try {
                             if (curr_cell.getAgents().getFirst().getType().equals(AgentType.SEARCHER) &&
                                     curr_cell.getAgents().getFirst().getAID().equals(this.getAID())) {
-                                position[0] = i;
-                                position[1] = j;
+                                position.setRow(i);
+                                position.setColumn(j);
                                 break firstLoop;
                             }
                         } catch (Exception e) {
@@ -170,10 +175,10 @@ public class SearcherAgent extends ImasAgent {
 
         // Obtain the 8 surrounding cells at this turn
         counter = 0;
-        for (int i = position[0] - 1; i <= position[0] + 1; i++){
-            for (int j = position[1] - 1; j <= position[1] + 1; j++){
-                if ((i != this.position[0] || j != this.position[1]) 
-                        && i >= 0 && j >= 0 && i <= maxRowColum[0] && j <= maxRowColum[1]) {
+        for (int i = position.getRow() - 1; i <= position.getRow() + 1; i++){
+            for (int j = position.getColumn() - 1; j <= position.getColumn() + 1; j++){
+                if ((i != this.position.getRow() || j != this.position.getColumn()) 
+                        && i >= 0 && j >= 0 && i <= maxRowColum.getRow() && j <= maxRowColum.getColumn()) {
                     surroundingCells[counter] = game.getMap()[i][j];
                     counter++;
                 }
@@ -202,22 +207,19 @@ public class SearcherAgent extends ImasAgent {
             }
         }
         
-        /*try {
+        try {
             informNewPosMsg.setContentObject(newPos);
             this.send(informNewPosMsg);
         } catch (IOException ex) {
             Logger.getLogger(CleanerAgent.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }
     
-    private boolean isValidPos(int[] pos){
-        if (pos[0] < 0 || 
-                pos[1] < 0 || 
-                pos[0] > maxRowColum[0] || 
-                pos[1] > maxRowColum[1]){
-            return false;
-        }
-        return true;
+    private boolean isValidPos(AgentPosition pos){
+        return !(pos.getRow()    < 0 ||
+                 pos.getColumn() < 0 ||
+                 pos.getRow()    > maxRowColum.getRow() ||
+                 pos.getColumn() > maxRowColum.getColumn());
     }
     
     private enum Move{
@@ -234,12 +236,12 @@ public class SearcherAgent extends ImasAgent {
             return VALUES.get(RANDOM.nextInt(SIZE));
         }
         
-        public static int[] newPos(int[] pos, Move move) {
+        public static AgentPosition newPos(AgentPosition pos, Move move) {
             switch(move){
-                case UP:    return new int[]{pos[0]-1, pos[1]};
-                case DOWN:  return new int[]{pos[0]+1, pos[1]};
-                case RIGHT: return new int[]{pos[0], pos[1]+1};
-                case LEFT:  return new int[]{pos[0], pos[1]-1};
+                case UP:    return new AgentPosition(pos.getAgent(), pos.getRow()-1, pos.getColumn());
+                case DOWN:  return new AgentPosition(pos.getAgent(), pos.getRow()+1, pos.getColumn());
+                case RIGHT: return new AgentPosition(pos.getAgent(), pos.getRow(), pos.getColumn()+1);
+                case LEFT:  return new AgentPosition(pos.getAgent(), pos.getRow(), pos.getColumn()-1);
                 default:    return null;
             }
         }

@@ -1,5 +1,8 @@
 package cat.urv.imas.agent;
 
+import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.Position;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,13 +22,13 @@ public enum Move{
         return VALUES.get(RANDOM.nextInt(SIZE));
     }
 
-    public static int[] newPos(int[] pos, Move move) {
+    public static AgentPosition newPos(AgentPosition pos, Move move) {
         switch(move){
-            case UP: return new int[]{pos[0]-1, pos[1]};
-            case DOWN: return new int[]{pos[0]+1, pos[1]};
-            case RIGHT: return new int[]{pos[0], pos[1]+1};
-            case LEFT: return new int[]{pos[0], pos[1]-1};
-            default: return null;
+            case UP:    return new AgentPosition(pos.getAgent(), pos.getRow()-1, pos.getColumn());
+            case DOWN:  return new AgentPosition(pos.getAgent(), pos.getRow()+1, pos.getColumn());
+            case RIGHT: return new AgentPosition(pos.getAgent(), pos.getRow(), pos.getColumn()+1);
+            case LEFT:  return new AgentPosition(pos.getAgent(), pos.getRow(), pos.getColumn()-1);
+            default:    return null;
         }
     }
 }

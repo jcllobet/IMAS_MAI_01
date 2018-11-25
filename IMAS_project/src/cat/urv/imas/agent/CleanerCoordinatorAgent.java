@@ -28,10 +28,7 @@ public class CleanerCoordinatorAgent extends BaseCoordinator {
         MessageTemplate mt = MessageTemplate.and(
                 MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_REQUEST),
                 MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
-
+        
         this.addBehaviour(new ListenerBehaviour(this));
-        //this.addBehaviour(new RequestResponseBehaviour(this, mt));
-        //this.send(requestMapMsg);
-        //this.mapRequestInProgress = true;
     }
 }

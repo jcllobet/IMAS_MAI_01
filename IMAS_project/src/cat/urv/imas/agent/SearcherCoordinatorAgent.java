@@ -30,8 +30,5 @@ public class SearcherCoordinatorAgent extends BaseCoordinator {
                 MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
         
         this.addBehaviour(new ListenerBehaviour(this));
-        //this.addBehaviour(new RequestResponseBehaviour(this, mt));
-        //this.send(requestMapMsg);
-        //this.mapRequestInProgress = true;
     }
 }

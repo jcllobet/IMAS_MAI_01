@@ -19,12 +19,12 @@ public class BaseCoordinatorListenerBehavoir extends BaseListenerBehavoir {
             agent.getNewPositionReceived().put(msg.getSender(), false);
             // If map has been requested
             if (agent.isWaitingForMap()){
-                agent.log("Request received but waiting for the map");
+                agent.log("Request received from " + msg.getSender().getLocalName() + " but waiting for the map");
                 msg = msg.createReply();
                 msg.setPerformative(ACLMessage.REFUSE);
                 agent.send(msg);
             } else if (!agent.isMapUpdated()){
-                agent.log("Request received but game is not updated");
+                agent.log("Request received from " + msg.getSender().getLocalName() + "but game is not updated");
                 msg = msg.createReply();
                 msg.setPerformative(ACLMessage.REFUSE);
                 agent.send(msg);
@@ -33,7 +33,7 @@ public class BaseCoordinatorListenerBehavoir extends BaseListenerBehavoir {
             }
             // Agent requesting map when map is updated
             else {
-                agent.log("Request received and the map is updated");
+                agent.log("Request received from " + msg.getSender().getLocalName() + " and the map is updated");
                 msg.createReply().setPerformative(ACLMessage.AGREE);
                 agent.sendMap(msg.getSender());
             }

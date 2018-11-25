@@ -5,11 +5,16 @@ import cat.urv.imas.map.Cell;
 import cat.urv.imas.map.CellType;
 import cat.urv.imas.map.PathCell;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.Position;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CleanerAgent extends ImasAgent {
 
@@ -18,11 +23,11 @@ public class CleanerAgent extends ImasAgent {
     }
 
     private AID cleanerCoordinator;
-    private int[] position;
-    private int[] newPos;
-    private int[] maxRowColum;
-    private List<int[]> recyclingPoints;
-    private List<int[]> walls;
+    private AgentPosition position;
+    private AgentPosition newPos;
+    private Position maxRowColum;
+    private List<Position> recyclingPoints;
+    private List<Position> walls;
     private boolean startingTurn;
     private int cleanerCapacity;
     
@@ -39,9 +44,9 @@ public class CleanerAgent extends ImasAgent {
         registerToDF();
 
         // Array [row, col]
-        position    = new int[2];
-        newPos      = new int[2];
-        maxRowColum = new int[2];
+        position    = new AgentPosition(this.getAID());
+        newPos      = new AgentPosition(this.getAID());
+        maxRowColum = new Position();
 
         // Position of the recycling points
         recyclingPoints = new ArrayList<>();
@@ -97,8 +102,8 @@ public class CleanerAgent extends ImasAgent {
                                     if (counter == cleanerIdx) {
                                         // Initial set of the Cell Agent AID
                                         curr_cell.getAgents().getFirst().setAID(this.getAID());
-                                        position[0] = i;
-                                        position[1] = j;
+                                        position.setRow(i);
+                                        position.setColumn(j);
                                         located = true;
                                     } else {
                                         counter++;
@@ -110,10 +115,10 @@ public class CleanerAgent extends ImasAgent {
                         }
                     // All other Cells will be a Wall (Some of them Recycling Points and some other Charging Points)
                     } else {
-                        walls.add(new int[]{i, j});
+                        walls.add(new Position(i, j));
 
                         if (map[i][j].getCellType().equals(CellType.RECYCLING_POINT_CENTER)) {
-                            this.recyclingPoints.add(new int[]{i, j});
+                            this.recyclingPoints.add(new Position(i, j));
                         }
                     }
                 }
@@ -123,11 +128,11 @@ public class CleanerAgent extends ImasAgent {
             cleanerCapacity = game.getCleanerCapacity();
             
             // Set limits of the map
-            maxRowColum[0] = map.length - 1;
-            maxRowColum[1] = map[0].length - 1;
+            maxRowColum.setRow(map.length - 1);
+            maxRowColum.setColumn(map[0].length - 1);
 
-            System.out.println(this.getLocalName() + " starts at row " + String.valueOf(position[0]) + " and column " +
-                    String.valueOf(position[1]));
+            System.out.println(this.getLocalName() + " starts at row " + String.valueOf(position.getRow()) + " and column " +
+                    String.valueOf(position.getColumn()));
 
         } else {
 
@@ -140,8 +145,8 @@ public class CleanerAgent extends ImasAgent {
                         try {
                             if (curr_cell.getAgents().getFirst().getType().equals(AgentType.CLEANER) &&
                                     curr_cell.getAgents().getFirst().getAID().equals(this.getAID())) {
-                                position[0] = i;
-                                position[1] = j;
+                                position.setRow(i);
+                                position.setColumn(j);
                                 break firstLoop;
                             }
                         } catch (Exception e) {
@@ -162,19 +167,19 @@ public class CleanerAgent extends ImasAgent {
             }
         }
         
-        /*try {
+        try {
             informNewPosMsg.setContentObject(newPos);
             this.send(informNewPosMsg);
         } catch (IOException ex) {
             Logger.getLogger(CleanerAgent.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }
     
-    private boolean isValidPos(int[] pos){
-        if (pos[0] < 0 || 
-                pos[1] < 0 || 
-                pos[0] > maxRowColum[0] || 
-                pos[1] > maxRowColum[1]){
+    private boolean isValidPos(AgentPosition pos){
+        if (pos.getRow() < 0 || 
+                pos.getColumn() < 0 || 
+                pos.getRow() > maxRowColum.getRow() || 
+                pos.getColumn() > maxRowColum.getColumn()){
             return false;
         }
         return true;

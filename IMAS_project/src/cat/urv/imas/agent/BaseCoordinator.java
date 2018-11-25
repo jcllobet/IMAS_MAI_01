@@ -1,6 +1,8 @@
 package cat.urv.imas.agent;
 
+import cat.urv.imas.map.Cell;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.utils.AgentPosition;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 
@@ -17,19 +19,28 @@ public class BaseCoordinator extends ImasAgent {
     private GameSettings game;
     private boolean mapUpdated;
     private Map<AID, Boolean> newPositionReceived;
-    private List<int[]> newPositions;
+    private List<AgentPosition> newPositions;
+    private Integer numChildren;
 
     public BaseCoordinator(AgentType type) {
         super(type);
         this.mapUpdated = false;
         this.newPositionReceived = new HashMap<>();
         this.newPositions = new ArrayList<>();
+        this.numChildren = 0;
     }
 
     public void setGame(GameSettings game) {
         this.game = game;
         this.mapUpdated = true;
         clearWaitingForMap();
+        if (numChildren == null){
+            for (Map.Entry<AgentType, List<Cell>> entry : this.getGame().getAgentList().entrySet()) {
+                if (entry.getKey().name().equals(AgentType.CLEANER.toString())) {
+                    numChildren = entry.getValue().size();
+                }
+            }
+        }
     }
 
     public boolean isMapUpdated() {
@@ -63,7 +74,18 @@ public class BaseCoordinator extends ImasAgent {
         this.newPositions.removeAll(newPositions);
     }
 
-    public void addNewPosition(int[] newPos){
-        this.newPositions.add(newPos);
+    public void addNewPosition(AgentPosition newPos){
+        ACLMessage informNewPosMsg = new ACLMessage(ACLMessage.INFORM);
+        informNewPosMsg.addReceiver(getParent());
+
+        if (!this.newPositionReceived.values().contains(false)){
+            try {
+                informNewPosMsg.setContentObject(newPositions.toArray());
+                this.send(informNewPosMsg);
+            } catch (IOException ex) {
+                Logger.getLogger(CleanerCoordinatorAgent.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.send(informNewPosMsg);
+        }
     }
 }

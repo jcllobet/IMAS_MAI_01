@@ -11,6 +11,7 @@ import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavoir;
 import cat.urv.imas.behaviour.BaseListenerBehavoir;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.AgentPosition;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -38,9 +39,15 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavoir {
                 agent.log("Map received");
             } catch (UnreadableException ex) {
                 Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
+
             }
         } else {
             agent.setNewPositionReceived(msg.getSender(), true);
+            try {
+                agent.addNewPosition((AgentPosition)msg.getContentObject());
+            } catch (UnreadableException ex) {
+                Logger.getLogger(cat.urv.imas.behaviour.searchCoordinator.ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }
