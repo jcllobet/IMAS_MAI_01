@@ -9,6 +9,7 @@ import cat.urv.imas.agent.CleanerCoordinatorAgent;
 import cat.urv.imas.agent.CoordinatorAgent;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.AgentPosition;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -41,12 +42,14 @@ public class ListenerBehaviour extends CyclicBehaviour{
                         cleanerCoordAgent.setNewPositionReceived(msg.getSender(), false);
                         // If map has been requested
                         if (cleanerCoordAgent.isMapRequestInProgress()){
-                            cleanerCoordAgent.log("Request received but waiting for the map");
+                            cleanerCoordAgent.log("Request received  " + msg.getSender().getLocalName() + 
+                                    " but waiting for the map");
                             msg = msg.createReply();
                             msg.setPerformative(ACLMessage.REFUSE);
                             cleanerCoordAgent.send(msg);
                         } else if (cleanerCoordAgent.isMapUpdated() == false){
-                            cleanerCoordAgent.log("Request received but game is not updated");
+                            cleanerCoordAgent.log("Request received from " + msg.getSender().getLocalName() + 
+                                    " but game is not updated");
                             msg = msg.createReply();
                             msg.setPerformative(ACLMessage.REFUSE);
                             cleanerCoordAgent.send(msg);
@@ -56,7 +59,8 @@ public class ListenerBehaviour extends CyclicBehaviour{
                         }
                         // Agent requesting map when map is updated
                         else {
-                            cleanerCoordAgent.log("Request received and the map is updated");
+                            cleanerCoordAgent.log("Request received from " + msg.getSender().getLocalName() + 
+                                    " and the map is updated");
                             msg.createReply().setPerformative(ACLMessage.AGREE);
                             cleanerCoordAgent.sendMap(msg.getSender());
                         }
@@ -88,7 +92,7 @@ public class ListenerBehaviour extends CyclicBehaviour{
                     }
                     break;
                 case ACLMessage.INFORM:
-                    cleanerCoordAgent.log("INFORM message received");
+                    cleanerCoordAgent.log("INFORM message received from " + msg.getSender().getLocalName());
                     if (msg.getSender().equals(cleanerCoordAgent.getCoordinatorAgent())){
                         try {
                             cleanerCoordAgent.setGame((GameSettings) msg.getContentObject());
@@ -98,6 +102,11 @@ public class ListenerBehaviour extends CyclicBehaviour{
                         }
                     } else {
                         cleanerCoordAgent.setNewPositionReceived(msg.getSender(), true);
+                        try {
+                            cleanerCoordAgent.addNewPosition((AgentPosition)msg.getContentObject());
+                        } catch (UnreadableException ex) {
+                            Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                     break;
                 default:

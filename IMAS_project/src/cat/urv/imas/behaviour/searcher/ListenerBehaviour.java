@@ -62,6 +62,7 @@ public class ListenerBehaviour extends CyclicBehaviour{
                     try {
                         if (msg.getContentObject() instanceof GameSettings){
                             searcherAgent.setParameters((GameSettings) msg.getContentObject());
+                            searcherAgent.computeNewPosition();
                         }
                         break;
                     } catch (UnreadableException ex) {
