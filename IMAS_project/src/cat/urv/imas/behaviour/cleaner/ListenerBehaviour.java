@@ -6,6 +6,7 @@
 package cat.urv.imas.behaviour.cleaner;
 
 import cat.urv.imas.agent.CleanerAgent;
+import cat.urv.imas.behaviour.BaseListenerBehavoir;
 import cat.urv.imas.behaviour.searcher.*;
 import cat.urv.imas.behaviour.searchCoordinator.*;
 import cat.urv.imas.behaviour.coordinator.*;
@@ -24,55 +25,23 @@ import java.util.logging.Logger;
  *
  * @author alarca_94
  */
-public class ListenerBehaviour extends CyclicBehaviour{
-    Integer RETRY_TIME_MS = 2000;
+public class ListenerBehaviour extends BaseListenerBehavoir {
     
     public ListenerBehaviour(CleanerAgent agent){
         super(agent);
     }
-    
+
     @Override
-    public void action() {
-        CleanerAgent cleanerAgent = (CleanerAgent)this.getAgent();
-        ACLMessage msg = cleanerAgent.receive();
-        
-        //if a message is available and a listener is available
-        if (msg != null){
-            switch (msg.getPerformative()) {
-                case ACLMessage.REQUEST:
-                    break;
-                case ACLMessage.PROPOSE:
-                    // Auction logic
-                    break;
-                case ACLMessage.AGREE:
-                    // Look who sends it: System Agent maybe sends the inform with the map back
-                    break;
-                case ACLMessage.REFUSE:
-                    if (cleanerAgent.isWaitingForMap()){
-                        cleanerAgent.log("Action refused. Retrying in " + RETRY_TIME_MS + "...");
-                        try {
-                            Thread.sleep(RETRY_TIME_MS);
-                            cleanerAgent.send(cleanerAgent.getReqMapMsg());
-                        } catch (InterruptedException e) {
-                            cleanerAgent.log("Failed retry");
-                        }
-                    }
-                    break;
-                case ACLMessage.INFORM:
-                    try {
-                        if (msg.getContentObject() instanceof GameSettings){
-                            cleanerAgent.setParameters((GameSettings) msg.getContentObject());
-                            cleanerAgent.computeNewPosition();
-                        }
-                        break;
-                    } catch (UnreadableException ex) {
-                        Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                default:
-                    break;
+    protected  void onInform() {
+        CleanerAgent agent = (CleanerAgent)getImasAgent();
+        ACLMessage msg = getMsg();
+        try {
+            if (msg.getContentObject() instanceof GameSettings){
+                agent.setParameters((GameSettings) msg.getContentObject());
+                agent.computeNewPosition();
             }
-        } else {
-                block();
+        } catch (UnreadableException ex) {
+            Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

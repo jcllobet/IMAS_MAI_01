@@ -18,46 +18,19 @@
 package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.coordinator.ListenerBehaviour;
-import cat.urv.imas.behaviour.coordinator.RequestResponseBehaviour;
-import cat.urv.imas.map.Cell;
-import cat.urv.imas.ontology.GameSettings;
-import cat.urv.imas.behaviour.coordinator.RequesterBehaviour;
-import cat.urv.imas.ontology.MessageContent;
 import jade.core.*;
 import jade.domain.FIPANames.InteractionProtocol;
 import jade.lang.acl.*;
-import java.io.IOException;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The main Coordinator agent. 
  * TODO: This coordinator agent should get the game settings from the System
  * agent every round and share the necessary information to other coordinators.
  */
-public class CoordinatorAgent extends ImasAgent {
+public class CoordinatorAgent extends BaseCoordinator {
 
-    private Map<AID, Boolean> newPositionReceived;
-    private boolean mapRequestInProgress;
-    private boolean mapUpdated;
-
-    /**
-     * Game settings in use.
-     */
-    private GameSettings game;
-    /**
-     * System agent id.
-     */
-    private AID systemAgent;
     private AID searcherCoordinator;
     private AID cleanerCoordinator;
-    
-    // Messages
-    ACLMessage requestMapMsg;
 
     /**
      * Builds the coordinator agent.
@@ -72,10 +45,6 @@ public class CoordinatorAgent extends ImasAgent {
      */
     @Override
     protected void setup() {
-        this.mapRequestInProgress = false;
-        this.mapUpdated = false;
-        this.newPositionReceived = new HashMap<>();
-
         /* ** Very Important Line (VIL) ***************************************/
         this.setEnabledO2ACommunication(true, 1);
         /* ********************************************************************/
@@ -84,7 +53,7 @@ public class CoordinatorAgent extends ImasAgent {
         registerToDF();
 
         // search SystemAgent (is a blocking method, so we will obtain always a correct AID)
-        this.systemAgent = UtilsAgents.searchAgentType(this, AgentType.SYSTEM);
+        setParent(UtilsAgents.searchAgentType(this, AgentType.SYSTEM));
         this.searcherCoordinator = UtilsAgents.searchAgentType(this, AgentType.ESEARCHER_COORDINATOR);
         this.cleanerCoordinator = UtilsAgents.searchAgentType(this, AgentType.CLEANER_COORDINATOR);
 
@@ -92,10 +61,6 @@ public class CoordinatorAgent extends ImasAgent {
         MessageTemplate mt = MessageTemplate.and(
                 MessageTemplate.MatchProtocol(InteractionProtocol.FIPA_REQUEST),
                 MessageTemplate.MatchPerformative(ACLMessage.REQUEST));
-        requestMapMsg = generateMsg(ACLMessage.REQUEST, 
-                                    systemAgent, 
-                                    InteractionProtocol.FIPA_REQUEST, 
-                                    MessageContent.GET_MAP);
 
         this.addBehaviour(new ListenerBehaviour(this));
         //this.send(requestMapMsg);
@@ -106,10 +71,6 @@ public class CoordinatorAgent extends ImasAgent {
         // a behaviour to send/receive actions
     }
 
-    public AID getSystemAgent() {
-        return systemAgent;
-    }
-
     public AID getSearcherCoordinator() {
         return searcherCoordinator;
     }
@@ -117,64 +78,4 @@ public class CoordinatorAgent extends ImasAgent {
     public AID getCleanerCoordinator() {
         return cleanerCoordinator;
     }
-
-    public Map<AID, Boolean> getNewPositionReceived() {
-        return newPositionReceived;
-    }
-
-    public void setNewPositionReceived(Map<AID, Boolean> newPositionReceived) {
-        this.newPositionReceived = newPositionReceived;
-    }
-
-    public boolean isMapRequestInProgress() {
-        return mapRequestInProgress;
-    }
-
-    public void setMapRequestInProgress(boolean mapRequestInProgress) {
-        this.mapRequestInProgress = mapRequestInProgress;
-    }
-
-    /**
-     * Update the game settings.
-     *
-     * @param game current game settings.
-     */
-    public void setGame(GameSettings game) {
-        this.game = game;
-        this.setMapRequestInProgress(false);
-        this.setMapUpdated(true);
-    }
-
-    /**
-     * Gets the current game settings.
-     *
-     * @return the current game settings.
-     */
-    public GameSettings getGame() {
-        return this.game;
-    }
-
-    public ACLMessage getReqMapMsg() {
-        return requestMapMsg;
-    }
-    
-    public boolean isMapUpdated() {
-        return mapUpdated;
-    }
-
-    public void setMapUpdated(boolean mapUpdated) {
-        this.mapUpdated = mapUpdated;
-    }
-    
-    public void sendMap(AID sender) {
-        ACLMessage sendMapMsg = new ACLMessage(ACLMessage.INFORM);
-        sendMapMsg.addReceiver(sender);
-        try {
-            sendMapMsg.setContentObject(this.game);
-            this.send(sendMapMsg);
-        } catch (IOException ex) {
-            Logger.getLogger(SearcherCoordinatorAgent.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
 }

@@ -5,6 +5,7 @@
  */
 package cat.urv.imas.behaviour.searcher;
 
+import cat.urv.imas.behaviour.BaseListenerBehavoir;
 import cat.urv.imas.behaviour.searchCoordinator.*;
 import cat.urv.imas.behaviour.coordinator.*;
 import cat.urv.imas.agent.CoordinatorAgent;
@@ -22,57 +23,22 @@ import java.util.logging.Logger;
  *
  * @author alarca_94
  */
-public class ListenerBehaviour extends CyclicBehaviour{
-    
-    Integer RETRY_TIME_MS = 2000;
-    
+public class ListenerBehaviour extends BaseListenerBehavoir {
+
     public ListenerBehaviour(SearcherAgent agent){
         super(agent);
     }
-    
+
     @Override
-    public void action() {
-        SearcherAgent searcherAgent = (SearcherAgent)this.getAgent();
-        ACLMessage msg = searcherAgent.receive();
-        
-        //if a message is available and a listener is available
-        if (msg != null){
-            switch (msg.getPerformative()) {
-                case ACLMessage.REQUEST:
-                    break;
-                case ACLMessage.PROPOSE:
-                    // Auction logic
-                    break;
-                case ACLMessage.AGREE:
-                    // Look who sends it: System Agent maybe sends the inform with the map back
-                    break;
-                case ACLMessage.REFUSE:
-                    // Wait for two seconds to resend the message
-                    if (searcherAgent.isWaitingForMap()){
-                        searcherAgent.log("Action refused. Retrying in " + RETRY_TIME_MS + "...");
-                        try {
-                            Thread.sleep(RETRY_TIME_MS);
-                            searcherAgent.send(searcherAgent.getReqMapMsg());
-                        } catch (InterruptedException e) {
-                            searcherAgent.log("Failed retry");
-                        }
-                    }
-                    break;
-                case ACLMessage.INFORM:
-                    try {
-                        if (msg.getContentObject() instanceof GameSettings){
-                            searcherAgent.setParameters((GameSettings) msg.getContentObject());
-                        }
-                        break;
-                    } catch (UnreadableException ex) {
-                        Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                default:
-                    break;
+    protected void onInform() {
+        SearcherAgent agent = (SearcherAgent)getImasAgent();
+        ACLMessage msg = getMsg();
+        try {
+            if (msg.getContentObject() instanceof GameSettings){
+                agent.setParameters((GameSettings) msg.getContentObject());
             }
-        } else {
-                block();
+        } catch (UnreadableException ex) {
+            Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 }

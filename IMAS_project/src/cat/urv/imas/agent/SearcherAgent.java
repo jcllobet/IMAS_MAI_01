@@ -1,7 +1,6 @@
 package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.searcher.ListenerBehaviour;
-import cat.urv.imas.behaviour.searcher.RequesterBehaviour;
 import cat.urv.imas.map.Cell;
 import cat.urv.imas.map.CellType;
 import cat.urv.imas.map.PathCell;
@@ -10,15 +9,12 @@ import cat.urv.imas.ontology.MessageContent;
 import jade.core.AID;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
-import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SearcherAgent extends ImasAgent {
 
@@ -71,6 +67,7 @@ public class SearcherAgent extends ImasAgent {
 
         // search CoordinatorAgent (is a blocking method, so we will obtain always a correct AID)
         this.searcherCoordinator = UtilsAgents.searchAgentType(this, AgentType.ESEARCHER_COORDINATOR);
+        setParent(searcherCoordinator);
         
         requestMapMsg = generateMsg(ACLMessage.REQUEST, 
                                     searcherCoordinator, 
@@ -85,11 +82,6 @@ public class SearcherAgent extends ImasAgent {
         this.addBehaviour(new ListenerBehaviour(this));
         this.send(requestMapMsg);
         this.waitingForMap = true;
-    }
-
-    public void launchInitialRequest() {
-        ACLMessage initialRequest = generateMsg(ACLMessage.REQUEST, searcherCoordinator, FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.GET_MAP);
-        addBehaviour(new RequesterBehaviour(this, initialRequest));
     }
 
     /**

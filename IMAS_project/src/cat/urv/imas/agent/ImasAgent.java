@@ -32,6 +32,9 @@ import jade.lang.acl.ACLMessage;
  * It gathers common attributes and functionality from all agents.
  */
 public class ImasAgent extends Agent {
+
+    private AID parent;
+    private boolean waitingForMap;
     
     /**
      * Type of this agent.
@@ -58,6 +61,37 @@ public class ImasAgent extends Agent {
     public ImasAgent(AgentType type) {
         super();
         this.type = type;
+        this.waitingForMap = false;
+        this.parent = null;
+    }
+
+    public AID getParent() {
+        return parent;
+    }
+
+    public void setParent(AID parent) {
+        this.parent = parent;
+    }
+
+    public void sendMapRequestToParent() {
+        sendMapRequestTo(parent);
+    }
+
+    public void sendMapRequestTo(AID receiver) {
+        ACLMessage requestMapMsg = generateMsg(ACLMessage.REQUEST,
+                                                receiver,
+                                                FIPANames.InteractionProtocol.FIPA_REQUEST,
+                                                MessageContent.GET_MAP);
+        this.send(requestMapMsg);
+        this.waitingForMap = true;
+    }
+
+    public void clearWaitingForMap() {
+        waitingForMap = false;
+    }
+
+    public boolean isWaitingForMap() {
+        return waitingForMap;
     }
     
     /**
