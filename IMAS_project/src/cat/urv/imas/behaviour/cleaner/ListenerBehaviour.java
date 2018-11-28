@@ -6,7 +6,7 @@
 package cat.urv.imas.behaviour.cleaner;
 
 import cat.urv.imas.agent.CleanerAgent;
-import cat.urv.imas.behaviour.BaseListenerBehavoir;
+import cat.urv.imas.behaviour.BaseListenerBehavior;
 import cat.urv.imas.ontology.GameSettings;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author alarca_94
  */
-public class ListenerBehaviour extends BaseListenerBehavoir {
+public class ListenerBehaviour extends BaseListenerBehavior {
     
     public ListenerBehaviour(CleanerAgent agent){
         super(agent);
@@ -27,7 +27,6 @@ public class ListenerBehaviour extends BaseListenerBehavoir {
     protected  void onInform() {
         CleanerAgent agent = (CleanerAgent) getBaseAgent();
         ACLMessage msg = getMsg();
-        agent.log("INFORM message received from " + msg.getSender().getLocalName());
         try {
             if (msg.getContentObject() instanceof GameSettings){
                 agent.setParameters((GameSettings) msg.getContentObject());

@@ -6,7 +6,7 @@
 package cat.urv.imas.behaviour.searchCoordinator;
 
 import cat.urv.imas.agent.BaseCoordinatorAgent;
-import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavoir;
+import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavior;
 import cat.urv.imas.agent.SearcherCoordinatorAgent;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.utils.MovementMsg;
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author alarca_94
  */
-public class ListenerBehaviour extends BaseCoordinatorListenerBehavoir {
+public class ListenerBehaviour extends BaseCoordinatorListenerBehavior {
     
     public ListenerBehaviour(BaseCoordinatorAgent agent){
         super(agent);
@@ -29,7 +29,6 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavoir {
     protected void onInform() {
         SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent) getBaseAgent();
         ACLMessage msg = getMsg();
-        agent.log("INFORM message received from " + msg.getSender().getLocalName());
         if (msg.getSender().equals(agent.getParent())){
             try {
                 agent.setGame((GameSettings) msg.getContentObject());

@@ -18,6 +18,7 @@
 package cat.urv.imas.agent;
 
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.LogCode;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -122,7 +123,11 @@ public abstract class BaseAgent extends Agent {
      * @param str message to show
      */
     public void log(String str) {
-        System.out.println(getLocalName() + ": " + str);
+        System.out.printf("[%-24s]: %s\n", getLocalName(), str);
+    }
+
+    public void log(LogCode logCode, String str) {
+        System.out.printf("[%-24s]: " + logCode.getCode() + "[%-7s]" + LogCode.RESET.getCode() + ": %s\n", getLocalName(), logCode.getName(), str);
     }
     
     /**
@@ -164,10 +169,10 @@ public abstract class BaseAgent extends Agent {
         msg.clearAllReceiver();
         msg.addReceiver(receiver);
         msg.setProtocol(protocol);
-        log("Request message to agent " + receiver.getName());
+        // log("Request message to agent " + receiver.getName());
         try {
             msg.setContent(content);
-            log("Request message content:" + msg.getContent());
+            // log("Request message content:" + msg.getContent());
         } catch (Exception e) {
             e.printStackTrace();
         }

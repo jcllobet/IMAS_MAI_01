@@ -2,11 +2,13 @@ package cat.urv.imas.behaviour;
 
 import cat.urv.imas.agent.BaseCoordinatorAgent;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.LogCode;
 import jade.lang.acl.ACLMessage;
+import jade.core.AID;
 
-public class BaseCoordinatorListenerBehavoir extends BaseListenerBehavoir {
+public class BaseCoordinatorListenerBehavior extends BaseListenerBehavior {
 
-    public BaseCoordinatorListenerBehavoir(BaseCoordinatorAgent agent) {
+    public BaseCoordinatorListenerBehavior(BaseCoordinatorAgent agent) {
         super(agent);
     }
 
@@ -17,12 +19,12 @@ public class BaseCoordinatorListenerBehavoir extends BaseListenerBehavoir {
         if (msg.getContent().equals(MessageContent.GET_MAP)){
             // If map has been requested
             if (agent.isWaitingForMap()){
-                agent.log("Request received from " + msg.getSender().getLocalName() + " but waiting for the map");
+                agent.log(LogCode.REQUEST, "from " + msg.getSender().getLocalName() + " but waiting for the map");
                 msg = msg.createReply();
                 msg.setPerformative(ACLMessage.REFUSE);
                 agent.send(msg);
             } else if (!agent.isMapUpdated()){
-                agent.log("Request received from " + msg.getSender().getLocalName() + "but game is not updated");
+                agent.log(LogCode.REQUEST, "from " + msg.getSender().getLocalName() + " but map is not updated");
                 msg = msg.createReply();
                 msg.setPerformative(ACLMessage.REFUSE);
                 agent.send(msg);
@@ -31,9 +33,12 @@ public class BaseCoordinatorListenerBehavoir extends BaseListenerBehavoir {
             }
             // Agent requesting map when map is updated
             else {
-                agent.log("Request received from " + msg.getSender().getLocalName() + " and the map is updated");
-                msg.createReply().setPerformative(ACLMessage.AGREE);
-                agent.sendMap(msg.getSender());
+                agent.log(LogCode.REQUEST, "from " + msg.getSender().getLocalName() + " and the map is updated");
+                AID sender = msg.getSender();
+                msg = msg.createReply();
+                msg.setPerformative(ACLMessage.AGREE);
+                agent.send(msg); // Send agree
+                agent.sendMap(sender); // Send map
             }
             // Set updating map to true
             // Send request map to System Agent

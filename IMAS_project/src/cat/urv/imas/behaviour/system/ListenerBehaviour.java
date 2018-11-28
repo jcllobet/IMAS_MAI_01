@@ -6,9 +6,9 @@
 package cat.urv.imas.behaviour.system;
 
 import cat.urv.imas.agent.SystemAgent;
-import cat.urv.imas.behaviour.BaseListenerBehavoir;
+import cat.urv.imas.behaviour.BaseListenerBehavior;
 import cat.urv.imas.ontology.MessageContent;
-import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.LogCode;
 import cat.urv.imas.utils.MovementMsg;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  *
  * @author alarca_94
  */
-public class ListenerBehaviour extends BaseListenerBehavoir {
+public class ListenerBehaviour extends BaseListenerBehavior {
     public ListenerBehaviour(SystemAgent agent) {
         super(agent);
     }
@@ -36,14 +36,14 @@ public class ListenerBehaviour extends BaseListenerBehavoir {
             // If map has been requested
             if (!agent.isMapUpdated()){
                 agent.resetNewPositions();
-                agent.log("Request received from " + msg.getSender().getLocalName() + " but game is not updated");
+                agent.log(LogCode.REQUEST, "from " + msg.getSender().getLocalName() + " but map is not updated");
                 msg = msg.createReply();
                 msg.setPerformative(ACLMessage.REFUSE);
                 agent.send(msg);
             }
             // Agent requesting map when map is updated
             else {
-                agent.log("Request received from " + msg.getSender().getLocalName() + " and the map is updated");
+                agent.log(LogCode.REQUEST, "from " + msg.getSender().getLocalName() + " and the map is updated");
                 msg.createReply().setPerformative(ACLMessage.AGREE);
 
                 agent.addElementsForThisSimulationStep();
@@ -56,7 +56,6 @@ public class ListenerBehaviour extends BaseListenerBehavoir {
     protected void onInform() {
         SystemAgent agent = (SystemAgent) getBaseAgent();
         ACLMessage msg = getMsg();
-        agent.log("INFORM message received from " + msg.getSender().getLocalName());
         try {
             List<MovementMsg> movements = Arrays.asList((MovementMsg[])msg.getContentObject());
             agent.updateMap(movements);
