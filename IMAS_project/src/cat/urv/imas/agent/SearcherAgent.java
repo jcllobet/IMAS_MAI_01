@@ -5,6 +5,7 @@ import cat.urv.imas.map.Cell;
 import cat.urv.imas.map.CellType;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.utils.Move;
+import cat.urv.imas.utils.Movement;
 import cat.urv.imas.utils.Position;
 
 public class SearcherAgent extends BaseWorkerAgent {
@@ -49,7 +50,7 @@ public class SearcherAgent extends BaseWorkerAgent {
     @Override
     public void computeNewPos() {
         do {
-            setNewPos(Move.newPos(getPosition(), Move.randomMove()));
+            setNewPos(Movement.random(getPosition(), Move.getRandom()));
         } while (!isValidPos(getNewPos()));
 
         sendNewPosToParent();
