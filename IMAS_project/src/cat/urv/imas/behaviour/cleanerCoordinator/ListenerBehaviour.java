@@ -8,6 +8,7 @@ package cat.urv.imas.behaviour.cleanerCoordinator;
 import cat.urv.imas.agent.CleanerCoordinatorAgent;
 import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavior;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.MovementMsg;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -28,7 +29,9 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavior {
     protected void onInform() {
         CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) getBaseAgent();
         ACLMessage msg = getMsg();
-        if (msg.getSender().equals(agent.getParent())){
+        if (msg.getContent().equals(MessageContent.MAP_UPDATED)) {
+            agent.informToAllChildren(msg);
+        } else if (msg.getSender().equals(agent.getParent())){
             try {
                 agent.setGame((GameSettings) msg.getContentObject());
                 agent.log("Map received");

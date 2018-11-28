@@ -9,6 +9,7 @@ import cat.urv.imas.agent.BaseCoordinatorAgent;
 import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavior;
 import cat.urv.imas.agent.SearcherCoordinatorAgent;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.MovementMsg;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -29,7 +30,9 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavior {
     protected void onInform() {
         SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent) getBaseAgent();
         ACLMessage msg = getMsg();
-        if (msg.getSender().equals(agent.getParent())){
+        if (msg.getContent().equals(MessageContent.MAP_UPDATED)) {
+            agent.informToAllChildren(msg);
+        } else if (msg.getSender().equals(agent.getParent())){
             try {
                 agent.setGame((GameSettings) msg.getContentObject());
                 agent.log("Map received");

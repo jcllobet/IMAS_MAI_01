@@ -19,18 +19,25 @@ package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.system.ListenerBehaviour;
 import cat.urv.imas.map.Cell;
+import cat.urv.imas.map.CellType;
+import cat.urv.imas.map.PathCell;
+import cat.urv.imas.ontology.InfoAgent;
 import cat.urv.imas.ontology.InitialGameSettings;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.gui.GraphicInterface;
+import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
 import cat.urv.imas.utils.MovementMsg;
 import jade.core.*;
+import jade.lang.acl.ACLMessage;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
 import java.util.List;
 import java.util.Map;
+
+import static cat.urv.imas.agent.UtilsAgents.searchAgentsType;
 
 
 /**
@@ -181,9 +188,44 @@ public class SystemAgent extends BaseCoordinatorAgent {
                         "cat.urv.imas.agent.CleanerAgent", null);
                 searcher.start();
             }
+            setWorkersAIDtoCells(AgentType.SEARCHER, numSearchers);
+            setWorkersAIDtoCells(AgentType.CLEANER, numCleaners);
 
         } catch (StaleProxyException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setWorkersAIDtoCells(AgentType type, int num) {
+        List<AID> AIDs = UtilsAgents.searchAgentsType(this, type, num);
+        Cell[][] map = getGame().getMap();
+
+        for (int i = 0; i < AIDs.size(); ++i) {
+            boolean found = false;
+            int currentSearcher = 0;
+
+            for (int j = 0; j < map.length && !found; ++j) {
+                for (int k = 0; k < map[0].length && !found; ++k) {
+
+                    Cell cell = map[j][k];
+                    if (cell.getCellType().equals(CellType.PATH) && !cell.isEmpty()) {
+                        PathCell pathCell = (PathCell) cell;
+                        InfoAgent cellAgent = null;
+                        try {
+                            cellAgent = pathCell.getAgents().getFirst();
+                        } catch (Exception e) { /* Cell is empty, this should never happen  */ }
+                        if (cellAgent.getType().equals(type)) {
+                            if (currentSearcher == i) {
+                                // Agent found
+                                cellAgent.setAID(AIDs.get(i));
+                                System.out.println("Setting " + AIDs.get(i).getLocalName() + " to " + j + ", " + k);
+                                found = true;
+                            }
+                            currentSearcher++;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -202,10 +244,26 @@ public class SystemAgent extends BaseCoordinatorAgent {
         this.gui.updateGame();
     }
 
-    public void updateMap(List<MovementMsg> positions) {
-        for (MovementMsg msg : positions) {
-            log(msg.toString());
+    public void updateMap(List<MovementMsg> movements) {
+        Cell[][] map = getGame().getMap();
+        for (MovementMsg msg : movements) {
+            try {
+                PathCell cellFrom = (PathCell) map[msg.getFrom().getRow()][msg.getFrom().getColumn()];
+
+                Cell cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()];
+                if (cellTo.getCellType().equals(CellType.PATH)) {
+                    InfoAgent iAgent = cellFrom.getAgents().getFirst();
+                    ((PathCell)cellTo).addAgent(iAgent);
+                    cellFrom.removeAgent(iAgent);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
         updateGUI();
+        ACLMessage updateMsg = new ACLMessage(ACLMessage.INFORM);
+        updateMsg.setContent(MessageContent.MAP_UPDATED);
+        informToAllChildren(updateMsg);
     }
 }

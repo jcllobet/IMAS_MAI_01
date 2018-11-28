@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author alarca_94
  */
-public class Position implements Serializable{
+public class Position implements Serializable,Comparable {
     private int row;
     private int column;
     
@@ -54,5 +54,20 @@ public class Position implements Serializable{
     @Override
     public String toString() {
         return "(" + String.valueOf(row) + ", " + String.valueOf(column) + ")";
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o == null)
+            return -1;
+        if (!(o instanceof  Position))
+            return -1;
+        Position other = (Position)o;
+        if (getRow() == other.getRow() && getColumn() == other.getColumn())
+            return 0;
+        if (getRow() > other.getRow())
+            return 1; // TODO
+        else
+            return -1;
     }
 }

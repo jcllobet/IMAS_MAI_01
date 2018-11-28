@@ -10,11 +10,10 @@ import cat.urv.imas.utils.Position;
 
 public class SearcherAgent extends BaseWorkerAgent {
     private final static int VISION_SIZE = 8;
-    private static int mapID = 0;
     private Cell[] surroundingCells;
 
     public SearcherAgent() {
-        super(AgentType.SEARCHER, mapID++, CellType.BATTERIES_CHARGE_POINT);
+        super(AgentType.SEARCHER, CellType.BATTERIES_CHARGE_POINT);
         // Array of the eSearcher surrounding Cells
         this.surroundingCells = new Cell[VISION_SIZE];
     }

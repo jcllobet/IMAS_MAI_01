@@ -25,12 +25,9 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     private List<Position> pointsOfInterest;
     private CellType interestType;
 
-    private int mapID;
-
-    public BaseWorkerAgent(AgentType type, int mapID, CellType interestType) {
+    public BaseWorkerAgent(AgentType type, CellType interestType) {
         super(type);
         this.interestType     = interestType;
-        this.mapID            = mapID;
         this.position         = null;
         this.walls            = new ArrayList<>();
         this.pointsOfInterest = new ArrayList<>();
@@ -42,7 +39,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         return !(pos.getRow()    < minBounds.getRow()    ||
                  pos.getColumn() < minBounds.getColumn() ||
                  pos.getRow()    > maxBounds.getRow()    ||
-                 pos.getColumn() > maxBounds.getColumn());
+                 pos.getColumn() > maxBounds.getColumn()) && !walls.contains(pos);
     }
 
     protected void onNewParameters(GameSettings game) {
@@ -72,7 +69,6 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     }
 
     private boolean findInMap(Cell[][] map) {
-        int currMapID = 0;
 
         for (Cell[] row : map) {
             for (Cell cell : row) {
@@ -83,14 +79,12 @@ public abstract class BaseWorkerAgent extends BaseAgent {
                     try {
                         cellAgent = pathCell.getAgents().getFirst();
                     } catch (Exception e) { /* Cell is empty, this should never happen  */ }
-                    if (cellAgent != null && currMapID == mapID && cellAgent.getType().equals(getType())) {
+                    if (cellAgent.getAID().equals(getAID())) {
                         // Agent found
-                        cellAgent.setAID(getAID());
                         position.setRow(cell.getRow());
                         position.setColumn(cell.getCol());
                         return true;
                     }
-                    currMapID++;
                 }
                 // Is wall
                 else {

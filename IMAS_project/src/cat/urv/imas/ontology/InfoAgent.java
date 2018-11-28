@@ -20,6 +20,8 @@ public class InfoAgent implements java.io.Serializable {
      * AID for the related agent.
      */
     private AID aid;
+    private static int b = 0;
+    private int a;
 
     /**
      * Building new instance with only the type.
@@ -27,7 +29,7 @@ public class InfoAgent implements java.io.Serializable {
      * @param type type of agent.
      */
     public InfoAgent(AgentType type) {
-        this.type = type;
+        a = b++; this.type = type;
     }
 
     /**
@@ -111,5 +113,9 @@ public class InfoAgent implements java.io.Serializable {
      */
     public String getMapMessage() {
         return type.getShortString();
+    }
+
+    public int test() {
+        return a;
     }
 }

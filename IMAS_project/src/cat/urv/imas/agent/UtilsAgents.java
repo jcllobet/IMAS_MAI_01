@@ -66,11 +66,23 @@ public class UtilsAgents {
      * @return AID of the agent if it is foun, it is a *blocking* method
      */
     public static AID searchAgent(Agent parent, ServiceDescription sd) {
-        List<AID> result = searchAgents(parent, sd);
+        List<AID> result = searchAgents(parent, sd, null);
         return (result.size() == 0) ? null : result.get(0);
     }
 
-    public static List<AID> searchAgents(Agent parent, ServiceDescription sd) {
+    public static List<AID> searchAgentsType(Agent parent, AgentType type, int num) {
+        ServiceDescription searchCriterion = new ServiceDescription();
+        searchCriterion.setType(type.toString());
+        return UtilsAgents.searchAgents(parent, searchCriterion, num);
+    }
+
+    public static List<AID> searchAgentsType(Agent parent, AgentType type) {
+        ServiceDescription searchCriterion = new ServiceDescription();
+        searchCriterion.setType(type.toString());
+        return UtilsAgents.searchAgents(parent, searchCriterion, null);
+    }
+
+    public static List<AID> searchAgents(Agent parent, ServiceDescription sd, Integer num) {
         /**
          * Searching an agent of the specified type
          */
@@ -79,7 +91,7 @@ public class UtilsAgents {
         dfd.addServices(sd);
         try {
             DFAgentDescription[] result = new DFAgentDescription[0];
-            while (result.length == 0) {
+            while ((result.length == 0 && num == null) || (num != null && result.length < num)) {
                 SearchConstraints c = new SearchConstraints();
                 c.setMaxResults(new Long(-1));
                 result = DFService.search(parent, dfd, c);

@@ -8,6 +8,7 @@ package cat.urv.imas.behaviour.cleaner;
 import cat.urv.imas.agent.CleanerAgent;
 import cat.urv.imas.behaviour.BaseListenerBehavior;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.ontology.MessageContent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import java.util.logging.Level;
@@ -27,13 +28,17 @@ public class ListenerBehaviour extends BaseListenerBehavior {
     protected  void onInform() {
         CleanerAgent agent = (CleanerAgent) getBaseAgent();
         ACLMessage msg = getMsg();
-        try {
-            if (msg.getContentObject() instanceof GameSettings){
-                agent.setParameters((GameSettings) msg.getContentObject());
-                agent.computeNewPos();
+        if (msg.getContent().equals(MessageContent.MAP_UPDATED)) {
+            agent.sendMapRequestToParent();
+        } else {
+            try {
+                if (msg.getContentObject() instanceof GameSettings) {
+                    agent.setParameters((GameSettings) msg.getContentObject());
+                    agent.computeNewPos();
+                }
+            } catch (UnreadableException ex) {
+                Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (UnreadableException ex) {
-            Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

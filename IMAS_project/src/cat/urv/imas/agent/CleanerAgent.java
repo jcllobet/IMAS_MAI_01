@@ -8,11 +8,10 @@ import cat.urv.imas.utils.Movement;
 import cat.urv.imas.utils.Position;
 
 public class CleanerAgent extends BaseWorkerAgent {
-    private static int mapID = 0;
     private int cleanerCapacity;
 
     public CleanerAgent() {
-        super(AgentType.CLEANER, mapID, CellType.RECYCLING_POINT_CENTER);
+        super(AgentType.CLEANER, CellType.RECYCLING_POINT_CENTER);
     }
 
     @Override
