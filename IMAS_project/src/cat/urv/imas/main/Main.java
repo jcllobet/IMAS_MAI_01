@@ -1,11 +1,5 @@
 package cat.urv.imas.main;
 
-import cat.urv.imas.agent.SystemAgent;
-import cat.urv.imas.map.Cell;
-import jade.core.AID;
-import cat.urv.imas.agent.AgentType;
-import cat.urv.imas.agent.ImasAgent;
-import cat.urv.imas.agent.UtilsAgents;
 import jade.core.Profile;
 import jade.core.Runtime;
 import jade.wrapper.AgentController;
@@ -13,9 +7,6 @@ import jade.wrapper.ContainerController;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
 import jade.Boot;
-
-import java.util.List;
-import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {

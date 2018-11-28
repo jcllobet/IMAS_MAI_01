@@ -22,19 +22,14 @@ import cat.urv.imas.map.Cell;
 import cat.urv.imas.ontology.InitialGameSettings;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.gui.GraphicInterface;
-import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
 import jade.core.*;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -42,7 +37,7 @@ import java.util.logging.Logger;
  * TODO: You have to decide the onthology and protocol when interacting among
  * the Coordinator agent.
  */
-public class SystemAgent extends BaseCoordinator {
+public class SystemAgent extends BaseCoordinatorAgent {
 
     /**
      * GUI with the map, system agent log and statistics.

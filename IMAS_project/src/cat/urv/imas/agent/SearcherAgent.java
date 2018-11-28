@@ -4,9 +4,10 @@ import cat.urv.imas.behaviour.searcher.ListenerBehaviour;
 import cat.urv.imas.map.Cell;
 import cat.urv.imas.map.CellType;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.utils.Move;
 import cat.urv.imas.utils.Position;
 
-public class SearcherAgent extends BaseWorker {
+public class SearcherAgent extends BaseWorkerAgent {
     private final static int VISION_SIZE = 8;
     private static int mapID = 0;
     private Cell[] surroundingCells;

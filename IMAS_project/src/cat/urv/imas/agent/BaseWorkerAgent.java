@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class BaseWorker extends ImasAgent {
+public abstract class BaseWorkerAgent extends BaseAgent {
 
     private AgentPosition position;
     private AgentPosition newPos;
@@ -27,7 +27,7 @@ public abstract class BaseWorker extends ImasAgent {
 
     private int mapID;
 
-    public BaseWorker(AgentType type, int mapID, CellType interestType) {
+    public BaseWorkerAgent(AgentType type, int mapID, CellType interestType) {
         super(type);
         this.interestType     = interestType;
         this.mapID            = mapID;

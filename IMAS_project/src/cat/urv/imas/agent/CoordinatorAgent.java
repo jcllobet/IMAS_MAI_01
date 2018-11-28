@@ -19,17 +19,14 @@ package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.coordinator.ListenerBehaviour;
 import cat.urv.imas.ontology.GameSettings;
-import cat.urv.imas.utils.AgentPosition;
 import jade.core.*;
-import jade.domain.FIPANames.InteractionProtocol;
-import jade.lang.acl.*;
 
 /**
  * The main Coordinator agent. 
  * TODO: This coordinator agent should get the game settings from the System
  * agent every round and share the necessary information to other coordinators.
  */
-public class CoordinatorAgent extends BaseCoordinator {
+public class CoordinatorAgent extends BaseCoordinatorAgent {
 
     private AID searcherCoordinator;
     private AID cleanerCoordinator;

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class BaseCoordinator extends ImasAgent {
+public abstract class BaseCoordinatorAgent extends BaseAgent {
 
     private GameSettings game;
     private boolean mapUpdated;
@@ -20,7 +20,7 @@ public abstract class BaseCoordinator extends ImasAgent {
     private int newPosMsgCount;
     protected ACLMessage informNewPosMsg;
 
-    public BaseCoordinator(AgentType type) {
+    public BaseCoordinatorAgent(AgentType type) {
         super(type);
         this.mapUpdated = false;
         this.newPositions = new ArrayList<>();
@@ -60,8 +60,7 @@ public abstract class BaseCoordinator extends ImasAgent {
     public void sendMap(AID sender) {
         ACLMessage sendMapMsg = new ACLMessage(ACLMessage.INFORM);
         sendMapMsg.addReceiver(sender);
-        Boolean isNull = game == null;
-        System.out.println("SENDING MAP TO " + sender.getLocalName() + " FROM " + getLocalName() + " AND IS NULL: " + isNull);
+
         try {
             sendMapMsg.setContentObject(game);
             this.send(sendMapMsg);

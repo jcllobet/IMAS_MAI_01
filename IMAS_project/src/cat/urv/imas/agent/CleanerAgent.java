@@ -3,9 +3,9 @@ package cat.urv.imas.agent;
 import cat.urv.imas.behaviour.cleaner.ListenerBehaviour;
 import cat.urv.imas.map.CellType;
 import cat.urv.imas.ontology.GameSettings;
-import jade.lang.acl.ACLMessage;
+import cat.urv.imas.utils.Move;
 
-public class CleanerAgent extends BaseWorker {
+public class CleanerAgent extends BaseWorkerAgent {
     private static int mapID = 0;
     private int cleanerCapacity;
 

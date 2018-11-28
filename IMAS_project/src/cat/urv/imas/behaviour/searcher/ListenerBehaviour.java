@@ -6,14 +6,8 @@
 package cat.urv.imas.behaviour.searcher;
 
 import cat.urv.imas.behaviour.BaseListenerBehavoir;
-import cat.urv.imas.behaviour.searchCoordinator.*;
-import cat.urv.imas.behaviour.coordinator.*;
-import cat.urv.imas.agent.CoordinatorAgent;
 import cat.urv.imas.agent.SearcherAgent;
-import cat.urv.imas.agent.SearcherCoordinatorAgent;
 import cat.urv.imas.ontology.GameSettings;
-import cat.urv.imas.ontology.MessageContent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import java.util.logging.Level;
@@ -31,7 +25,7 @@ public class ListenerBehaviour extends BaseListenerBehavoir {
 
     @Override
     protected void onInform() {
-        SearcherAgent agent = (SearcherAgent)getImasAgent();
+        SearcherAgent agent = (SearcherAgent) getBaseAgent();
         ACLMessage msg = getMsg();
         agent.log("INFORM message received from " + msg.getSender().getLocalName());
         try {

@@ -1,8 +1,6 @@
 package cat.urv.imas.behaviour;
 
-import cat.urv.imas.agent.CleanerAgent;
-import cat.urv.imas.agent.CoordinatorAgent;
-import cat.urv.imas.agent.ImasAgent;
+import cat.urv.imas.agent.BaseAgent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 
@@ -10,9 +8,9 @@ public class BaseListenerBehavoir extends CyclicBehaviour {
     public static final Integer RETRY_TIME_MS = 2000;
 
     private ACLMessage msg;
-    private ImasAgent imasAgent;
+    private BaseAgent baseAgent;
 
-    public BaseListenerBehavoir(ImasAgent agent){
+    public BaseListenerBehavoir(BaseAgent agent){
         super(agent);
         msg = null;
         agent = null;
@@ -25,7 +23,7 @@ public class BaseListenerBehavoir extends CyclicBehaviour {
     protected void onAgree() {}
 
     protected void onRefuse() {
-        ImasAgent agent = getImasAgent();
+        BaseAgent agent = getBaseAgent();
         if (agent.isWaitingForMap()) {
             agent.log("Action refused. Retrying in " + RETRY_TIME_MS + "...");
             try {
@@ -41,8 +39,8 @@ public class BaseListenerBehavoir extends CyclicBehaviour {
 
     @Override
     public void action() {
-        setImasAgent((ImasAgent)getAgent());
-        setMsg(getImasAgent().receive());
+        setBaseAgent((BaseAgent)getAgent());
+        setMsg(getBaseAgent().receive());
 
         // If a message is available and a listener is available
         if (getMsg() != null){
@@ -78,11 +76,11 @@ public class BaseListenerBehavoir extends CyclicBehaviour {
         this.msg = msg;
     }
 
-    public ImasAgent getImasAgent() {
-        return imasAgent;
+    public BaseAgent getBaseAgent() {
+        return baseAgent;
     }
 
-    public void setImasAgent(ImasAgent agent) {
-        this.imasAgent = agent;
+    public void setBaseAgent(BaseAgent agent) {
+        this.baseAgent = agent;
     }
 }

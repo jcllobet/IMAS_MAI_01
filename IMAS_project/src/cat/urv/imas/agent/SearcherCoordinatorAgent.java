@@ -3,14 +3,11 @@ package cat.urv.imas.agent;
 import cat.urv.imas.behaviour.searchCoordinator.ListenerBehaviour;
 import cat.urv.imas.map.Cell;
 import cat.urv.imas.ontology.GameSettings;
-import jade.domain.FIPANames;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 
 import java.util.List;
 import java.util.Map;
 
-public class SearcherCoordinatorAgent extends BaseCoordinator {
+public class SearcherCoordinatorAgent extends BaseCoordinatorAgent {
 
     public SearcherCoordinatorAgent() {
         super(AgentType.ESEARCHER_COORDINATOR);

@@ -31,7 +31,7 @@ import jade.lang.acl.ACLMessage;
  * Agent abstraction used in this practical work.
  * It gathers common attributes and functionality from all agents.
  */
-public abstract class ImasAgent extends Agent {
+public abstract class BaseAgent extends Agent {
 
     private AID parent;
     private boolean waitingForMap;
@@ -58,7 +58,7 @@ public abstract class ImasAgent extends Agent {
      * Creates the agent.
      * @param type type of agent to set.
      */
-    public ImasAgent(AgentType type) {
+    public BaseAgent(AgentType type) {
         super();
         this.type = type;
         this.waitingForMap = false;

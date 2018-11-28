@@ -6,13 +6,9 @@
 package cat.urv.imas.behaviour.cleanerCoordinator;
 
 import cat.urv.imas.agent.CleanerCoordinatorAgent;
-import cat.urv.imas.agent.CoordinatorAgent;
 import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavoir;
-import cat.urv.imas.behaviour.BaseListenerBehavoir;
 import cat.urv.imas.ontology.GameSettings;
-import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import java.util.logging.Level;
@@ -30,7 +26,7 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavoir {
 
     @Override
     protected void onInform() {
-        CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) getImasAgent();
+        CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) getBaseAgent();
         ACLMessage msg = getMsg();
         agent.log("INFORM message received from " + msg.getSender().getLocalName());
         if (msg.getSender().equals(agent.getParent())){

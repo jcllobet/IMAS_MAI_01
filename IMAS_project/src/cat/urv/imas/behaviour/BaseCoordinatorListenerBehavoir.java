@@ -1,18 +1,18 @@
 package cat.urv.imas.behaviour;
 
-import cat.urv.imas.agent.BaseCoordinator;
+import cat.urv.imas.agent.BaseCoordinatorAgent;
 import cat.urv.imas.ontology.MessageContent;
 import jade.lang.acl.ACLMessage;
 
 public class BaseCoordinatorListenerBehavoir extends BaseListenerBehavoir {
 
-    public BaseCoordinatorListenerBehavoir(BaseCoordinator agent) {
+    public BaseCoordinatorListenerBehavoir(BaseCoordinatorAgent agent) {
         super(agent);
     }
 
     @Override
     protected void onRequest() {
-        BaseCoordinator agent = (BaseCoordinator) getImasAgent();
+        BaseCoordinatorAgent agent = (BaseCoordinatorAgent) getBaseAgent();
         ACLMessage msg = getMsg();
         if (msg.getContent().equals(MessageContent.GET_MAP)){
             // If map has been requested

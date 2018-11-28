@@ -5,12 +5,8 @@
  */
 package cat.urv.imas.behaviour.system;
 
-import cat.urv.imas.agent.BaseCoordinator;
-import cat.urv.imas.agent.CoordinatorAgent;
 import cat.urv.imas.agent.SystemAgent;
-import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavoir;
 import cat.urv.imas.behaviour.BaseListenerBehavoir;
-import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
 import jade.lang.acl.ACLMessage;
@@ -32,7 +28,7 @@ public class ListenerBehaviour extends BaseListenerBehavoir {
 
     @Override
     protected void onRequest() {
-        SystemAgent agent = (SystemAgent) getImasAgent();
+        SystemAgent agent = (SystemAgent) getBaseAgent();
         ACLMessage msg = getMsg();
 
         if (msg.getContent().equals(MessageContent.GET_MAP)){
@@ -57,7 +53,7 @@ public class ListenerBehaviour extends BaseListenerBehavoir {
 
     @Override
     protected void onInform() {
-        SystemAgent agent = (SystemAgent) getImasAgent();
+        SystemAgent agent = (SystemAgent) getBaseAgent();
         ACLMessage msg = getMsg();
         agent.log("INFORM message received from " + msg.getSender().getLocalName());
         try {

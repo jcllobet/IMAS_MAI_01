@@ -1,7 +1,4 @@
-package cat.urv.imas.agent;
-
-import cat.urv.imas.utils.AgentPosition;
-import cat.urv.imas.utils.Position;
+package cat.urv.imas.utils;
 
 import java.util.Arrays;
 import java.util.Collections;
