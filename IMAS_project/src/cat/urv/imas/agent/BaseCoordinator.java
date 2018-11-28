@@ -1,22 +1,17 @@
 package cat.urv.imas.agent;
 
-import cat.urv.imas.map.Cell;
 import cat.urv.imas.ontology.GameSettings;
-import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
 import jade.core.AID;
-import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BaseCoordinator extends ImasAgent {
+public abstract class BaseCoordinator extends ImasAgent {
 
     private GameSettings game;
     private boolean mapUpdated;

@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author alarca_94
  */
-public class AgentPosition extends Position implements Serializable{
+public class AgentPosition extends Position implements Serializable {
     private AID agent;
     
     public AgentPosition(AID agent) {        
@@ -21,14 +21,15 @@ public class AgentPosition extends Position implements Serializable{
     
     public AgentPosition(AID agent, int row, int column) {
         super(row, column);
-        
         this.agent = agent;
     }
 
     public AID getAgent() {
         return agent;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return (agent != null ? agent.getLocalName() : "??") + ": " + super.toString();
+    }
 }

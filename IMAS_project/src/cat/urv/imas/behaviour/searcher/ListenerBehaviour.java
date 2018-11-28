@@ -37,7 +37,7 @@ public class ListenerBehaviour extends BaseListenerBehavoir {
         try {
             if (msg.getContentObject() instanceof GameSettings){
                 agent.setParameters((GameSettings) msg.getContentObject());
-                agent.computeNewPosition();
+                agent.computeNewPos();
             }
         } catch (UnreadableException ex) {
             Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);

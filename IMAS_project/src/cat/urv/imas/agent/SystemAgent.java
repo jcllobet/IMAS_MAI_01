@@ -30,6 +30,7 @@ import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -171,13 +172,16 @@ public class SystemAgent extends BaseCoordinator {
                 }
             }
             // Create searchers
+            Integer[] args = new Integer[1];
             for (int i = 0; i < numSearchers; ++i) {
+                args[0] = i;
                 AgentController searcher = cc.createNewAgent("Searcher-" + i,
                         "cat.urv.imas.agent.SearcherAgent", null);
                 searcher.start();
             }
             // Create cleaners
             for (int i = 0; i < numCleaners; ++i) {
+                args[0] = i;
                 AgentController searcher = cc.createNewAgent("Cleaner-" + i,
                         "cat.urv.imas.agent.CleanerAgent", null);
                 searcher.start();

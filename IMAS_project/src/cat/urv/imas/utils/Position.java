@@ -16,13 +16,23 @@ public class Position implements Serializable{
     private int row;
     private int column;
     
-    public Position(){
-        
+    public Position() {
+        this(0, 0);
     }
     
+    public Position(Position other) {
+        this.row = other.getRow();
+        this.column = other.getColumn();
+    }
+
     public Position(int row, int column){
         this.row = row;
         this.column = column;
+    }
+
+    public void set(int row, int col) {
+        setRow(row);
+        setColumn(col);
     }
 
     public int getRow() {
@@ -39,5 +49,10 @@ public class Position implements Serializable{
 
     public void setColumn(int column) {
         this.column = column;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + String.valueOf(row) + ", " + String.valueOf(column) + ")";
     }
 }
