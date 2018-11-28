@@ -27,6 +27,9 @@ import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Agent abstraction used in this practical work.
  * It gathers common attributes and functionality from all agents.
@@ -34,6 +37,7 @@ import jade.lang.acl.ACLMessage;
 public abstract class BaseAgent extends Agent {
 
     private AID parent;
+    private List<AID> children;
     private boolean waitingForMap;
     
     /**
@@ -63,6 +67,7 @@ public abstract class BaseAgent extends Agent {
         this.type = type;
         this.waitingForMap = false;
         this.parent = null;
+        this.children = new ArrayList<>();
     }
 
     public AID getParent() {
@@ -71,19 +76,28 @@ public abstract class BaseAgent extends Agent {
 
     public void setParent(AID parent) {
         this.parent = parent;
+        this.sendChildRequestToParent();
+    }
+
+    public void addChild(AID child) {
+        children.add(child);
     }
 
     public void sendMapRequestToParent() {
-        sendMapRequestTo(parent);
-    }
-
-    public void sendMapRequestTo(AID receiver) {
         ACLMessage requestMapMsg = generateMsg(ACLMessage.REQUEST,
-                                                receiver,
+                                                parent,
                                                 FIPANames.InteractionProtocol.FIPA_REQUEST,
                                                 MessageContent.GET_MAP);
-        this.send(requestMapMsg);
-        this.waitingForMap = true;
+        send(requestMapMsg);
+        waitingForMap = true;
+    }
+
+    private void sendChildRequestToParent() {
+        ACLMessage requestMapMsg = generateMsg(ACLMessage.INFORM,
+                                                parent,
+                                                FIPANames.InteractionProtocol.FIPA_REQUEST,
+                                                MessageContent.CHILD_REQUEST);
+        send(requestMapMsg);
     }
 
     public void clearWaitingForMap() {
@@ -138,6 +152,13 @@ public abstract class BaseAgent extends Agent {
         }
     }
 
+    public void informToAllChildren(ACLMessage msg) {
+        for (AID child : children) {
+            msg.addReceiver(child);
+        }
+        send(msg);
+    }
+
     public ACLMessage generateMsg(int performative, AID receiver, String protocol, String content) {
         ACLMessage msg = new ACLMessage(performative);
         msg.clearAllReceiver();
@@ -151,5 +172,13 @@ public abstract class BaseAgent extends Agent {
             e.printStackTrace();
         }
         return msg;
+    }
+
+    public List<AID> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<AID> children) {
+        this.children = children;
     }
 }

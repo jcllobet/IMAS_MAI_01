@@ -5,6 +5,7 @@ import cat.urv.imas.map.CellType;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.utils.Move;
 import cat.urv.imas.utils.Movement;
+import cat.urv.imas.utils.Position;
 
 public class CleanerAgent extends BaseWorkerAgent {
     private static int mapID = 0;
@@ -25,7 +26,7 @@ public class CleanerAgent extends BaseWorkerAgent {
 
         // Behaviors
         addBehaviour(new ListenerBehaviour(this));
-        sendMapRequestTo(getParent());
+        sendMapRequestToParent();
     }
 
     @Override
@@ -35,10 +36,11 @@ public class CleanerAgent extends BaseWorkerAgent {
 
     @Override
     public void computeNewPos() {
+        Position newPos = null;
         do {
-            setNewPos(Movement.random(getPosition(), Move.getRandom()));
-        } while (!isValidPos(getNewPos()));
+            newPos = Movement.random(getPosition(), Move.getRandom());
+        } while (!isValidPos(newPos));
 
-        sendNewPosToParent();
+        sendNewPosToParent(newPos);
     }
 }

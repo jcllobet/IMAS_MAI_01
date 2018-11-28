@@ -65,7 +65,6 @@ public class CoordinatorAgent extends BaseCoordinatorAgent {
     @Override
     public void setGame(GameSettings game) {
         super.setGame(game);
-        setNumChildren(2); // TODO constant
     }
 
     public AID getSearcherCoordinator() {

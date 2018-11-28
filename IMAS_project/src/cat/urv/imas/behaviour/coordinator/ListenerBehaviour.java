@@ -8,7 +8,7 @@ package cat.urv.imas.behaviour.coordinator;
 import cat.urv.imas.agent.CoordinatorAgent;
 import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavoir;
 import cat.urv.imas.ontology.GameSettings;
-import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.MovementMsg;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
@@ -41,10 +41,10 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavoir {
             }
         } else {
             try {
-                List<AgentPosition> positions = Arrays.asList((AgentPosition[])msg.getContentObject());
-                agent.addNewPositions(positions);
-                agent.addNewPosMsgCount();
-                agent.sendNewPositions();
+                List<MovementMsg> movements = Arrays.asList((MovementMsg[])msg.getContentObject());
+                agent.addMovementsMsg(movements);
+                agent.incrementMovementMsgCount();
+                agent.sendMovements();
             } catch (UnreadableException ex) {
                 Logger.getLogger(cat.urv.imas.behaviour.searchCoordinator.ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
             }

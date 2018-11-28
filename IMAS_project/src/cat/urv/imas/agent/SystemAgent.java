@@ -23,6 +23,7 @@ import cat.urv.imas.ontology.InitialGameSettings;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.gui.GraphicInterface;
 import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.MovementMsg;
 import jade.core.*;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
@@ -139,7 +140,6 @@ public class SystemAgent extends BaseCoordinatorAgent {
     @Override
     public void setGame(GameSettings game) {
         super.setGame(game);
-        setNumChildren(1); // TODO constant
     }
 
     private void createAgents() {
@@ -188,10 +188,10 @@ public class SystemAgent extends BaseCoordinatorAgent {
     }
 
     /*@Override
-    public void addNewPosition(AgentPosition newPos){
-        getNewPositions().add(newPos);
+    public void addMovementMsg(AgentPosition newPos){
+        getMovements().add(newPos);
         log("All positions received");
-        if (getNewPositions().size() == getNumChildren()) {
+        if (getMovements().size() == getNumChildren()) {
             informToAllChildren(MessageContent.MAP_UPDATED);
             setMapUpdated(false);
             resetNewPositions();
@@ -202,7 +202,10 @@ public class SystemAgent extends BaseCoordinatorAgent {
         this.gui.updateGame();
     }
 
-    public void updateMap(List<AgentPosition> positions) {
-
+    public void updateMap(List<MovementMsg> positions) {
+        for (MovementMsg msg : positions) {
+            log(msg.toString());
+        }
+        updateGUI();
     }
 }

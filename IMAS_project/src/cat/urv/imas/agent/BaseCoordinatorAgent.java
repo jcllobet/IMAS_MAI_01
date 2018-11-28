@@ -2,6 +2,7 @@ package cat.urv.imas.agent;
 
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.MovementMsg;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 
@@ -15,17 +16,15 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
 
     private GameSettings game;
     private boolean mapUpdated;
-    private List<AgentPosition> newPositions;
-    private Integer numChildren;
-    private int newPosMsgCount;
+    private List<MovementMsg> movements;
+    private int movementMsgCount;
     protected ACLMessage informNewPosMsg;
 
     public BaseCoordinatorAgent(AgentType type) {
         super(type);
         this.mapUpdated = false;
-        this.newPositions = new ArrayList<>();
-        this.numChildren = null;
-        this.newPosMsgCount = 0;
+        this.movements = new ArrayList<>();
+        this.movementMsgCount = 0;
         this.informNewPosMsg = new ACLMessage(ACLMessage.INFORM);
     }
 
@@ -37,12 +36,8 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
         }
     }
 
-    public Integer getNumChildren() {
-        return numChildren;
-    }
-
-    public void setNumChildren(Integer numChildren) {
-        this.numChildren = numChildren;
+    public int getNumChildren() {
+        return getChildren().size();
     }
 
     public boolean isMapUpdated() {
@@ -69,28 +64,28 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
         }
     }
 
-    public void setNewPositions(List<AgentPosition> positions) {
-        newPositions = positions;
+    public void setMovements(List<MovementMsg> positions) {
+        movements = positions;
     }
 
     public void resetNewPositions(){
-        this.newPositions.removeAll(newPositions);
+        movements.removeAll(movements);
     }
 
-    public void addNewPosition(AgentPosition newPos){
-        newPositions.add(newPos);
+    public void addMovementMsg(MovementMsg msg){
+        movements.add(msg);
     }
 
-    public void addNewPositions(List<AgentPosition> positions) {
-        for (AgentPosition agentPosition : positions) {
-            addNewPosition(agentPosition);
+    public void addMovementsMsg(List<MovementMsg> movements) {
+        for (MovementMsg msg : movements) {
+            addMovementMsg(msg);
         }
     }
     
-    public void sendNewPositions(){
-        if (newPosMsgCount == numChildren && getParent() != null) {
+    public void sendMovements(){
+        if (movementMsgCount == getNumChildren() && getParent() != null) {
             try {
-                informNewPosMsg.setContentObject(newPositions.toArray(new AgentPosition[newPositions.size()]));
+                informNewPosMsg.setContentObject(movements.toArray(new MovementMsg[movements.size()]));
                 this.send(informNewPosMsg);
             } catch (IOException ex) {
                 Logger.getLogger(CleanerCoordinatorAgent.class.getName()).log(Level.SEVERE, null, ex);
@@ -101,24 +96,15 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
         }
     }
 
-    public void informToAllChildren(String messageContent) {
-        for (AgentPosition agentPosition : newPositions) {
-            ACLMessage informUpdatedMsg = new ACLMessage(ACLMessage.INFORM);
-            informUpdatedMsg.addReceiver(agentPosition.getAgent());
-            informUpdatedMsg.setContent(messageContent);
-            send(informUpdatedMsg);
-        }
-    }
-
-    public List<AgentPosition> getNewPositions() {
-        return newPositions;
+    public List<MovementMsg> getMovements() {
+        return movements;
     }
 
     private void resetNewPosMsgCount() {
-        newPosMsgCount = 0;
+        movementMsgCount = 0;
     }
     
-    public void addNewPosMsgCount() {
-        newPosMsgCount++;
+    public void incrementMovementMsgCount() {
+        movementMsgCount++;
     }
 }

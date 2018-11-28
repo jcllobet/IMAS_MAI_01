@@ -5,26 +5,27 @@
  */
 package cat.urv.imas.utils;
 
+import cat.urv.imas.agent.BaseAgent;
 import jade.core.AID;
 import java.io.Serializable;
 
-/**
- *
- * @author alarca_94
- */
 public class AgentPosition extends Position implements Serializable {
-    private AID agent;
+    private BaseAgent agent;
     
-    public AgentPosition(AID agent) {        
+    public AgentPosition(BaseAgent agent) {
         this.agent = agent;
     }
     
-    public AgentPosition(AID agent, int row, int column) {
+    public AgentPosition(BaseAgent agent, int row, int column) {
         super(row, column);
         this.agent = agent;
     }
 
-    public AID getAgent() {
+    public AID getAID() {
+        return agent.getAID();
+    }
+
+    public BaseAgent getAgent() {
         return agent;
     }
 

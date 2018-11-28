@@ -1,6 +1,7 @@
 package cat.urv.imas.behaviour;
 
 import cat.urv.imas.agent.BaseAgent;
+import cat.urv.imas.ontology.MessageContent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 
@@ -58,7 +59,12 @@ public class BaseListenerBehavoir extends CyclicBehaviour {
                     onRefuse();
                     break;
                 case ACLMessage.INFORM:
-                    onInform();
+                    if (msg.getContent().equals(MessageContent.CHILD_REQUEST)) {
+                        getBaseAgent().addChild(msg.getSender());
+                        getBaseAgent().log("Added " + msg.getSender().getLocalName() + " as child");
+                    } else {
+                        onInform();
+                    }
                     break;
                 default:
                     break;

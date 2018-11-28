@@ -6,6 +6,7 @@ import cat.urv.imas.map.PathCell;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.InfoAgent;
 import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.MovementMsg;
 import cat.urv.imas.utils.Position;
 import jade.lang.acl.ACLMessage;
 
@@ -17,8 +18,7 @@ import java.util.logging.Logger;
 
 public abstract class BaseWorkerAgent extends BaseAgent {
 
-    private AgentPosition position;
-    private AgentPosition newPos;
+    private Position position;
     private Position maxBounds;
     private Position minBounds;
     private List<Position> walls;
@@ -32,7 +32,6 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         this.interestType     = interestType;
         this.mapID            = mapID;
         this.position         = null;
-        this.newPos           = null;
         this.walls            = new ArrayList<>();
         this.pointsOfInterest = new ArrayList<>();
         this.maxBounds        = new Position();
@@ -61,8 +60,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         assert(map[0].length > 0);
 
         if (position == null) {
-            position = new AgentPosition(getAID());
-            newPos = new AgentPosition(getAID());
+            position = new Position();
             findInMap(map); // Returns false if not found
             onNewParameters(game);
             maxBounds.set(map.length - 1, map[0].length - 1);
@@ -107,31 +105,23 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         return false;
     }
 
-    protected void sendNewPosToParent() {
+    protected void sendNewPosToParent(Position newPos) {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.addReceiver(getParent());
         try {
-            msg.setContentObject(newPos);
+            msg.setContentObject(new MovementMsg(position, newPos, getType()));
             send(msg);
         } catch (IOException ex) {
             Logger.getLogger(CleanerAgent.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public AgentPosition getPosition() {
+    public Position getPosition() {
         return position;
     }
 
     public void setPosition(AgentPosition position) {
         this.position = position;
-    }
-
-    public AgentPosition getNewPos() {
-        return newPos;
-    }
-
-    public void setNewPos(AgentPosition newPos) {
-        this.newPos = newPos;
     }
 
     public List<Position> getWalls() {

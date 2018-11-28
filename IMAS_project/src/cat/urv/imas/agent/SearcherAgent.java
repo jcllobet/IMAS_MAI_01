@@ -27,7 +27,7 @@ public class SearcherAgent extends BaseWorkerAgent {
         setParent(UtilsAgents.searchAgentType(this, AgentType.ESEARCHER_COORDINATOR));
 
         addBehaviour(new ListenerBehaviour(this));
-        sendMapRequestTo(getParent());
+        sendMapRequestToParent();
     }
 
     @Override
@@ -49,10 +49,11 @@ public class SearcherAgent extends BaseWorkerAgent {
 
     @Override
     public void computeNewPos() {
+        Position newPos = null;
         do {
-            setNewPos(Movement.random(getPosition(), Move.getRandom()));
-        } while (!isValidPos(getNewPos()));
+            newPos = Movement.random(getPosition(), Move.getRandom());
+        } while (!isValidPos(newPos));
 
-        sendNewPosToParent();
+        sendNewPosToParent(newPos);
     }
 }

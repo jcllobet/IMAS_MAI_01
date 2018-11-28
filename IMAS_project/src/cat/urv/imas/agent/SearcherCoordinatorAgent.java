@@ -15,32 +15,18 @@ public class SearcherCoordinatorAgent extends BaseCoordinatorAgent {
 
     @Override
     protected void setup() {
-        /* ** Very Important Line (VIL) ***************************************/
         this.setEnabledO2ACommunication(true, 1);
-        /* ********************************************************************/
-
-        // Register the agent to the DF
         registerToDF();
 
-        // search CoordinatorAgent (is a blocking method, so we will obtain always a correct AID)
         setParent(UtilsAgents.searchAgentType(this, AgentType.COORDINATOR));
 
-        /* ********************************************************************/
-        this.informNewPosMsg.addReceiver(getParent());
-        
-        this.addBehaviour(new ListenerBehaviour(this));
+        informNewPosMsg.addReceiver(getParent());
+        addBehaviour(new ListenerBehaviour(this));
     }
 
     @Override
     public void setGame(GameSettings game) {
         super.setGame(game);
-        if (getNumChildren() == null && getGame() != null) {
-            for (Map.Entry<AgentType, List<Cell>> entry : this.getGame().getAgentList().entrySet()) {
-                if (entry.getKey().name().equals(AgentType.SEARCHER.toString())) {
-                    setNumChildren(entry.getValue().size());
-                    break;
-                }
-            }
-        }
+        // ...
     }
 }

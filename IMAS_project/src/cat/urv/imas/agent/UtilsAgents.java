@@ -33,6 +33,9 @@ import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Utility class for agents.
  */
@@ -63,21 +66,25 @@ public class UtilsAgents {
      * @return AID of the agent if it is foun, it is a *blocking* method
      */
     public static AID searchAgent(Agent parent, ServiceDescription sd) {
+        List<AID> result = searchAgents(parent, sd);
+        return (result.size() == 0) ? null : result.get(0);
+    }
+
+    public static List<AID> searchAgents(Agent parent, ServiceDescription sd) {
         /**
          * Searching an agent of the specified type
          */
-        AID searchedAgent = new AID();
+        List<AID> found = new ArrayList<>();
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.addServices(sd);
         try {
-            while (true) {
+            DFAgentDescription[] result = new DFAgentDescription[0];
+            while (result.length == 0) {
                 SearchConstraints c = new SearchConstraints();
                 c.setMaxResults(new Long(-1));
-                DFAgentDescription[] result = DFService.search(parent, dfd, c);
-                if (result.length > 0) {
-                    dfd = result[0];
-                    searchedAgent = dfd.getName();
-                    break;
+                result = DFService.search(parent, dfd, c);
+                for (DFAgentDescription description : result) {
+                    found.add(description.getName());
                 }
                 Thread.sleep(DELAY);
             }
@@ -86,7 +93,7 @@ public class UtilsAgents {
             fe.printStackTrace();
             parent.doDelete();
         }
-        return searchedAgent;
+        return found;
     }
 
     /**
