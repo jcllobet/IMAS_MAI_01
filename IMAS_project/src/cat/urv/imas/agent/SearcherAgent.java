@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class SearcherAgent extends BaseWorkerAgent {
-    private final static int VISION_SIZE = 8;
     private List<GarbagePosition> locatedGarbage;
 
     public SearcherAgent() {
@@ -53,6 +52,7 @@ public class SearcherAgent extends BaseWorkerAgent {
             for (int y = -1; y <= 1; ++y) {
                 if (y !=0 || x != 0) {
                     currPos.set(getPosition().getRow() + y, getPosition().getColumn() + x);
+                    // TODO Dont look out of the map
                     Cell cell = game.getMap()[currPos.getRow()][currPos.getColumn()];
                     if (cell.getCellType().equals(CellType.FIELD)) {
                         FieldCell field = (FieldCell) cell;
@@ -73,7 +73,7 @@ public class SearcherAgent extends BaseWorkerAgent {
     @Override
     public void computeNewPos() {
         Position newPos = null;
-        newPos = Movement.random(getPosition(), Move.getRandom());
+        newPos = Movement.random(getPosition());
 
         sendNewPosToParent(newPos);
     }

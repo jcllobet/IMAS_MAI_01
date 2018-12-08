@@ -51,6 +51,7 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavior {
         if (msg.getSender().equals(agent.getParent())) { // Refuse from parent (Map not updated)
             super.onRefuse();
         } else { // Refuse from child (Proposal rejected)
+            agent.log(LogCode.REFUSE, "from " + msg.getSender().getLocalName() + " in proposal from " + agent.getAllocatingGarbage());
             agent.responseReceived();
         }
     }

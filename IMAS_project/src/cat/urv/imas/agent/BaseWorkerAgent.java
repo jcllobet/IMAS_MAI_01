@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 public abstract class BaseWorkerAgent extends BaseAgent {
 
     private Position position;
+    private Position previous;
     private Position maxBounds;
     private Position minBounds;
     private List<Position> walls;
@@ -31,6 +32,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         super(type);
         this.interestType     = interestType;
         this.position         = null;
+        this.previous         = null;
         this.walls            = new ArrayList<>();
         this.pointsOfInterest = new ArrayList<>();
         this.maxBounds        = new Position();
@@ -54,10 +56,15 @@ public abstract class BaseWorkerAgent extends BaseAgent {
 
     public abstract void computeNewPos();
 
+    public Position getPrevious() {
+        return previous;
+    }
+
     public void setParameters(GameSettings game) {
         Cell[][] map = game.getMap();
         assert(map[0].length > 0);
 
+        previous = position;
         if (position == null) {
             position = new Position();
             findInMap(map); // Returns false if not found

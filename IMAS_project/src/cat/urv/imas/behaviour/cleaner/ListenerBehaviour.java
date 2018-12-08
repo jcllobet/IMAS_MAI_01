@@ -32,6 +32,21 @@ public class ListenerBehaviour extends BaseListenerBehavior {
     }
 
     @Override
+    protected void onAcceptProposal() {
+        CleanerAgent agent = (CleanerAgent) getBaseAgent();
+        ACLMessage msg = getMsg();
+
+        try {
+            GarbagePosition garbage = (GarbagePosition)msg.getContentObject();
+            ACLMessage response = msg.createReply();
+            agent.log(LogCode.ACCEPT_PROPOSAL, "from " + msg.getSender().getLocalName() + " for garbage " + garbage);
+            agent.accept(garbage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void onCFP() {
         CleanerAgent agent = (CleanerAgent) getBaseAgent();
         ACLMessage msg = getMsg();

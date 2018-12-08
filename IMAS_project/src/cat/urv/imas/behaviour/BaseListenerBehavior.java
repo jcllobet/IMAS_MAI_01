@@ -32,6 +32,14 @@ public class BaseListenerBehavior extends CyclicBehaviour {
         getBaseAgent().log(LogCode.PROPOSE, "from " + msg.getSender().getLocalName());
     }
 
+    protected void onAcceptProposal() {
+        getBaseAgent().log(LogCode.ACCEPT_PROPOSAL, "from " + msg.getSender().getLocalName());
+    }
+
+    protected void onRejectProposal() {
+        getBaseAgent().log(LogCode.REJECT_PROPOSAL, "from " + msg.getSender().getLocalName());
+    }
+
     protected void onAgree() {
         getBaseAgent().log(LogCode.AGREE, "from " + msg.getSender().getLocalName());
     }
@@ -59,6 +67,12 @@ public class BaseListenerBehavior extends CyclicBehaviour {
         // If a message is available and a listener is available
         if (getMsg() != null){
             switch (msg.getPerformative()) {
+                case ACLMessage.ACCEPT_PROPOSAL:
+                    onAcceptProposal();
+                    break;
+                case ACLMessage.REJECT_PROPOSAL:
+                    onRejectProposal();
+                    break;
                 case ACLMessage.REQUEST:
                     onRequest();
                     break;

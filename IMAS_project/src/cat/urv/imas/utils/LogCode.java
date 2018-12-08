@@ -11,14 +11,14 @@ public enum LogCode {
             return "";
         }
     },
-    BLACK  {
+    ACCEPT_PROPOSAL  {
         @Override
         public String getCode() {
             return "\u001B[30m";
         }
         @Override
         public String getName() {
-            return "Unused";
+            return "ACCEPT_PROPOSAL";
         }
     },
     REFUSE    {
@@ -81,14 +81,14 @@ public enum LogCode {
             return "CFP";
         }
     },
-    WHITE  {
+    REJECT_PROPOSAL  {
         @Override
         public String getCode() {
-            return "\u001B[37m";
+            return "\u001B[38m";
         }
         @Override
         public String getName() {
-            return "Unused";
+            return "REJECT_PROPOSAL";
         }
     };
 

@@ -92,16 +92,49 @@ public class CleanerCoordinatorAgent extends BaseCoordinatorAgent {
         responses++;
 
         if (responses == getNumChildren()) {
-            System.out.println("PROPOSALS RECEIVED");
-            for (Proposal proposal : proposals) {
-                System.out.println(proposal + " for " + allocatingGarbage);
+            if (!proposals.isEmpty()) {
+                Proposal best = proposals.get(0);
+                for (Proposal proposal : proposals) {
+                    if (proposal.getDistance() < best.getDistance()) {
+                        best = proposal;
+                    }
+                }
+                proposals.remove(best);
+                acceptProposal(best);
+                unassignedGarbage.remove(allocatingGarbage);
+                pendingGarbage.remove(allocatingGarbage);
+                assignedGarbage.add(allocatingGarbage);
+                rejectProposals();
             }
-            // TODO manejar las proposals
+
             responses = 0;
             proposals.clear();
             allocatingGarbage = null;
             contractNetInProgress = false;
             tryAssignGarbage();
         }
+    }
+
+    private void rejectProposals() {
+        for (Proposal proposal : proposals) {
+            ACLMessage msg = new ACLMessage(ACLMessage.REJECT_PROPOSAL);
+            msg.addReceiver(proposal.getAgent());
+            send(msg);
+        }
+    }
+
+    private void acceptProposal(Proposal best) {
+        try {
+            ACLMessage msg = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
+            msg.setContentObject(allocatingGarbage);
+            msg.addReceiver(best.getAgent());
+            send(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public GarbagePosition getAllocatingGarbage() {
+        return allocatingGarbage;
     }
 }

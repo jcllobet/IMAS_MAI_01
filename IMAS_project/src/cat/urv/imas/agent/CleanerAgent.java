@@ -7,14 +7,20 @@ import cat.urv.imas.utils.GarbagePosition;
 import cat.urv.imas.utils.Move;
 import cat.urv.imas.utils.Movement;
 import cat.urv.imas.utils.Position;
+import javafx.geometry.Pos;
 
 public class CleanerAgent extends BaseWorkerAgent {
+    private static final int MAX_STUCK = 2;
     private int cleanerCapacity;
     private GarbagePosition assigned;
+    private int stuck;
+    private Position previous;
 
     public CleanerAgent() {
         super(AgentType.CLEANER, CellType.RECYCLING_POINT_CENTER);
         assigned = null;
+        previous = null;
+        stuck = 0;
     }
 
     public GarbagePosition getAssigned() {
@@ -43,7 +49,22 @@ public class CleanerAgent extends BaseWorkerAgent {
     @Override
     public void computeNewPos() {
         Position newPos = null;
-        newPos = Movement.random(getPosition(), Move.getRandom());
+
+        if (getPrevious() != null && getPrevious().equals(getPosition())) {
+            stuck++;
+        }
+
+        if (assigned == null || stuck > MAX_STUCK) {
+            newPos = Movement.random(getPosition());
+            stuck = 0;
+        }
+        else {
+            newPos = Movement.advance(getPosition(), assigned);
+        }
         sendNewPosToParent(newPos);
+    }
+
+    public void accept(GarbagePosition garbage) {
+        assigned = garbage;
     }
 }
