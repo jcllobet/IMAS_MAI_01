@@ -27,13 +27,16 @@ import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.gui.GraphicInterface;
 import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.Movement;
 import cat.urv.imas.utils.MovementMsg;
+import cat.urv.imas.utils.Position;
 import jade.core.*;
 import jade.lang.acl.ACLMessage;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -246,24 +249,64 @@ public class SystemAgent extends BaseCoordinatorAgent {
 
     public void updateMap(List<MovementMsg> movements) {
         Cell[][] map = getGame().getMap();
-        for (MovementMsg msg : movements) {
-            try {
-                PathCell cellFrom = (PathCell) map[msg.getFrom().getRow()][msg.getFrom().getColumn()];
+        List<MovementMsg> newMovements = new ArrayList<>();
+        List<MovementMsg> oldMovements = new ArrayList<>();
+        oldMovements.addAll(movements);
 
-                Cell cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()];
-                if (cellTo.getCellType().equals(CellType.PATH)) {
-                    InfoAgent iAgent = cellFrom.getAgents().getFirst();
-                    ((PathCell)cellTo).addAgent(iAgent);
-                    cellFrom.removeAgent(iAgent);
+        // Victor sabe como va esto
+        for (MovementMsg msg : movements) {
+            Cell cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()];
+            boolean alreadyOnMovements = false;
+            boolean alreadyOnNewMovements = false;
+            boolean isNotWall = cellTo.getCellType().equals(CellType.PATH);
+
+            for (MovementMsg msg1 : oldMovements) {
+                if (msg1.getFrom().equals(msg.getTo())) {
+                    alreadyOnMovements = true;
+                    break;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
 
+            for (MovementMsg msg1 : newMovements) {
+                if (msg1.getTo().equals(msg.getTo())) {
+                    alreadyOnNewMovements = true;
+                    break;
+                }
+            }
+
+            if (!alreadyOnMovements && !alreadyOnNewMovements && isNotWall) {
+                newMovements.add(msg);
+                oldMovements.remove(msg);
+            }
         }
+
+        for (MovementMsg msg : newMovements) {
+            move(msg);
+        }
+
         updateGUI();
         ACLMessage updateMsg = new ACLMessage(ACLMessage.INFORM);
         updateMsg.setContent(MessageContent.MAP_UPDATED);
         informToAllChildren(updateMsg);
+    }
+
+    private void move(MovementMsg msg) {
+        Cell[][] map = getGame().getMap();
+
+        try {
+            PathCell cellFrom = (PathCell) map[msg.getFrom().getRow()][msg.getFrom().getColumn()];
+            Cell cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()];
+
+            InfoAgent iAgent = cellFrom.getAgents().getFirst();
+            ((PathCell) cellTo).addAgent(iAgent);
+            cellFrom.removeAgent(iAgent);
+
+        } catch (Exception e) {
+            System.out.println(msg);
+            e.printStackTrace();
+            for (int i = 0; i < 10; ++i) {
+                System.out.println("aa");
+            }
+        }
     }
 }

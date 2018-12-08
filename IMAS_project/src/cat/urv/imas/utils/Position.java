@@ -57,6 +57,17 @@ public class Position implements Serializable,Comparable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Position))
+            return false;
+
+        Position other = (Position)obj;
+        return getRow() == other.getRow() && getColumn() == other.getColumn();
+    }
+
+    @Override
     public int compareTo(Object o) {
         if (o == null)
             return -1;
