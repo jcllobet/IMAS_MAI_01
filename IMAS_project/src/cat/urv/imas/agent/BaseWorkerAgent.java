@@ -102,7 +102,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     }
 
     protected void sendNewPosToParent(Position newPos) {
-        ACLMessage msg = new InformMsg(MessageContent.NEW_POS, ACLMessage.INFORM);
+        ACLMessage msg = new InformMsg(MessageContent.NEW_POS);
         msg.addReceiver(getParent());
         try {
             msg.setContentObject(new MovementMsg(position, newPos, getType()));

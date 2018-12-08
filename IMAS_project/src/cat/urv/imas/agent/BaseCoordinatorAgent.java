@@ -28,7 +28,7 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
         this.mapUpdated = false;
         this.movements = new ArrayList<>();
         this.movementMsgCount = 0;
-        this.informNewPosMsg = new InformMsg(MessageContent.NEW_POS, ACLMessage.INFORM);
+        this.informNewPosMsg = new InformMsg(MessageContent.NEW_POS);
     }
 
     public void setGame(GameSettings game) {
@@ -56,7 +56,7 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
     }
 
     public void sendMap(AID sender) {
-        ACLMessage sendMapMsg = new InformMsg(MessageContent.NEW_MAP, ACLMessage.INFORM);
+        ACLMessage sendMapMsg = new InformMsg(MessageContent.NEW_MAP);
         sendMapMsg.addReceiver(sender);
 
         try {

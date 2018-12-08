@@ -6,8 +6,8 @@ import jade.lang.acl.ACLMessage;
 public class InformMsg extends ACLMessage {
     String informType;
 
-    public InformMsg(String informType, int performative) {
-        super(performative);
+    public InformMsg(String informType) {
+        super(ACLMessage.INFORM);
         this.informType = informType;
     }
 

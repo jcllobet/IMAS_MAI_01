@@ -101,8 +101,7 @@ public abstract class BaseAgent extends Agent {
     }
 
     private void sendChildRequestToParent() {
-        ACLMessage requestMapMsg = generateInformMsg(ACLMessage.INFORM,
-                                                    parent,
+        ACLMessage requestMapMsg = generateInformMsg(parent,
                                                     FIPANames.InteractionProtocol.FIPA_REQUEST,
                                                     MessageContent.CHILD_REQUEST);
         send(requestMapMsg);
@@ -189,8 +188,8 @@ public abstract class BaseAgent extends Agent {
         return msg;
     }
 
-    public InformMsg generateInformMsg(int performative, AID receiver, String protocol, String content) {
-        InformMsg msg = new InformMsg(content, performative);
+    public InformMsg generateInformMsg(AID receiver, String protocol, String content) {
+        InformMsg msg = new InformMsg(content);
         msg.clearAllReceiver();
         msg.addReceiver(receiver);
         msg.setProtocol(protocol);

@@ -282,7 +282,7 @@ public class SystemAgent extends BaseCoordinatorAgent {
         }
 
         updateGUI();
-        ACLMessage updateMsg = new InformMsg(MessageContent.MAP_UPDATED, ACLMessage.INFORM);
+        ACLMessage updateMsg = new InformMsg(MessageContent.MAP_UPDATED);
         informToAllChildren(updateMsg);
     }
 
@@ -298,11 +298,7 @@ public class SystemAgent extends BaseCoordinatorAgent {
             cellFrom.removeAgent(iAgent);
 
         } catch (Exception e) {
-            System.out.println(msg);
             e.printStackTrace();
-            for (int i = 0; i < 10; ++i) {
-                System.out.println("aa");
-            }
         }
     }
 }
