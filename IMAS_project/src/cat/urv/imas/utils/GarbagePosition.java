@@ -20,8 +20,27 @@ public class GarbagePosition extends Position implements Serializable {
         return type;
     }
 
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Position))
+            return false;
+
+        GarbagePosition other = (GarbagePosition)obj;
+        return getRow() == other.getRow() && getColumn() == other.getColumn() && type.equals(other.getType());
+    }
+
     @Override
     public String toString() {
-        return type.getShortString() + ": " + super.toString();
+        return type.getShortString() + "/" + amount + ":" + super.toString();
     }
 }

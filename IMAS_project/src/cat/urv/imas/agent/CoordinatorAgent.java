@@ -84,5 +84,27 @@ public class CoordinatorAgent extends BaseCoordinatorAgent {
 
     public AID getCleanerCoordinator() {
         return cleanerCoordinator;
-    }    
+    }
+
+    public void addGarbage(List<GarbagePosition> garbages) {
+        for (GarbagePosition newGarbage : garbages) {
+            boolean alreadyFound = false;
+
+            for (GarbagePosition knownGarbage : locatedGarbage) {
+                if (knownGarbage.equals(newGarbage)) {
+                    knownGarbage.setAmount(newGarbage.getAmount());
+                    alreadyFound = true;
+                }
+            }
+
+            if (!alreadyFound) {
+                locatedGarbage.add(newGarbage);
+            }
+        }
+        System.out.print("TRASH: ");
+        for (GarbagePosition garbage : locatedGarbage) {
+            System.out.print(garbage + ", ");
+        }
+        System.out.println();
+    }
 }

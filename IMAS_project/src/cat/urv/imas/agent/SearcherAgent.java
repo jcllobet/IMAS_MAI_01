@@ -65,9 +65,9 @@ public class SearcherAgent extends BaseWorkerAgent {
             }
         }
 
-        //if (!locatedGarbage.isEmpty()) {
-        //    sendGarbageListToParent(locatedGarbage);
-        //}
+        if (!locatedGarbage.isEmpty()) {
+            sendGarbageListToParent(locatedGarbage);
+        }
     }
 
     @Override

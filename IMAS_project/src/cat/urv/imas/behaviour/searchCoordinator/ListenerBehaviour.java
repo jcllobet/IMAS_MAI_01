@@ -15,6 +15,7 @@ import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.MovementMsg;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+import sun.plugin2.message.Message;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,12 +37,11 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavior {
         SearcherCoordinatorAgent agent = (SearcherCoordinatorAgent) getBaseAgent();
 
         try {
-            /*if (msg.getContentObject() instanceof GarbagePosition[]) {
-                    List<GarbagePosition> garbagePositions = Arrays.asList((GarbagePosition[])msg.getContentObject());
-                    agent.onNewGarbage(garbagePositions);
+            if (msg.getType().equals(MessageContent.NEW_GARBAGE)) {
+                GarbagePosition[] garbage = (GarbagePosition[])msg.getContentObject();
+                agent.sendGarbageListToParent(Arrays.asList(garbage));
             }
-            else */
-            if (msg.getType().equals(MessageContent.MAP_UPDATED)) {
+            else if (msg.getType().equals(MessageContent.MAP_UPDATED)) {
                 agent.informToAllChildren(msg);
             }
             else if (msg.getType().equals(MessageContent.NEW_MAP)){ // Map received from parent
