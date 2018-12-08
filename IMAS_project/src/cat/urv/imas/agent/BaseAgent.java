@@ -144,7 +144,7 @@ public abstract class BaseAgent extends Agent {
 
     public void log(LogCode logCode, String str) {
         //if (logCode != LogCode.REFUSE && !SHOW_REFUSE) {
-            System.out.printf("[%-24s]: " + logCode.getCode() + "[%-7s]" + LogCode.RESET.getCode() + ": %s\n", getLocalName(), logCode.getName(), str);
+           // System.out.printf("[%-24s]: " + logCode.getCode() + "[%-7s]" + LogCode.RESET.getCode() + ": %s\n", getLocalName(), logCode.getName(), str);
         //}
     }
     

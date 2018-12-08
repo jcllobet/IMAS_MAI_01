@@ -2,6 +2,7 @@ package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.cleanerCoordinator.ListenerBehaviour;
 import cat.urv.imas.map.Cell;
+import cat.urv.imas.map.FieldCell;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.utils.GarbagePosition;
 
@@ -136,5 +137,16 @@ public class CleanerCoordinatorAgent extends BaseCoordinatorAgent {
 
     public GarbagePosition getAllocatingGarbage() {
         return allocatingGarbage;
+    }
+
+    public void removedGarbage(GarbagePosition garbage) {
+        Cell[][] map = getGame().getMap();
+
+        // Remove waste from map
+        FieldCell field = (FieldCell)map[garbage.getRow()][garbage.getColumn()];
+        field.removeWaste();
+
+        // Remove waste from pending
+        assignedGarbage.remove(garbage);
     }
 }
