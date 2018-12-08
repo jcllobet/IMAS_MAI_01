@@ -31,4 +31,6 @@ public class MessageContent {
     public static final String NEW_POS = "New pos";
     public static final String MAP_UPDATED = "Map updated";
     public static final String CHILD_REQUEST = "Child request";
+    public static final String NEW_GARBAGE = "New garbage" ;
+    public static final String NEW_MAP = "New map";
 }

@@ -2,9 +2,11 @@ package cat.urv.imas.behaviour;
 
 import cat.urv.imas.agent.BaseAgent;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.LogCode;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import sun.plugin2.message.Message;
 
 public class BaseListenerBehavior extends CyclicBehaviour {
     public static final Integer RETRY_TIME_MS = 100;
@@ -43,7 +45,7 @@ public class BaseListenerBehavior extends CyclicBehaviour {
         }
     }
 
-    protected void onInform() {}
+    protected void onInform(InformMsg msg) {}
 
     @Override
     public void action() {
@@ -66,12 +68,13 @@ public class BaseListenerBehavior extends CyclicBehaviour {
                     onRefuse();
                     break;
                 case ACLMessage.INFORM:
+                    InformMsg infMsg = (InformMsg)msg;
                     getBaseAgent().log(LogCode.INFORM, "from " + msg.getSender().getLocalName());
-                    if (msg.getContent().equals(MessageContent.CHILD_REQUEST)) {
+                    if (infMsg.getType().equals(MessageContent.CHILD_REQUEST)) {
                         getBaseAgent().addChild(msg.getSender());
                         getBaseAgent().log("Added " + msg.getSender().getLocalName() + " as child");
                     } else {
-                        onInform();
+                        onInform(infMsg);
                     }
                     break;
                 default:

@@ -36,10 +36,7 @@ public class CleanerAgent extends BaseWorkerAgent {
     @Override
     public void computeNewPos() {
         Position newPos = null;
-        //do {
-            newPos = Movement.random(getPosition(), Move.getRandom());
-        //} while (!isValidPos(newPos));
-
+        newPos = Movement.random(getPosition(), Move.getRandom());
         sendNewPosToParent(newPos);
     }
 }

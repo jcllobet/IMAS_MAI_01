@@ -9,6 +9,7 @@ import cat.urv.imas.behaviour.BaseListenerBehavior;
 import cat.urv.imas.agent.SearcherAgent;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.InformMsg;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import java.util.logging.Level;
@@ -25,20 +26,18 @@ public class ListenerBehaviour extends BaseListenerBehavior {
     }
 
     @Override
-    protected void onInform() {
+    protected void onInform(InformMsg msg) {
         SearcherAgent agent = (SearcherAgent) getBaseAgent();
-        ACLMessage msg = getMsg();
-        if (msg.getContent().equals(MessageContent.MAP_UPDATED)) {
-            agent.sendMapRequestToParent();
-        } else {
-            try {
-                if (msg.getContentObject() instanceof GameSettings) {
-                    agent.setParameters((GameSettings) msg.getContentObject());
-                    agent.computeNewPos();
-                }
-            } catch (UnreadableException ex) {
-                Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
+
+        try {
+            if (msg.getType().equals(MessageContent.MAP_UPDATED)) {
+                agent.sendMapRequestToParent();
+            } else if (msg.getType().equals(MessageContent.NEW_MAP)) {
+                agent.setParameters((GameSettings) msg.getContentObject());
+                agent.computeNewPos();
             }
+        } catch (UnreadableException ex) {
+            Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

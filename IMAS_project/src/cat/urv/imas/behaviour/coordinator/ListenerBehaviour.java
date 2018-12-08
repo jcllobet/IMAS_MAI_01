@@ -9,6 +9,8 @@ import cat.urv.imas.agent.CoordinatorAgent;
 import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavior;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.GarbagePosition;
+import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.MovementMsg;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -29,27 +31,30 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavior {
     }
 
     @Override
-    protected void onInform() {
+    protected void onInform(InformMsg msg) {
         CoordinatorAgent agent = (CoordinatorAgent) getBaseAgent();
-        ACLMessage msg = getMsg();
-        if (msg.getContent().equals(MessageContent.MAP_UPDATED)) {
-            agent.informToAllChildren(msg);
-        } else if (msg.getSender().equals(agent.getParent())){
-            try {
+
+        try {
+/*            if (msg.getContentObject() instanceof GarbagePosition[]) {
+                List<GarbagePosition> garbagePositions = Arrays.asList((GarbagePosition[])msg.getContentObject());
+                agent.onNewGarbage(garbagePositions);
+            }
+            else*/
+            if (msg.getType().equals(MessageContent.MAP_UPDATED)) {
+                agent.informToAllChildren(msg);
+            }
+            else if (msg.getType().equals(MessageContent.NEW_MAP)){
                 agent.setGame((GameSettings) msg.getContentObject());
                 agent.log("Map received");
-            } catch (UnreadableException ex) {
-                Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
-            try {
+            else if (msg.getType().equals(MessageContent.NEW_POS)) {
                 List<MovementMsg> movements = Arrays.asList((MovementMsg[])msg.getContentObject());
                 agent.addMovementsMsg(movements);
                 agent.incrementMovementMsgCount();
                 agent.sendMovements();
-            } catch (UnreadableException ex) {
-                Logger.getLogger(cat.urv.imas.behaviour.searchCoordinator.ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (UnreadableException ex) {
+            Logger.getLogger(cat.urv.imas.behaviour.searchCoordinator.ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

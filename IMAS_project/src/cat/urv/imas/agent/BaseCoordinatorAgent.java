@@ -1,7 +1,10 @@
 package cat.urv.imas.agent;
 
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.GarbagePosition;
+import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.MovementMsg;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
@@ -25,7 +28,7 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
         this.mapUpdated = false;
         this.movements = new ArrayList<>();
         this.movementMsgCount = 0;
-        this.informNewPosMsg = new ACLMessage(ACLMessage.INFORM);
+        this.informNewPosMsg = new InformMsg(MessageContent.NEW_POS, ACLMessage.INFORM);
     }
 
     public void setGame(GameSettings game) {
@@ -53,7 +56,7 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
     }
 
     public void sendMap(AID sender) {
-        ACLMessage sendMapMsg = new ACLMessage(ACLMessage.INFORM);
+        ACLMessage sendMapMsg = new InformMsg(MessageContent.NEW_MAP, ACLMessage.INFORM);
         sendMapMsg.addReceiver(sender);
 
         try {
@@ -107,4 +110,6 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
     public void incrementMovementMsgCount() {
         movementMsgCount++;
     }
+
+    public void onNewGarbage(List<GarbagePosition> garbagePositions) {}
 }

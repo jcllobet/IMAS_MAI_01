@@ -5,7 +5,9 @@ import cat.urv.imas.map.CellType;
 import cat.urv.imas.map.PathCell;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.InfoAgent;
+import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
+import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.MovementMsg;
 import cat.urv.imas.utils.Position;
 import jade.lang.acl.ACLMessage;
@@ -100,7 +102,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     }
 
     protected void sendNewPosToParent(Position newPos) {
-        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+        ACLMessage msg = new InformMsg(MessageContent.NEW_POS, ACLMessage.INFORM);
         msg.addReceiver(getParent());
         try {
             msg.setContentObject(new MovementMsg(position, newPos, getType()));

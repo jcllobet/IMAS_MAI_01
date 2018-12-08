@@ -7,8 +7,10 @@ public enum Move {
 
     private static final Random RANDOM = new Random();
     public static Move getRandom() {
-        //int x = RANDOM.nextInt(Move.class.getEnumConstants().length);
-        //return Move.class.getEnumConstants()[x];
-        return Move.LEFT;
+        double random = RANDOM.nextDouble();
+        if (random < 0.25) return Move.UP;
+        if (random < 0.50) return Move.DOWN;
+        if (random < 0.75) return Move.LEFT;
+        return Move.RIGHT;
     }
 }

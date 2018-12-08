@@ -17,7 +17,9 @@
  */
 package cat.urv.imas.agent;
 
+import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.GarbagePosition;
 import cat.urv.imas.utils.LogCode;
 import jade.core.AID;
 import jade.core.Agent;
@@ -28,6 +30,7 @@ import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,6 +87,10 @@ public abstract class BaseAgent extends Agent {
         children.add(child);
     }
 
+    public void sendGarbageListToParent(List<GarbagePosition> locatedGarbage) {
+        // TODO
+    }
+
     public void sendMapRequestToParent() {
         ACLMessage requestMapMsg = generateMsg(ACLMessage.REQUEST,
                                                 parent,
@@ -94,10 +101,10 @@ public abstract class BaseAgent extends Agent {
     }
 
     private void sendChildRequestToParent() {
-        ACLMessage requestMapMsg = generateMsg(ACLMessage.INFORM,
-                                                parent,
-                                                FIPANames.InteractionProtocol.FIPA_REQUEST,
-                                                MessageContent.CHILD_REQUEST);
+        ACLMessage requestMapMsg = generateInformMsg(ACLMessage.INFORM,
+                                                    parent,
+                                                    FIPANames.InteractionProtocol.FIPA_REQUEST,
+                                                    MessageContent.CHILD_REQUEST);
         send(requestMapMsg);
     }
 
@@ -179,6 +186,14 @@ public abstract class BaseAgent extends Agent {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return msg;
+    }
+
+    public InformMsg generateInformMsg(int performative, AID receiver, String protocol, String content) {
+        InformMsg msg = new InformMsg(content, performative);
+        msg.clearAllReceiver();
+        msg.addReceiver(receiver);
+        msg.setProtocol(protocol);
         return msg;
     }
 

@@ -19,7 +19,11 @@ package cat.urv.imas.agent;
 
 import cat.urv.imas.behaviour.coordinator.ListenerBehaviour;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.utils.GarbagePosition;
 import jade.core.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The main Coordinator agent. 
@@ -30,12 +34,14 @@ public class CoordinatorAgent extends BaseCoordinatorAgent {
 
     private AID searcherCoordinator;
     private AID cleanerCoordinator;
+    private List<GarbagePosition> locatedGarbage;
 
     /**
      * Builds the coordinator agent.
      */
     public CoordinatorAgent() {
         super(AgentType.COORDINATOR);
+        this.locatedGarbage = new ArrayList<>();
     }
 
     /**
@@ -60,6 +66,11 @@ public class CoordinatorAgent extends BaseCoordinatorAgent {
         this.informNewPosMsg.addReceiver(getParent());
         
         this.addBehaviour(new ListenerBehaviour(this));
+    }
+
+    @Override
+    public void onNewGarbage(List<GarbagePosition> garbagePositions) {
+        System.out.println("New garbage");
     }
 
     @Override

@@ -26,10 +26,7 @@ import cat.urv.imas.ontology.InitialGameSettings;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.gui.GraphicInterface;
 import cat.urv.imas.ontology.MessageContent;
-import cat.urv.imas.utils.AgentPosition;
-import cat.urv.imas.utils.Movement;
-import cat.urv.imas.utils.MovementMsg;
-import cat.urv.imas.utils.Position;
+import cat.urv.imas.utils.*;
 import jade.core.*;
 import jade.lang.acl.ACLMessage;
 import jade.wrapper.AgentController;
@@ -285,8 +282,7 @@ public class SystemAgent extends BaseCoordinatorAgent {
         }
 
         updateGUI();
-        ACLMessage updateMsg = new ACLMessage(ACLMessage.INFORM);
-        updateMsg.setContent(MessageContent.MAP_UPDATED);
+        ACLMessage updateMsg = new InformMsg(MessageContent.MAP_UPDATED, ACLMessage.INFORM);
         informToAllChildren(updateMsg);
     }
 

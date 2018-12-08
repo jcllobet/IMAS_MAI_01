@@ -8,6 +8,7 @@ package cat.urv.imas.behaviour.system;
 import cat.urv.imas.agent.SystemAgent;
 import cat.urv.imas.behaviour.BaseListenerBehavior;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.LogCode;
 import cat.urv.imas.utils.MovementMsg;
 import jade.lang.acl.ACLMessage;
@@ -53,12 +54,13 @@ public class ListenerBehaviour extends BaseListenerBehavior {
     }
 
     @Override
-    protected void onInform() {
+    protected void onInform(InformMsg msg) {
         SystemAgent agent = (SystemAgent) getBaseAgent();
-        ACLMessage msg = getMsg();
         try {
-            List<MovementMsg> movements = Arrays.asList((MovementMsg[])msg.getContentObject());
-            agent.updateMap(movements);
+            if (msg.getType().equals(MessageContent.NEW_POS)) {
+                List<MovementMsg> movements = Arrays.asList((MovementMsg[])msg.getContentObject());
+                agent.updateMap(movements);
+            }
         } catch (UnreadableException ex) {
             Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
         }
