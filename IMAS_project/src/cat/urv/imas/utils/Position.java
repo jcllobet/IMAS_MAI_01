@@ -15,6 +15,7 @@ import java.io.Serializable;
 public class Position implements Serializable,Comparable {
     private int row;
     private int column;
+    private Position parent;
     
     public Position() {
         this(0, 0);
@@ -28,6 +29,12 @@ public class Position implements Serializable,Comparable {
     public Position(int row, int column){
         this.row = row;
         this.column = column;
+    }
+
+    public Position(int row, int column, Position parent){
+        this.row = row;
+        this.column = column;
+        this.parent = parent;
     }
 
     public void set(int row, int col) {
@@ -80,5 +87,10 @@ public class Position implements Serializable,Comparable {
             return 1; // TODO
         else
             return -1;
+    }
+    
+    
+    public Position getParent() {
+        return parent;
     }
 }

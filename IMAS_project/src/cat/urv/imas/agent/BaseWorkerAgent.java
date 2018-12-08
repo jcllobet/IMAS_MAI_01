@@ -5,15 +5,15 @@ import cat.urv.imas.map.CellType;
 import cat.urv.imas.map.PathCell;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.InfoAgent;
-import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.AgentPosition;
-import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.MovementMsg;
 import cat.urv.imas.utils.Position;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,10 +38,10 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     }
 
     protected boolean isValidPos(Position pos){
-        return !(pos.getRow()    < minBounds.getRow()    ||
-                 pos.getColumn() < minBounds.getColumn() ||
-                 pos.getRow()    > maxBounds.getRow()    ||
-                 pos.getColumn() > maxBounds.getColumn()) && !walls.contains(pos);
+        return   pos.getRow()    > minBounds.getRow()    &&
+                 pos.getColumn() > minBounds.getColumn() &&
+                 pos.getRow()    < maxBounds.getRow()    &&
+                 pos.getColumn() < maxBounds.getColumn() && !walls.contains(pos);
     }
 
     protected void onNewParameters(GameSettings game) {
@@ -75,17 +75,20 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         for (Cell[] row : map) {
             for (Cell cell : row) {
                 // Is path (not a wall)
-                if (cell.getCellType().equals(CellType.PATH) && !cell.isEmpty()) {
-                    PathCell pathCell = (PathCell)cell;
-                    InfoAgent cellAgent = null;
-                    try {
-                        cellAgent = pathCell.getAgents().getFirst();
-                    } catch (Exception e) { /* Cell is empty, this should never happen  */ }
-                    if (cellAgent.getAID().equals(getAID())) {
-                        // Agent found
-                        position.setRow(cell.getRow());
-                        position.setColumn(cell.getCol());
-                        return true;
+                if (cell.getCellType().equals(CellType.PATH)) {
+                    if (!cell.isEmpty())
+                    {
+                        PathCell pathCell = (PathCell)cell;
+                        InfoAgent cellAgent = null;
+                        try {
+                            cellAgent = pathCell.getAgents().getFirst();
+                        } catch (Exception e) { /* Cell is empty, this should never happen  */ }
+                        if (cellAgent.getAID().equals(getAID())) {
+                            // Agent found
+                            position.setRow(cell.getRow());
+                            position.setColumn(cell.getCol());
+                            return true;
+                        }
                     }
                 }
                 // Is wall
@@ -102,7 +105,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     }
 
     protected void sendNewPosToParent(Position newPos) {
-        ACLMessage msg = new InformMsg(MessageContent.NEW_POS);
+        ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.addReceiver(getParent());
         try {
             msg.setContentObject(new MovementMsg(position, newPos, getType()));
@@ -135,4 +138,49 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     public void setPointsOfInterest(List<Position> pointsOfInterest) {
         this.pointsOfInterest = pointsOfInterest;
     }
+    
+    public List<Position> GetPath(Position endPosition) {
+        List<Position> visitedPoints = new ArrayList();
+        LinkedList<Position> nextToVisit = new LinkedList<>();
+        Position start = this.position;
+        nextToVisit.add(start);
+        
+        while (!nextToVisit.isEmpty()) {
+            Position cur = nextToVisit.remove();
+            
+            if (!isValidPos(cur) || visitedPoints.contains(cur)) {
+                continue;
+            }
+            
+            if (cur.equals(endPosition)) {
+                return backtrackPath(cur);
+            }
+
+            for (int[] direction : DIRECTIONS) {
+                Position coordinate = new Position(cur.getRow() + direction[0], cur.getColumn() + direction[1], cur);
+                
+                nextToVisit.add(coordinate);
+
+            }
+            
+            visitedPoints.add(cur);
+        }
+        return Collections.emptyList();
+    }
+    
+    private List<Position> backtrackPath(
+      Position cur) {
+        List<Position> path = new ArrayList<>();
+        Position iter = cur;
+        
+        while (iter != null) {
+            path.add(iter);
+            iter = iter.getParent();
+        }
+
+        Collections.reverse(path);
+        return path;
+    }
+    
+    private static int[][] DIRECTIONS  = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
 }
