@@ -110,6 +110,4 @@ public abstract class BaseCoordinatorAgent extends BaseAgent {
     public void incrementMovementMsgCount() {
         movementMsgCount++;
     }
-
-    public void onNewGarbage(List<GarbagePosition> garbagePositions) {}
 }

@@ -6,12 +6,18 @@
 package cat.urv.imas.behaviour.cleaner;
 
 import cat.urv.imas.agent.CleanerAgent;
+import cat.urv.imas.agent.CleanerCoordinatorAgent;
+import cat.urv.imas.agent.UtilsAgents;
 import cat.urv.imas.behaviour.BaseListenerBehavior;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.GarbagePosition;
 import cat.urv.imas.utils.InformMsg;
+import cat.urv.imas.utils.LogCode;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +29,28 @@ public class ListenerBehaviour extends BaseListenerBehavior {
     
     public ListenerBehaviour(CleanerAgent agent){
         super(agent);
+    }
+
+    @Override
+    protected void onCFP() {
+        CleanerAgent agent = (CleanerAgent) getBaseAgent();
+        ACLMessage msg = getMsg();
+        try {
+            GarbagePosition garbage = (GarbagePosition)msg.getContentObject();
+            ACLMessage response = msg.createReply();
+
+            if (agent.getAssigned() != null) { // TODO: And not enough capacity
+                getBaseAgent().log(LogCode.CFP, "CFP for " + garbage + " from " + msg.getSender().getLocalName() + " but already assigned");
+                response.setPerformative(ACLMessage.REFUSE);
+            } else {
+                getBaseAgent().log(LogCode.CFP, "CFP for " + garbage + " from " + msg.getSender().getLocalName());
+                response.setPerformative(ACLMessage.PROPOSE);
+                response.setContentObject(UtilsAgents.manhattanDist(agent.getPosition(), garbage));
+            }
+            agent.send(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

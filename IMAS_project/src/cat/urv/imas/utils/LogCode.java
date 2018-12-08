@@ -41,16 +41,6 @@ public enum LogCode {
             return "AGREE";
         }
     },
-    YELLOW {
-        @Override
-        public String getCode() {
-            return "\u001B[33m";
-        }
-        @Override
-        public String getName() {
-            return "Unused";
-        }
-    },
     INFORM   {
         @Override
         public String getCode() {
@@ -81,6 +71,16 @@ public enum LogCode {
             return "PROPOSE";
         }
     },
+    CFP   {
+        @Override
+        public String getCode() {
+            return "\u001B[33m";
+        }
+        @Override
+        public String getName() {
+            return "CFP";
+        }
+    },
     WHITE  {
         @Override
         public String getCode() {
@@ -91,7 +91,6 @@ public enum LogCode {
             return "Unused";
         }
     };
-
 
     public abstract String getCode();
     public abstract String getName();

@@ -88,7 +88,11 @@ public abstract class BaseAgent extends Agent {
     }
 
     public void sendGarbageListToParent(List<GarbagePosition> locatedGarbage) {
-        ACLMessage msg = generateInformMsg(parent, FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.NEW_GARBAGE);
+        sendGarbageListTo(locatedGarbage, parent);
+    }
+
+    public void sendGarbageListTo(List<GarbagePosition> locatedGarbage, AID receiver) {
+        ACLMessage msg = generateInformMsg(receiver, FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.NEW_GARBAGE);
         try {
             msg.setContentObject(locatedGarbage.toArray(new GarbagePosition[locatedGarbage.size()]));
         } catch (IOException e) {
