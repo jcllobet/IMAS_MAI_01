@@ -5,14 +5,17 @@
  */
 package cat.urv.imas.behaviour.cleanerCoordinator;
 
+import cat.urv.imas.agent.BaseAgent;
 import cat.urv.imas.agent.CleanerCoordinatorAgent;
 import cat.urv.imas.behaviour.BaseCoordinatorListenerBehavior;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
-import cat.urv.imas.utils.InformMsg;
-import cat.urv.imas.utils.MovementMsg;
+import cat.urv.imas.utils.*;
 import jade.lang.acl.ACLMessage;
+import jade.core.AID;
 import jade.lang.acl.UnreadableException;
+
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,11 +30,41 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavior {
     }
 
     @Override
+    protected void onPropose() {
+        CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) getBaseAgent();
+        ACLMessage msg = getMsg();
+
+        try {
+            Integer distance = (Integer)msg.getContentObject();
+            agent.log(LogCode.PROPOSE, "from " + msg.getSender().getLocalName() + " with distance: " + distance);
+            agent.acceptedProposal(new Proposal(msg.getSender(), distance));
+        } catch (UnreadableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onRefuse() {
+        CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) getBaseAgent();
+        ACLMessage msg = getMsg();
+
+        if (msg.getSender().equals(agent.getParent())) { // Refuse from parent (Map not updated)
+            super.onRefuse();
+        } else { // Refuse from child (Proposal rejected)
+            agent.responseReceived();
+        }
+    }
+
+    @Override
     protected void onInform(InformMsg msg) {
         CleanerCoordinatorAgent agent = (CleanerCoordinatorAgent) getBaseAgent();
 
         try {
-            if (msg.getType().equals(MessageContent.MAP_UPDATED)) {
+            if (msg.getType().equals(MessageContent.NEW_GARBAGE)) {
+                GarbagePosition[] garbage = (GarbagePosition[])msg.getContentObject();
+                agent.onNewGarbage(Arrays.asList(garbage));
+            }
+            else if (msg.getType().equals(MessageContent.MAP_UPDATED)) {
                 agent.informToAllChildren(msg);
             }
             else if (msg.getType().equals(MessageContent.NEW_MAP)){ // Map received from parent

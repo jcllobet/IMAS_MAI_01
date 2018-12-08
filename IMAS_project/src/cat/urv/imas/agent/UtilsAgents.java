@@ -18,6 +18,7 @@
 package cat.urv.imas.agent;
 
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.Position;
 import jade.core.Agent;
 import jade.core.AID;
 import jade.core.Profile;
@@ -68,6 +69,10 @@ public class UtilsAgents {
     public static AID searchAgent(Agent parent, ServiceDescription sd) {
         List<AID> result = searchAgents(parent, sd, null);
         return (result.size() == 0) ? null : result.get(0);
+    }
+
+    public static Integer manhattanDist(Position A, Position B) {
+        return Math.abs(A.getRow() - B.getRow()) + Math.abs(A.getColumn() - B.getColumn());
     }
 
     public static List<AID> searchAgentsType(Agent parent, AgentType type, int num) {

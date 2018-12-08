@@ -26,11 +26,6 @@ public class SearcherCoordinatorAgent extends BaseCoordinatorAgent {
     }
 
     @Override
-    public void onNewGarbage(List<GarbagePosition> garbagePositions) {
-        //sendGarbageListToParent(garbagePositions);
-    }
-
-    @Override
     public void setGame(GameSettings game) {
         super.setGame(game);
         // ...

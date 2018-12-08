@@ -20,6 +20,10 @@ public class BaseListenerBehavior extends CyclicBehaviour {
         this.baseAgent = null;
     }
 
+    protected void onCFP() {
+        getBaseAgent().log(LogCode.CFP, "from " + msg.getSender().getLocalName());
+    }
+
     protected void onRequest() {
         getBaseAgent().log(LogCode.REQUEST, "from " + msg.getSender().getLocalName());
     }
@@ -63,6 +67,9 @@ public class BaseListenerBehavior extends CyclicBehaviour {
                     break;
                 case ACLMessage.AGREE:
                     onAgree();
+                    break;
+                case ACLMessage.CFP:
+                    onCFP();
                     break;
                 case ACLMessage.REFUSE:
                     onRefuse();
