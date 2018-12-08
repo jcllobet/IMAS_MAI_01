@@ -19,12 +19,10 @@ public class CleanerAgent extends BaseWorkerAgent {
     private int cleanerCapacity;
     private GarbagePosition assigned;
     private int stuck;
-    private Position previous;
 
     public CleanerAgent() {
         super(AgentType.CLEANER, CellType.RECYCLING_POINT_CENTER);
         assigned = null;
-        previous = null;
         stuck = 0;
     }
 
@@ -58,7 +56,7 @@ public class CleanerAgent extends BaseWorkerAgent {
             int dx = Math.abs(getPosition().getColumn() - assigned.getColumn());
 
             try {
-                if (dx <= 1 || dy <= 1) {
+                if (dx <= 1 && dy <= 1) {
                     ACLMessage msg = generateInformMsg(getParent(), FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.REMOVED_GARBAGE);
                     msg.setContentObject(assigned);
                     assigned = null;

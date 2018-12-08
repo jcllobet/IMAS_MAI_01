@@ -64,7 +64,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         Cell[][] map = game.getMap();
         assert(map[0].length > 0);
 
-        previous = position;
+        previous = (position == null) ? null : new Position(position);
         if (position == null) {
             position = new Position();
             findInMap(map); // Returns false if not found
