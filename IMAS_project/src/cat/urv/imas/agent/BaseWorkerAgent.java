@@ -80,7 +80,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     }
 
     private boolean findInMap(Cell[][] map) {
-
+        boolean agentFound = false;
         for (Cell[] row : map) {
             for (Cell cell : row) {
                 // Is path (not a wall)
@@ -96,7 +96,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
                             // Agent found
                             position.setRow(cell.getRow());
                             position.setColumn(cell.getCol());
-                            return true;
+                            agentFound = true;
                         }
                     }
                 }
@@ -110,7 +110,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
                 }
             }
         }
-        return false;
+        return agentFound;
     }
 
     protected void sendNewPosToParent(Position newPos) {
@@ -150,6 +150,30 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     public List<Position> GetPath(Position endPosition) {
         List<Position> visitedPoints = new ArrayList<>();
         LinkedList<Position> nextToVisit = new LinkedList<>();
+        int[][] manhattan_dir  = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 }};
+
+        int[][] allsides_dir  = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 },  //Sides
+                                  { 1, 1 }, { 1, -1 }, { -1, -1 }, { -1, 1 }}; //Diagonal
+
+        //Finding the nearest path cell
+        //in case the destination is a wall and a corner
+        if(this.walls.contains(endPosition)){
+            boolean findNearPath = false;
+
+            for (int[] direction : allsides_dir) {
+                Position newEndPos = new Position(endPosition.getRow() + direction[0], endPosition.getColumn() + direction[1]);
+
+                if(isValidPos(newEndPos)){
+                    endPosition = newEndPos;
+                    findNearPath = true;
+                    break;
+                }
+            }
+
+            if (!findNearPath)
+                return Collections.emptyList();
+        }
+
         Position start = this.position;
         nextToVisit.add(start);
 
@@ -164,7 +188,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
                 return backtrackPath(cur);
             }
 
-            for (int[] direction : DIRECTIONS) {
+            for (int[] direction : manhattan_dir) {
                 Position coordinate = new Position(cur.getRow() + direction[0], cur.getColumn() + direction[1], cur);
 
                 nextToVisit.add(coordinate);
@@ -189,6 +213,4 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         Collections.reverse(path);
         return path;
     }
-
-    private static int[][] DIRECTIONS  = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } }; // TODO use MOVE class
 }

@@ -13,6 +13,7 @@ import jade.lang.acl.ACLMessage;
 import javafx.geometry.Pos;
 
 import java.io.IOException;
+import java.util.List;
 
 public class CleanerAgent extends BaseWorkerAgent {
     private static final int MAX_STUCK = 2;
@@ -81,8 +82,22 @@ public class CleanerAgent extends BaseWorkerAgent {
             stuck = 0;
         }
         else {
-            newPos = Movement.advance(getPosition(), assigned);
-            System.out.println("!!!!!!!!!!!!!!!!!!!" + getLocalName() + " " + getPosition() + " going to " + newPos);
+            List<Position> positions = GetPath(new Position(assigned.getRow(), assigned.getRow()));
+            if(positions.size()>0){
+                if (positions.size() == 1) //TODO: Remove it ....Assigned position is already current position
+                {
+                    newPos = positions.get(0);
+                    System.out.println("!!!!!!!!!!!!!!!!!!!" + getLocalName() + " " + getPosition() + " is already at destination " + newPos);
+                }
+                else{
+                    newPos = positions.get(1);
+                    System.out.println("!!!!!!!!!!!!!!!!!!!" + getLocalName() + " " + getPosition() + " going to " + newPos);
+                }
+
+            }
+            else{
+                System.err.println("Couldn't calculate next step for agent " + getLocalName());
+            }
         }
 
         sendNewPosToParent(newPos);
