@@ -74,14 +74,9 @@ public class PathHelper {
         }
 
         System.out.println();
-        int completed = 0;
-        int total = max * max;
         for (int i = 0; i < max; ++i) {
             for (int j = 0; j < max; ++j) {
-                if (completed++ % 10 == 0) {
-                    double percentage = completed * 100.0 / total;
-                    System.out.print("\rCalculating path ... " + completed + " of " + total + " (" + percentage + "%)");
-                }
+                percentage(i, j, max);
                 if (i != j) {
                     List<Position> path = null;
                     if (isPath[i] && isPath[j]) {
@@ -100,6 +95,31 @@ public class PathHelper {
             }
         }
         System.out.println();
+    }
+
+    private static void percentage(int i, int j, int max) {
+        final int WIDTH = 40;
+        int completed = i * max + j;
+        int total = max * max - 1;
+        if (completed % 5 == 0 || completed == 0 || completed == total) {
+            double percentage = completed * 1. / total;
+            String txt = "\rPrecalculating all paths ";
+            if (completed == 0) {
+                txt += "[" + repeat(WIDTH, " ") + "]";
+            } else if (completed == total) {
+                txt += "[\033[6;30;42m" + repeat(WIDTH, " ") + "\033[0m]";
+            } else {
+                String lines = repeat((int) (WIDTH * percentage), " ");
+                String spaces = repeat(WIDTH - (int) (WIDTH * percentage), " ");
+                txt += "[\033[6;30;42m" + lines + "\033[0m" + spaces + "]";
+            }
+            txt += " ( " + ((int)(percentage * 100.)) + "% )    ";
+            System.out.print(txt);
+        }
+    }
+
+    private static String repeat(int count, String with) {
+        return new String(new char[count]).replace("\0", with);
     }
 
     private static int getCol(int index, int width) {
