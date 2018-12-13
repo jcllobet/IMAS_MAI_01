@@ -137,27 +137,33 @@ public class SearcherAgent extends BaseWorkerAgent {
 
         Position newPos = null;
 
-        // !isBatteryNeeded()
-        if (nextMove != null) {
+        Position nearestRecharge = isBatteryNeeded();
+        if (nearestRecharge != null) {
+            newPos = PathHelper.nextPath(getPosition(), nearestRecharge);
+        }
+        else if (nextMove != null) {
             newPos = Movement.givenMove(nextMove, getPosition());
-        } else {
+        }
+        else {
             newPos = Movement.random(getPosition());
         }
 
         sendNewPosToParent(newPos);
     }
 
-    public boolean isBatteryNeeded() {
+    public Position isBatteryNeeded() {
         Integer min = Integer.MAX_VALUE;
+        Position best = null;
 
         for (Position pos : getPointsOfInterest()) {
             Integer size = PathHelper.pathSize(getPosition(), pos);
             if (size < min) {
                 min = size;
+                best = pos;
             }
         }
 
-        return (min + ALPHA) < battery;
+        return ((min + ALPHA) < battery) ? null : best;
     }
 
     private Move detachPos(Move move) {
