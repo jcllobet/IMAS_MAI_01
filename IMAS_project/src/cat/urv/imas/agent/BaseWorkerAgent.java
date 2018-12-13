@@ -29,6 +29,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     private List<Position> walls;
     private List<Position> pointsOfInterest;
     private CellType interestType;
+    private int busy;
 
 
     public BaseWorkerAgent(AgentType type, CellType interestType) {
@@ -40,6 +41,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         this.pointsOfInterest = new ArrayList<>();
         this.maxBounds        = new Position();
         this.minBounds        = new Position();
+        this.busy             = 0;
     }
 
     protected void onNewParameters(GameSettings game) {
@@ -110,7 +112,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         return agentFound;
     }
 
-    protected void sendNewPosToParent(Position newPos) {
+    public void sendNewPosToParent(Position newPos) {
         ACLMessage msg = new InformMsg(MessageContent.NEW_POS);
         msg.addReceiver(getParent());
         try {
@@ -143,5 +145,17 @@ public abstract class BaseWorkerAgent extends BaseAgent {
 
     public void setPointsOfInterest(List<Position> pointsOfInterest) {
         this.pointsOfInterest = pointsOfInterest;
+    }
+
+    public void setBusy(int turns) {
+        busy = turns;
+    }
+
+    public boolean updateBusy() {
+        if (busy > 0) {
+            busy--;
+            return true;
+        }
+        return false;
     }
 }

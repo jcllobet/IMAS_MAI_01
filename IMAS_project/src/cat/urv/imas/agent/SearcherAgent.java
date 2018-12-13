@@ -6,10 +6,14 @@ import cat.urv.imas.map.CellType;
 import cat.urv.imas.map.FieldCell;
 import cat.urv.imas.map.PathCell;
 import cat.urv.imas.ontology.GameSettings;
+import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.ontology.WasteType;
 import cat.urv.imas.utils.*;
+import jade.domain.FIPANames;
+import jade.lang.acl.ACLMessage;
 import javafx.geometry.Pos;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +64,9 @@ public class SearcherAgent extends BaseWorkerAgent {
         if (battery > 0 && !getPrevious().equals(getPosition())) {
             battery--;
         }
+
     }
+
 
     protected void updateVision(GameSettings game) {
         // Obtain the 8 surrounding cells at this turn

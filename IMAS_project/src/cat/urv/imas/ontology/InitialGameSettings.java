@@ -245,7 +245,7 @@ public class InitialGameSettings extends GameSettings {
         addElements(maxInitial, maxVisible);
     }
 
-    boolean k = false;
+    boolean k = true;
     public void addElements(int maxElements, int maxVisible) {
         CellType ctype = CellType.FIELD;
         int maxCells = getNumberOfCellsOfType(ctype);
