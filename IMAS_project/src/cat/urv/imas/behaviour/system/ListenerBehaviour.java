@@ -8,6 +8,7 @@ package cat.urv.imas.behaviour.system;
 import cat.urv.imas.agent.SystemAgent;
 import cat.urv.imas.behaviour.BaseListenerBehavior;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.utils.GarbagePosition;
 import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.LogCode;
 import cat.urv.imas.utils.MovementMsg;
@@ -57,7 +58,11 @@ public class ListenerBehaviour extends BaseListenerBehavior {
     protected void onInform(InformMsg msg) {
         SystemAgent agent = (SystemAgent) getBaseAgent();
         try {
-            if (msg.getType().equals(MessageContent.NEW_POS)) {
+            if (msg.getType().equals(MessageContent.REMOVED_GARBAGE)) {
+                GarbagePosition garbage = (GarbagePosition)msg.getContentObject();
+                agent.removedGarbage(garbage);
+            }
+            else if (msg.getType().equals(MessageContent.NEW_POS)) {
                 List<MovementMsg> movements = Arrays.asList((MovementMsg[])msg.getContentObject());
                 agent.updateMap(movements);
             }

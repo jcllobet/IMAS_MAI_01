@@ -20,6 +20,7 @@ package cat.urv.imas.agent;
 import cat.urv.imas.behaviour.system.ListenerBehaviour;
 import cat.urv.imas.map.Cell;
 import cat.urv.imas.map.CellType;
+import cat.urv.imas.map.FieldCell;
 import cat.urv.imas.map.PathCell;
 import cat.urv.imas.ontology.InfoAgent;
 import cat.urv.imas.ontology.InitialGameSettings;
@@ -252,7 +253,12 @@ public class SystemAgent extends BaseCoordinatorAgent {
 
         // Victor sabe como va esto
         for (MovementMsg msg : movements) {
-            Cell cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()];
+            Cell cellTo = null;
+            try {
+                cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()];
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             boolean alreadyOnMovements = false;
             boolean alreadyOnNewMovements = false;
             boolean isNotWall = cellTo.getCellType().equals(CellType.PATH);
@@ -300,5 +306,14 @@ public class SystemAgent extends BaseCoordinatorAgent {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void removedGarbage(GarbagePosition garbage) {
+        Cell[][] map = getGame().getMap();
+
+        // Remove waste from map
+        FieldCell field = (FieldCell)map[garbage.getRow()][garbage.getColumn()];
+        field.detectWaste();
+        field.removeWaste();
     }
 }

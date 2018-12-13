@@ -61,7 +61,12 @@ public class SearcherAgent extends BaseWorkerAgent {
                 if (y !=0 || x != 0) {
                     currPos.set(getPosition().getRow() + y, getPosition().getColumn() + x);
                     // TODO Dont look out of the map
-                    Cell cell = game.getMap()[currPos.getRow()][currPos.getColumn()];
+                    Cell cell = null;
+                    try {
+                        cell = game.getMap()[currPos.getRow()][currPos.getColumn()];
+                    } catch (Exception e) {
+                        System.out.println("Hello");
+                    }
                     if (cell.getCellType().equals(CellType.FIELD)) {
                         FieldCell field = (FieldCell) cell;
                         Map<WasteType, Integer> waste = field.detectWaste();
