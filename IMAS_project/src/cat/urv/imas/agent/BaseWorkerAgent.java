@@ -30,6 +30,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     private List<Position> pointsOfInterest;
     private CellType interestType;
 
+
     public BaseWorkerAgent(AgentType type, CellType interestType) {
         super(type);
         this.interestType     = interestType;
@@ -39,13 +40,6 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         this.pointsOfInterest = new ArrayList<>();
         this.maxBounds        = new Position();
         this.minBounds        = new Position();
-    }
-
-    protected boolean isValidPos(Position pos){
-        return   pos.getRow()    > minBounds.getRow()    &&
-                pos.getColumn() > minBounds.getColumn() &&
-                pos.getRow()    < maxBounds.getRow()    &&
-                pos.getColumn() < maxBounds.getColumn() && !walls.contains(pos);
     }
 
     protected void onNewParameters(GameSettings game) {
@@ -149,72 +143,5 @@ public abstract class BaseWorkerAgent extends BaseAgent {
 
     public void setPointsOfInterest(List<Position> pointsOfInterest) {
         this.pointsOfInterest = pointsOfInterest;
-    }
-
-    public List<Position> getPath(Position endPosition) {
-        List<Position> visitedPoints = new ArrayList<>();
-        LinkedList<Position> nextToVisit = new LinkedList<>();
-        int[][] manhattan_dir  = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 }};
-
-        int[][] allsides_dir  = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 },  //Sides
-                                  { 1, 1 }, { 1, -1 }, { -1, -1 }, { -1, 1 }}; //Diagonal
-
-        //Finding the nearest path cell
-        //in case the destination is a wall and a corner
-        if(this.walls.contains(endPosition)){
-            boolean findNearPath = false;
-
-            for (int[] direction : allsides_dir) {
-                Position newEndPos = new Position(endPosition.getRow() + direction[0], endPosition.getColumn() + direction[1]);
-
-                if(isValidPos(newEndPos)){
-                    endPosition = newEndPos;
-                    findNearPath = true;
-                    break;
-                }
-            }
-
-            if (!findNearPath)
-                return Collections.emptyList();
-        }
-
-        Position start = this.position;
-        nextToVisit.add(start);
-
-        while (!nextToVisit.isEmpty()) {
-            Position cur = nextToVisit.remove();
-
-            if (!isValidPos(cur) || visitedPoints.contains(cur)) {
-                continue;
-            }
-
-            if (cur.equals(endPosition)) {
-                return backtrackPath(cur);
-            }
-
-            for (int[] direction : manhattan_dir) {
-                Position coordinate = new Position(cur.getRow() + direction[0], cur.getColumn() + direction[1], cur);
-
-                nextToVisit.add(coordinate);
-
-            }
-
-            visitedPoints.add(cur);
-        }
-        return Collections.emptyList();
-    }
-
-    private List<Position> backtrackPath(
-            Position cur) {
-        List<Position> path = new ArrayList<>();
-        Position iter = cur;
-
-        while (iter != null) {
-            path.add(iter);
-            iter = iter.getParent();
-        }
-
-        Collections.reverse(path);
-        return path;
     }
 }

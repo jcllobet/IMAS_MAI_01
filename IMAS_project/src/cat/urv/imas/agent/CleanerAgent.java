@@ -7,6 +7,7 @@ import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.ontology.WasteType;
 import cat.urv.imas.utils.GarbagePosition;
 import cat.urv.imas.utils.Movement;
+import cat.urv.imas.utils.PathHelper;
 import cat.urv.imas.utils.Position;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
@@ -124,23 +125,7 @@ public class CleanerAgent extends BaseWorkerAgent {
             stuck = 0;
         }
         else {
-            List<Position> positions = getPath(new Position(assigned.getRow(), assigned.getColumn()));
-
-            if(positions.size()>0){
-                if (positions.size() == 1) //TODO: Remove it ....Assigned position is already current position
-                {
-                    newPos = positions.get(0);
-                    System.out.println("!!!!!!!!!!!!!!!!!!!" + getLocalName() + " " + getPosition() + " is already at destination " + newPos);
-                }
-                else{
-                    newPos = positions.get(1);
-                    System.out.println("!!!!!!!!!!!!!!!!!!!" + getLocalName() + " " + getPosition() + " going to " + newPos);
-                }
-
-            }
-            else{
-                System.err.println("Couldn't calculate next step for agent " + getLocalName());
-            }
+            newPos = PathHelper.nextPath(getPosition(), assigned.getPosition());
         }
 
         sendNewPosToParent(newPos);

@@ -10,6 +10,7 @@ import cat.urv.imas.utils.GarbagePosition;
 import cat.urv.imas.utils.Move;
 import cat.urv.imas.utils.Movement;
 import cat.urv.imas.utils.Position;
+import javafx.geometry.Pos;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.Set;
 
 public class SearcherAgent extends BaseWorkerAgent {
     private List<GarbagePosition> locatedGarbage;
+    private int ALPHA = 10;
     private int batterySize;
     private int battery;
 
@@ -51,6 +53,9 @@ public class SearcherAgent extends BaseWorkerAgent {
     @Override
     protected void onParametersUpdate(GameSettings game) {
         updateVision(game);
+        if (battery > 0 && !getPrevious().equals(getPosition())) {
+            battery--;
+        }
     }
 
     protected void updateVision(GameSettings game) {
@@ -61,7 +66,7 @@ public class SearcherAgent extends BaseWorkerAgent {
 
         for (int x = -1; x <= 1; ++x) {
             for (int y = -1; y <= 1; ++y) {
-                if (y !=0 || x != 0) {
+               if (y !=0 || x != 0) {
                     currPos.set(getPosition().getRow() + y, getPosition().getColumn() + x);
                     // TODO Dont look out of the map
                     Cell cell = null;
@@ -92,13 +97,44 @@ public class SearcherAgent extends BaseWorkerAgent {
         if (battery <= 0) {
             sendNewPosToParent(getPosition());
             return;
-        } else {
-            battery--;
         }
 
         Position newPos = null;
-        newPos = Movement.random(getPosition());
+        List<Position> path = isBatteryNeeded();
+        if (path == null) {
+            newPos = Movement.random(getPosition());
+        } else {
+            if(path.size() > 0){
+                if (path.size() == 1) { //TODO: Remove it ....Assigned position is already current position
+                    newPos = path.get(0);
+                    System.out.println("!!!!!!!!!!!!!!!!!!!" + getLocalName() + " " + getPosition() + " is already at destination " + newPos);
+                }
+                else{
+                    newPos = path.get(1);
+                    System.out.println("!!!!!!!!!!!!!!!!!!!" + getLocalName() + " " + getPosition() + " going to " + newPos);
+                }
+            }
+            else{
+                System.err.println("Couldn't calculate next step for agent " + getLocalName());
+            }
+        }
 
         sendNewPosToParent(newPos);
+    }
+
+    public List<Position> isBatteryNeeded() {
+        /*Integer min = Integer.MAX_VALUE;
+        List<Position> best = null;
+
+        for (Position pos : getPointsOfInterest()) {
+            List<Position> path = getPath(pos);
+            if (path.size() < min) {
+                min = path.size();
+                best = path;
+            }
+        }
+
+        return ((min + ALPHA) < battery) ? null : best;*/
+        return null;
     }
 }

@@ -14,6 +14,7 @@ import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.GarbagePosition;
 import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.LogCode;
+import cat.urv.imas.utils.PathHelper;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
@@ -60,7 +61,7 @@ public class ListenerBehaviour extends BaseListenerBehavior {
             } else {
                 getBaseAgent().log(LogCode.CFP, "CFP for " + garbage + " from " + msg.getSender().getLocalName());
                 response.setPerformative(ACLMessage.PROPOSE);
-                response.setContentObject(agent.getPath(garbage.getPosition()).size());
+                response.setContentObject(PathHelper.pathSize(agent.getPosition(), garbage.getPosition()));
             }
             agent.send(response);
         } catch (Exception e) {
