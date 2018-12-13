@@ -67,7 +67,7 @@ public class CleanerAgent extends BaseWorkerAgent {
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             amount = (Integer)pair.getValue();
-            it.remove(); // avoids a ConcurrentModificationException
+            //it.remove(); // avoids a ConcurrentModificationException
         }
         return cleanerCapacity - amount;
     }
@@ -75,8 +75,8 @@ public class CleanerAgent extends BaseWorkerAgent {
     @Override
     protected void onParametersUpdate(GameSettings game) {
         if (recycling != null) {
-            int dy = Math.abs(getPosition().getRow() - assigned.getRow());
-            int dx = Math.abs(getPosition().getColumn() - assigned.getColumn());
+            int dy = Math.abs(getPosition().getRow() - recycling.getRow());
+            int dx = Math.abs(getPosition().getColumn() - recycling.getColumn());
 
             if (dx <= 1 && dy <= 1) {
                 storage.clear();
