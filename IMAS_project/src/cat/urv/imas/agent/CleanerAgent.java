@@ -9,18 +9,17 @@ import cat.urv.imas.utils.GarbagePosition;
 import cat.urv.imas.utils.Movement;
 import cat.urv.imas.utils.PathHelper;
 import cat.urv.imas.utils.Position;
+import com.sun.tools.javac.util.ArrayUtils;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CleanerAgent extends BaseWorkerAgent {
     private static final int MAX_STUCK = 2;
     private int cleanerCapacity;
+    private HashMap<GarbagePosition, Integer> assignedGarbages;
     private GarbagePosition assigned;
     private HashMap<WasteType, Integer> storage;
     private int stuck;
@@ -34,6 +33,7 @@ public class CleanerAgent extends BaseWorkerAgent {
         assigned = null;
         stuck = 0;
         storage = new HashMap<>();
+        assignedGarbages = new HashMap<>();
     }
 
     public GarbagePosition getAssigned() {
@@ -124,6 +124,28 @@ public class CleanerAgent extends BaseWorkerAgent {
     }
 
     public void accept(GarbagePosition garbage) {
-        assigned = garbage;
+        //assigned = garbage;
+        assignedGarbages.put(garbage, PathHelper.pathSize(getPosition(), garbage));
+        updateDistances(assignedGarbages);
+        assigned = shortestGarbage(assignedGarbages);
+    }
+
+    private GarbagePosition shortestGarbage(HashMap<GarbagePosition, Integer> assignedGarbages) {
+        int minDistance = 1000000;
+        GarbagePosition closest = null;
+        for (Map.Entry<GarbagePosition, Integer> entry : assignedGarbages.entrySet()) {
+            if (entry.getValue() < minDistance){
+                minDistance = entry.getValue();
+                closest = entry.getKey();
+            }
+        }
+
+        return closest;
+    }
+
+    private void updateDistances(HashMap<GarbagePosition, Integer> assignedGarbages) {
+        for (Map.Entry<GarbagePosition, Integer> entry : assignedGarbages.entrySet()) {
+            assignedGarbages.replace(entry.getKey(), PathHelper.pathSize(getPosition(), entry.getKey()));
+        }
     }
 }
