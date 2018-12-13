@@ -22,6 +22,7 @@ public class CleanerAgent extends BaseWorkerAgent {
     private static final int MAX_STUCK = 2;
     private int cleanerCapacity;
     private GarbagePosition assigned;
+    private Position recycling;
     private HashMap<WasteType, Integer> storage;
     private int stuck;
 
@@ -34,6 +35,7 @@ public class CleanerAgent extends BaseWorkerAgent {
         assigned = null;
         stuck = 0;
         storage = new HashMap<>();
+        recycling = null;
     }
 
     public GarbagePosition getAssigned() {
@@ -59,7 +61,7 @@ public class CleanerAgent extends BaseWorkerAgent {
         cleanerCapacity = game.getCleanerCapacity();
     }
 
-    private int freeStorage() {
+    public int freeStorage() {
         int amount = 0;
         Iterator it = storage.entrySet().iterator();
         while (it.hasNext()) {
@@ -72,7 +74,17 @@ public class CleanerAgent extends BaseWorkerAgent {
 
     @Override
     protected void onParametersUpdate(GameSettings game) {
-        if (assigned != null) {
+        if (recycling != null) {
+            int dy = Math.abs(getPosition().getRow() - assigned.getRow());
+            int dx = Math.abs(getPosition().getColumn() - assigned.getColumn());
+
+            if (dx <= 1 && dy <= 1) {
+                storage.clear();
+                // TODO setBusy(1);
+                recycling = null;
+            }
+        }
+        else if (assigned != null) {
             int dy = Math.abs(getPosition().getRow() - assigned.getRow());
             int dx = Math.abs(getPosition().getColumn() - assigned.getColumn());
 
@@ -87,8 +99,10 @@ public class CleanerAgent extends BaseWorkerAgent {
                         assigned = null;
                         send(msg);
                     } else {
-                        System.out.println("Not enough space!");
-                        // TODO say it to the cleaner coord
+                        System.out.println("FATAL: Not enough space!");
+                    }
+                    if (freeStorage() == 0) {
+                        recycling = nearestRecyclingPoint();
                     }
                     setBusy(PICK_UP_TIME);
                 }
@@ -98,15 +112,24 @@ public class CleanerAgent extends BaseWorkerAgent {
         }
     }
 
+    private Position nearestRecyclingPoint() {
+        Integer min = Integer.MAX_VALUE;
+        Position best = null;
+
+        for (Position pos : getPointsOfInterest()) {
+            Integer size = PathHelper.pathSize(getPosition(), pos);
+            if (size < min) {
+                min = size;
+                best = pos;
+            }
+        }
+
+        return best;
+    }
+
     @Override
     public void computeNewPos() {
         Position newPos = null;
-
-        /*if (pickingUp) {
-            pickUpTurns--;
-            sendNewPosToParent(getPosition());
-            return;
-        }*/
 
         if (getPrevious() != null && getPrevious().equals(getPosition())) {
             stuck++;
@@ -116,8 +139,10 @@ public class CleanerAgent extends BaseWorkerAgent {
             newPos = Movement.random(getPosition());
             stuck = 0;
         }
-        else {
+        else if (recycling == null) {
             newPos = PathHelper.nextPath(getPosition(), assigned.getPosition());
+        } else {
+            newPos = PathHelper.nextPath(getPosition(), recycling);
         }
 
         sendNewPosToParent(newPos);

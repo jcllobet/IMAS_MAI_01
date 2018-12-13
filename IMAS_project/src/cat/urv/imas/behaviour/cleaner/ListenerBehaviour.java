@@ -11,6 +11,7 @@ import cat.urv.imas.agent.UtilsAgents;
 import cat.urv.imas.behaviour.BaseListenerBehavior;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
+import cat.urv.imas.ontology.WasteType;
 import cat.urv.imas.utils.GarbagePosition;
 import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.LogCode;
@@ -55,7 +56,9 @@ public class ListenerBehaviour extends BaseListenerBehavior {
             GarbagePosition garbage = (GarbagePosition)msg.getContentObject();
             ACLMessage response = msg.createReply();
 
-            if (agent.getAssigned() != null) { // TODO: And not enough capacity
+            Integer storageNeeded = garbage.getType().equals(WasteType.MUNICIPAL) ? 1 : 3;
+
+            if (agent.getAssigned() != null || (storageNeeded > agent.freeStorage())) {
                 getBaseAgent().log(LogCode.CFP, "CFP for " + garbage + " from " + msg.getSender().getLocalName() + " but already assigned");
                 response.setPerformative(ACLMessage.REFUSE);
             } else {
