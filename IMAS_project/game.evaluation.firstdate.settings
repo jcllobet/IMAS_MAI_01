@@ -7,7 +7,7 @@
     <seed>1234567890</seed>
     <simulationSteps>100</simulationSteps>
     <title>Practical IMAS</title>
-    <eSearcherMaxSteps>20</eSearcherMaxSteps>
+    <eSearcherMaxSteps>100</eSearcherMaxSteps>
     <initialMap>
         <item>-4</item>
         <item>-4</item>
