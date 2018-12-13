@@ -60,7 +60,7 @@ public class ListenerBehaviour extends BaseListenerBehavior {
             } else {
                 getBaseAgent().log(LogCode.CFP, "CFP for " + garbage + " from " + msg.getSender().getLocalName());
                 response.setPerformative(ACLMessage.PROPOSE);
-                response.setContentObject(agent.getPath(garbage).size());
+                response.setContentObject(agent.getPath(garbage.getPosition()).size());
             }
             agent.send(response);
         } catch (Exception e) {

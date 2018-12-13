@@ -43,4 +43,8 @@ public class GarbagePosition extends Position implements Serializable {
     public String toString() {
         return type.getShortString() + "/" + amount + ":" + super.toString();
     }
+
+    public Position getPosition() {
+        return new Position(getRow(), getColumn());
+    }
 }
