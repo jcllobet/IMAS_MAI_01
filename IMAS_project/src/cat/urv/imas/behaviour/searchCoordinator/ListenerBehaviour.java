@@ -15,7 +15,6 @@ import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.MovementMsg;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import sun.plugin2.message.Message;
 
 import java.util.Arrays;
 import java.util.List;

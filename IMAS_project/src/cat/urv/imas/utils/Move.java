@@ -13,4 +13,14 @@ public enum Move {
         if (random < 0.75) return Move.LEFT;
         return Move.RIGHT;
     }
+
+    public static Move rotate90(Move move) {
+       switch(move){
+           case UP:     return LEFT;
+           case LEFT:   return DOWN;
+           case DOWN:   return RIGHT;
+           case RIGHT:  return UP;
+           default:     return null;
+       }
+    }
 }
