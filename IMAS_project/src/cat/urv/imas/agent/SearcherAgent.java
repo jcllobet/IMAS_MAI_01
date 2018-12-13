@@ -19,11 +19,22 @@ import java.util.Set;
 
 public class SearcherAgent extends BaseWorkerAgent {
     private List<GarbagePosition> locatedGarbage;
+    private int batterySize;
+    private int battery;
 
     public SearcherAgent() {
         super(AgentType.SEARCHER, CellType.BATTERIES_CHARGE_POINT);
         // Array of the eSearcher surrounding Cells
         this.locatedGarbage = new ArrayList<>();
+        this.batterySize = 0;
+        this.battery = batterySize;
+    }
+
+
+    @Override
+    protected void onNewParameters(GameSettings game) {
+        batterySize = game.geteSearcherMaxSteps();
+        battery = batterySize;
     }
 
     @Override
@@ -77,6 +88,14 @@ public class SearcherAgent extends BaseWorkerAgent {
 
     @Override
     public void computeNewPos() {
+
+        if (battery <= 0) {
+            sendNewPosToParent(getPosition());
+            return;
+        } else {
+            battery--;
+        }
+
         Position newPos = null;
         newPos = Movement.random(getPosition());
 
