@@ -263,18 +263,25 @@ public class SystemAgent extends BaseCoordinatorAgent {
             boolean alreadyOnMovements = false;
             boolean alreadyOnNewMovements = false;
             boolean isNotWall = cellTo.getCellType().equals(CellType.PATH);
+            boolean swapping = false;
 
             for (MovementMsg msg1 : oldMovements) {
                 if (msg1.getFrom().equals(msg.getTo())) {
-                    alreadyOnMovements = true;
+                    if (msg.getFrom().equals(msg1.getTo())) {
+                        swapping = true;
+                    } else {
+                        alreadyOnMovements = true;
+                    }
                     break;
                 }
             }
 
-            for (MovementMsg msg1 : newMovements) {
-                if (msg1.getTo().equals(msg.getTo())) {
-                    alreadyOnNewMovements = true;
-                    break;
+            if (!swapping) {
+                for (MovementMsg msg1 : newMovements) {
+                    if (msg1.getTo().equals(msg.getTo())) {
+                        alreadyOnNewMovements = true;
+                        break;
+                    }
                 }
             }
 
