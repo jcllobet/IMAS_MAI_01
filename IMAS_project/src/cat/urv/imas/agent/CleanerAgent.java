@@ -82,7 +82,8 @@ public class CleanerAgent extends BaseWorkerAgent {
             stuck = 0;
         }
         else {
-            List<Position> positions = GetPath(new Position(assigned.getRow(), assigned.getRow()));
+            List<Position> positions = GetPath(new Position(assigned.getRow(), assigned.getColumn()));
+
             if(positions.size()>0){
                 if (positions.size() == 1) //TODO: Remove it ....Assigned position is already current position
                 {

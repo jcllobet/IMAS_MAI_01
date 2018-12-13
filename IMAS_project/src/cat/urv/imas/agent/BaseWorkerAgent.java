@@ -147,6 +147,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     public void setPointsOfInterest(List<Position> pointsOfInterest) {
         this.pointsOfInterest = pointsOfInterest;
     }
+
     public List<Position> GetPath(Position endPosition) {
         List<Position> visitedPoints = new ArrayList<>();
         LinkedList<Position> nextToVisit = new LinkedList<>();
