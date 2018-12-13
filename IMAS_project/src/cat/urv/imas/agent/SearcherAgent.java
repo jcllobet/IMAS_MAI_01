@@ -29,6 +29,9 @@ public class SearcherAgent extends BaseWorkerAgent {
     private Position startPoint;
     private Move fixedMove;
     private boolean tripStarted;
+    private Position assigned;
+
+    private int PICK_UP_TIME = 5;
 
     public SearcherAgent() {
         super(AgentType.SEARCHER, CellType.BATTERIES_CHARGE_POINT);
@@ -36,6 +39,7 @@ public class SearcherAgent extends BaseWorkerAgent {
         this.locatedGarbage = new ArrayList<>();
         this.batterySize = 0;
         this.battery = batterySize;
+        this.assigned = null;
     }
 
 
@@ -64,15 +68,22 @@ public class SearcherAgent extends BaseWorkerAgent {
         if (battery > 0 && !getPrevious().equals(getPosition())) {
             battery--;
         }
-
+        if (assigned != null) {
+            int dy = Math.abs(getPosition().getRow() - assigned.getRow());
+            int dx = Math.abs(getPosition().getColumn() - assigned.getColumn());
+            if (dx <= 1 && dy <= 1) {
+                battery = batterySize;
+                setBusy(PICK_UP_TIME);
+                assigned = null;
+                System.out.println("RECHARGUED");
+            }
+        }
     }
-
 
     protected void updateVision(GameSettings game) {
         // Obtain the 8 surrounding cells at this turn
         locatedGarbage.clear();
         Position currPos = new Position();
-        int current = 0;
         nextMove = null;
 
         for (int x = -1; x <= 1; ++x) {
@@ -140,12 +151,12 @@ public class SearcherAgent extends BaseWorkerAgent {
             sendNewPosToParent(getPosition());
             return;
         }
+        assigned = isBatteryNeeded();
 
         Position newPos = null;
 
-        Position nearestRecharge = isBatteryNeeded();
-        if (nearestRecharge != null) {
-            newPos = PathHelper.nextPath(getPosition(), nearestRecharge);
+        if (assigned != null) {
+            newPos = PathHelper.nextPath(getPosition(), assigned);
         }
         else if (nextMove != null) {
             newPos = Movement.givenMove(nextMove, getPosition());

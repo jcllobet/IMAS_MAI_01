@@ -107,11 +107,11 @@ public class PathHelper {
             if (completed == 0) {
                 txt += "[" + repeat(WIDTH, " ") + "]";
             } else if (completed == total) {
-                txt += "[\033[6;30;42m" + repeat(WIDTH, " ") + "\033[0m]";
+                txt += "[" + repeat(WIDTH, "=") + "]";
             } else {
-                String lines = repeat((int) (WIDTH * percentage), " ");
-                String spaces = repeat(WIDTH - (int) (WIDTH * percentage), " ");
-                txt += "[\033[6;30;42m" + lines + "\033[0m" + spaces + "]";
+                String lines = repeat((int) (WIDTH * percentage), "=");
+                String spaces = repeat(WIDTH - (int) (WIDTH * percentage) - 1, " ");
+                txt += "[" + lines + ">" + spaces + "]";
             }
             txt += " ( " + ((int)(percentage * 100.)) + "% )    ";
             System.out.print(txt);

@@ -34,7 +34,11 @@ public class ListenerBehaviour extends BaseListenerBehavior {
                 agent.sendMapRequestToParent();
             } else if (msg.getType().equals(MessageContent.NEW_MAP)) {
                 agent.setParameters((GameSettings) msg.getContentObject());
-                agent.computeNewPos();
+                if (!agent.updateBusy()) {
+                    agent.computeNewPos();
+                } else {
+                    agent.sendNewPosToParent(agent.getPosition());
+                }
             }
         } catch (UnreadableException ex) {
             Logger.getLogger(ListenerBehaviour.class.getName()).log(Level.SEVERE, null, ex);
