@@ -6,10 +6,7 @@ import cat.urv.imas.map.CellType;
 import cat.urv.imas.map.FieldCell;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.WasteType;
-import cat.urv.imas.utils.GarbagePosition;
-import cat.urv.imas.utils.Move;
-import cat.urv.imas.utils.Movement;
-import cat.urv.imas.utils.Position;
+import cat.urv.imas.utils.*;
 import javafx.geometry.Pos;
 
 import java.lang.reflect.Field;
@@ -100,41 +97,26 @@ public class SearcherAgent extends BaseWorkerAgent {
         }
 
         Position newPos = null;
-        List<Position> path = isBatteryNeeded();
-        if (path == null) {
+
+        if (isBatteryNeeded()) {
             newPos = Movement.random(getPosition());
         } else {
-            if(path.size() > 0){
-                if (path.size() == 1) { //TODO: Remove it ....Assigned position is already current position
-                    newPos = path.get(0);
-                    System.out.println("!!!!!!!!!!!!!!!!!!!" + getLocalName() + " " + getPosition() + " is already at destination " + newPos);
-                }
-                else{
-                    newPos = path.get(1);
-                    System.out.println("!!!!!!!!!!!!!!!!!!!" + getLocalName() + " " + getPosition() + " going to " + newPos);
-                }
-            }
-            else{
-                System.err.println("Couldn't calculate next step for agent " + getLocalName());
-            }
+
         }
 
         sendNewPosToParent(newPos);
     }
 
-    public List<Position> isBatteryNeeded() {
-        /*Integer min = Integer.MAX_VALUE;
-        List<Position> best = null;
+    public boolean isBatteryNeeded() {
+        Integer min = Integer.MAX_VALUE;
 
         for (Position pos : getPointsOfInterest()) {
-            List<Position> path = getPath(pos);
-            if (path.size() < min) {
-                min = path.size();
-                best = path;
+            Integer size = PathHelper.pathSize(getPosition(), pos);
+            if (size < min) {
+                min = size;
             }
         }
 
-        return ((min + ALPHA) < battery) ? null : best;*/
-        return null;
+        return (min + ALPHA) < battery;
     }
 }

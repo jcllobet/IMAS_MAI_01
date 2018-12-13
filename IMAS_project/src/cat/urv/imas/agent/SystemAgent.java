@@ -252,11 +252,11 @@ public class SystemAgent extends BaseCoordinatorAgent {
         List<MovementMsg> oldMovements = new ArrayList<>();
         oldMovements.addAll(movements);
 
-        // Victor sabe como va esto
+        // Victor sabe como va esto TODO, Remove this, (by Rafa)
         for (MovementMsg msg : movements) {
             Cell cellTo = null;
             try {
-                cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()];
+                cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()]; // TODO, Seriously
             } catch (Exception e) {
                 e.printStackTrace();
             }
