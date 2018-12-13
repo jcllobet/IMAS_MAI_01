@@ -23,7 +23,10 @@ public class CleanerAgent extends BaseWorkerAgent {
     private GarbagePosition assigned;
     private HashMap<WasteType, Integer> storage;
     private int stuck;
+    private boolean pickingUp;
+    private int pickUpTurns;
 
+    private int PICK_UP_TIME = 3;
     private int MUNICIPAL = 1;
     private int INDUSTRIAL = 3;
 
@@ -32,6 +35,8 @@ public class CleanerAgent extends BaseWorkerAgent {
         assigned = null;
         stuck = 0;
         storage = new HashMap<>();
+        pickUpTurns = PICK_UP_TIME;
+        pickingUp = false;
     }
 
     public GarbagePosition getAssigned() {
@@ -76,17 +81,22 @@ public class CleanerAgent extends BaseWorkerAgent {
 
             try {
                 if (dx <= 1 && dy <= 1) {
-                    int storageNeeded = assigned.getType().equals(WasteType.MUNICIPAL) ? MUNICIPAL : INDUSTRIAL;
-                    if (freeStorage() >= storageNeeded) {
-                        Integer ocuppied = storage.get(assigned.getType());
-                        storage.put(assigned.getType(), (ocuppied!=null ? ocuppied : 0) + storageNeeded);
-                        ACLMessage msg = generateInformMsg(getParent(), FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.REMOVED_GARBAGE);
-                        msg.setContentObject(assigned);
-                        assigned = null;
-                        send(msg);
-                    } else {
-                        System.out.println("Not enough space!");
-                        // TODO say it to the cleaner coord
+                    pickingUp = true;
+                    if (pickUpTurns == 0) {
+                        int storageNeeded = assigned.getType().equals(WasteType.MUNICIPAL) ? MUNICIPAL : INDUSTRIAL;
+                        if (freeStorage() >= storageNeeded) {
+                            Integer ocuppied = storage.get(assigned.getType());
+                            storage.put(assigned.getType(), (ocuppied != null ? ocuppied : 0) + storageNeeded);
+                            ACLMessage msg = generateInformMsg(getParent(), FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.REMOVED_GARBAGE);
+                            msg.setContentObject(assigned);
+                            assigned = null;
+                            send(msg);
+                        } else {
+                            System.out.println("Not enough space!");
+                            // TODO say it to the cleaner coord
+                        }
+                        pickUpTurns = PICK_UP_TIME;
+                        pickingUp = false;
                     }
                 }
             } catch (IOException e) {
@@ -98,6 +108,12 @@ public class CleanerAgent extends BaseWorkerAgent {
     @Override
     public void computeNewPos() {
         Position newPos = null;
+
+        if (pickingUp) {
+            pickUpTurns--;
+            sendNewPosToParent(getPosition());
+            return;
+        }
 
         if (getPrevious() != null && getPrevious().equals(getPosition())) {
             stuck++;
