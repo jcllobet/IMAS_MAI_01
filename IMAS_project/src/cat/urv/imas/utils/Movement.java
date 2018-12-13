@@ -16,6 +16,16 @@ public class Movement {
             case LEFT:  return new Position(pos.getRow(), pos.getColumn() - 1);
         }
     }
+    
+    public static Position givenMove(Move movement, Position pos) {
+        switch(movement) {
+            default:
+            case UP:    return new Position(pos.getRow() - 1, pos.getColumn());
+            case DOWN:  return new Position(pos.getRow() + 1, pos.getColumn());
+            case RIGHT: return new Position(pos.getRow(), pos.getColumn() + 1);
+            case LEFT:  return new Position(pos.getRow(), pos.getColumn() - 1);
+        }
+    }
 
     public static Position advance(Position position, GarbagePosition assigned) {
         int dx = assigned.getColumn() - position.getColumn();

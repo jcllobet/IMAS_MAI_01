@@ -6,7 +6,6 @@ import cat.urv.imas.utils.InformMsg;
 import cat.urv.imas.utils.LogCode;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
-import sun.plugin2.message.Message;
 
 public class BaseListenerBehavior extends CyclicBehaviour {
     public static final Integer RETRY_TIME_MS = 100;
