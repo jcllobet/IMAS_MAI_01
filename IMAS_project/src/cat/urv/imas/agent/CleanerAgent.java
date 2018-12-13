@@ -5,12 +5,10 @@ import cat.urv.imas.map.CellType;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.GarbagePosition;
-import cat.urv.imas.utils.Move;
 import cat.urv.imas.utils.Movement;
 import cat.urv.imas.utils.Position;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
-import javafx.geometry.Pos;
 
 import java.io.IOException;
 import java.util.List;
@@ -82,7 +80,7 @@ public class CleanerAgent extends BaseWorkerAgent {
             stuck = 0;
         }
         else {
-            List<Position> positions = GetPath(new Position(assigned.getRow(), assigned.getColumn()));
+            List<Position> positions = getPath(new Position(assigned.getRow(), assigned.getColumn()));
 
             if(positions.size()>0){
                 if (positions.size() == 1) //TODO: Remove it ....Assigned position is already current position

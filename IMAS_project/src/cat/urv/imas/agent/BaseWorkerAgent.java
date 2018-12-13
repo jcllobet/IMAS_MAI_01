@@ -69,7 +69,10 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         previous = (position == null) ? null : new Position(position);
         if (position == null) {
             position = new Position();
-            findInMap(map); // Returns false if not found
+            if (!findInMap(map)) {
+                System.out.println("NOT FOUND !");
+            }
+            findInMap(map);
             onNewParameters(game);
             maxBounds.set(map.length - 1, map[0].length - 1);
             log("Position set " + position);
@@ -148,7 +151,7 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         this.pointsOfInterest = pointsOfInterest;
     }
 
-    public List<Position> GetPath(Position endPosition) {
+    public List<Position> getPath(Position endPosition) {
         List<Position> visitedPoints = new ArrayList<>();
         LinkedList<Position> nextToVisit = new LinkedList<>();
         int[][] manhattan_dir  = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 }};
