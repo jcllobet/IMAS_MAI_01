@@ -156,6 +156,7 @@ public class SearcherAgent extends BaseWorkerAgent {
         Position newPos = null;
 
         if (assigned != null) {
+            startPoint = null;
             newPos = PathHelper.nextPath(getPosition(), assigned);
         }
         else if (nextMove != null) {
