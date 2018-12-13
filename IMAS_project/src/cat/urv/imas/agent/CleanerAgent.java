@@ -91,6 +91,7 @@ public class CleanerAgent extends BaseWorkerAgent {
             try {
                 if (dx <= 1 && dy <= 1) {
                     int storageNeeded = assigned.getType().equals(WasteType.MUNICIPAL) ? MUNICIPAL : INDUSTRIAL;
+                    storageNeeded *= assigned.getAmount();
                     if (freeStorage() >= storageNeeded) {
                         Integer ocuppied = storage.get(assigned.getType());
                         storage.put(assigned.getType(), (ocuppied != null ? ocuppied : 0) + storageNeeded);

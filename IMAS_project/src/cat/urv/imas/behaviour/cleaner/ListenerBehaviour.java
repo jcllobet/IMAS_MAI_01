@@ -56,7 +56,7 @@ public class ListenerBehaviour extends BaseListenerBehavior {
             GarbagePosition garbage = (GarbagePosition)msg.getContentObject();
             ACLMessage response = msg.createReply();
 
-            Integer storageNeeded = garbage.getType().equals(WasteType.MUNICIPAL) ? 1 : 3;
+            Integer storageNeeded = (garbage.getType().equals(WasteType.MUNICIPAL) ? 1 : 3) * garbage.getAmount();
 
             if (agent.getAssigned() != null || (storageNeeded > agent.freeStorage())) {
                 getBaseAgent().log(LogCode.CFP, "CFP for " + garbage + " from " + msg.getSender().getLocalName() + " but already assigned");
