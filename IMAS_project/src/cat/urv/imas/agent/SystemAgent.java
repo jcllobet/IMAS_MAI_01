@@ -220,7 +220,7 @@ public class SystemAgent extends BaseCoordinatorAgent {
                             if (currentSearcher == i) {
                                 // Agent found
                                 cellAgent.setAID(AIDs.get(i));
-                                System.out.println("Setting " + AIDs.get(i).getLocalName() + " to " + j + ", " + k);
+                                log("Setting " + AIDs.get(i).getLocalName() + " to " + j + ", " + k);
                                 found = true;
                             }
                             currentSearcher++;

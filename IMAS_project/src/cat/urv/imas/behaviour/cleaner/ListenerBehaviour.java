@@ -6,8 +6,6 @@
 package cat.urv.imas.behaviour.cleaner;
 
 import cat.urv.imas.agent.CleanerAgent;
-import cat.urv.imas.agent.CleanerCoordinatorAgent;
-import cat.urv.imas.agent.UtilsAgents;
 import cat.urv.imas.behaviour.BaseListenerBehavior;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
@@ -19,7 +17,6 @@ import cat.urv.imas.utils.PathHelper;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +38,7 @@ public class ListenerBehaviour extends BaseListenerBehavior {
         try {
             GarbagePosition garbage = (GarbagePosition)msg.getContentObject();
             ACLMessage response = msg.createReply();
-            agent.log(LogCode.ACCEPT_PROPOSAL, "from " + msg.getSender().getLocalName() + " for garbage " + garbage);
+            agent.log(LogCode.ACCEPT_PROP, "from " + msg.getSender().getLocalName() + " for garbage " + garbage);
             agent.accept(garbage);
         } catch (Exception e) {
             e.printStackTrace();

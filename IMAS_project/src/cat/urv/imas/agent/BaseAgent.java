@@ -39,10 +39,12 @@ import java.util.List;
  * It gathers common attributes and functionality from all agents.
  */
 public abstract class BaseAgent extends Agent {
-    private final static boolean SHOW_REFUSE = true;
+    private final static boolean LOGS = true;
+    private static final int TOTAL_WIDTH = 11;
     private AID parent;
     private List<AID> children;
     private boolean waitingForMap;
+    private static long logNumber = 0;
     
     /**
      * Type of this agent.
@@ -139,13 +141,17 @@ public abstract class BaseAgent extends Agent {
      * @param str message to show
      */
     public void log(String str) {
-       // System.out.printf("[%-24s]: %s\n", getLocalName(), str);
+        log(LogCode.GENERAL, str);
     }
 
     public void log(LogCode logCode, String str) {
-        //if (logCode != LogCode.REFUSE && !SHOW_REFUSE) {
-            System.out.printf("[%-24s]: " + logCode.getCode() + "[%-7s]" + LogCode.RESET.getCode() + ": %s\n", getLocalName(), logCode.getName(), str);
-        //}
+        if (logCode.equals(LogCode.FATAL)) {
+            System.out.printf(logCode.getColor() + "[%-24s]: [%-11s]" + ": %s" + LogCode.RESET.getColor() + "\n", getLocalName(), logCode.getName(), str);
+        }
+        else if (LOGS) {
+            System.out.printf("[%-24s]: " + logCode.getColor() + "[%-11s]" + LogCode.RESET.getColor() + ": %s\n", getLocalName(), logCode.getName(), str);
+        }
+        logNumber++;
     }
     
     /**

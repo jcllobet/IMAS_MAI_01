@@ -5,11 +5,7 @@ import cat.urv.imas.map.CellType;
 import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.ontology.WasteType;
-import cat.urv.imas.utils.GarbagePosition;
-import cat.urv.imas.utils.Movement;
-import cat.urv.imas.utils.PathHelper;
-import cat.urv.imas.utils.Position;
-import com.sun.tools.javac.util.ArrayUtils;
+import cat.urv.imas.utils.*;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 
@@ -67,7 +63,6 @@ public class CleanerAgent extends BaseWorkerAgent {
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             amount = (Integer)pair.getValue();
-            //it.remove(); // avoids a ConcurrentModificationException
         }
         return cleanerCapacity - amount;
     }
@@ -80,9 +75,10 @@ public class CleanerAgent extends BaseWorkerAgent {
 
             if (dx <= 1 && dy <= 1) {
                 storage.clear();
-                System.out.println("CLEARING WASTES!!!!!!!!!!!!");
+                log("Waste dumped");
                 // TODO setBusy(1);
                 recycling = null;
+                recalculateTarget();
             }
         }
         else if (assigned != null) {
@@ -99,15 +95,10 @@ public class CleanerAgent extends BaseWorkerAgent {
                         ACLMessage msg = generateInformMsg(getParent(), FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.REMOVED_GARBAGE);
                         msg.setContentObject(assigned);
                         assignedGarbages.remove(assigned);
-                        if (assignedGarbages.size() > 0) {
-                            updateDistances(assignedGarbages);
-                            assigned = shortestGarbage(assignedGarbages);
-                        } else {
-                            assigned = null;
-                        }
+                        recalculateTarget();
                         send(msg);
                     } else {
-                        System.out.println("FATAL: Not enough space!");
+                         log(LogCode.FATAL, "Not enough space!");
                     }
                     if (freeStorage() == 0) {
                         recycling = nearestRecyclingPoint();
@@ -143,7 +134,7 @@ public class CleanerAgent extends BaseWorkerAgent {
             stuck++;
         }
 
-        if (assigned == null || stuck > MAX_STUCK) {
+        if ((assigned == null && recycling == null) || stuck > MAX_STUCK) {
             newPos = Movement.random(getPosition());
             stuck = 0;
         }
@@ -156,15 +147,31 @@ public class CleanerAgent extends BaseWorkerAgent {
         sendNewPosToParent(newPos);
     }
 
+    public void recalculateTarget() {
+        int storageNeeded = 0;
+        if (assignedGarbages.size() > 0) {
+            assigned = shortestGarbage(assignedGarbages);
+            storageNeeded = (assigned.getType().equals(WasteType.MUNICIPAL) ? MUNICIPAL : INDUSTRIAL) * assigned.getAmount();
+        } else {
+            assigned = null;
+        }
+
+        if (freeStorage() <= storageNeeded) {
+            recycling = nearestRecyclingPoint();
+            assigned = null;
+        }
+    }
+
     public void accept(GarbagePosition garbage) {
         //assigned = garbage;
         assignedGarbages.put(garbage, PathHelper.pathSize(getPosition(), garbage.getPosition()));
-        updateDistances(assignedGarbages);
-        assigned = shortestGarbage(assignedGarbages);
+        recalculateTarget();
     }
 
     private GarbagePosition shortestGarbage(HashMap<GarbagePosition, Integer> assignedGarbages) {
-        int minDistance = 1000000;
+        updateDistances(assignedGarbages);
+
+        int minDistance = Integer.MAX_VALUE;
         GarbagePosition closest = null;
         for (Map.Entry<GarbagePosition, Integer> entry : assignedGarbages.entrySet()) {
             if (entry.getValue() < minDistance){

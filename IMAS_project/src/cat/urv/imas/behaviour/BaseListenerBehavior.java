@@ -32,11 +32,11 @@ public class BaseListenerBehavior extends CyclicBehaviour {
     }
 
     protected void onAcceptProposal() {
-        getBaseAgent().log(LogCode.ACCEPT_PROPOSAL, "from " + msg.getSender().getLocalName());
+        getBaseAgent().log(LogCode.ACCEPT_PROP, "from " + msg.getSender().getLocalName());
     }
 
     protected void onRejectProposal() {
-        getBaseAgent().log(LogCode.REJECT_PROPOSAL, "from " + msg.getSender().getLocalName());
+        getBaseAgent().log(LogCode.REJECT_PROP, "from " + msg.getSender().getLocalName());
     }
 
     protected void onAgree() {

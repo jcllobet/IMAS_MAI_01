@@ -1,9 +1,29 @@
 package cat.urv.imas.utils;
 
 public enum LogCode {
-    RESET  {
+    GENERAL {
         @Override
-        public String getCode() {
+        public String getColor() {
+            return "\u001B[0m";
+        }
+        @Override
+        public String getName() {
+            return "GENERAL";
+        }
+    },
+    FATAL {
+        @Override
+        public String getColor() {
+            return "\u001B[31m";
+        }
+        @Override
+        public String getName() {
+            return "FATAL ERROR";
+        }
+    },
+    RESET {
+        @Override
+        public String getColor() {
             return "\u001B[0m";
         }
         @Override
@@ -11,19 +31,19 @@ public enum LogCode {
             return "";
         }
     },
-    ACCEPT_PROPOSAL  {
+    ACCEPT_PROP {
         @Override
-        public String getCode() {
-            return "\u001B[30m";
+        public String getColor() {
+            return "\u001B[92m";
         }
         @Override
         public String getName() {
-            return "ACCEPT_PROPOSAL";
+            return "ACCEPT_PROP";
         }
     },
-    REFUSE    {
+    REFUSE {
         @Override
-        public String getCode() {
+        public String getColor() {
             return "\u001B[31m";
         }
         @Override
@@ -33,7 +53,7 @@ public enum LogCode {
     },
     AGREE  {
         @Override
-        public String getCode() {
+        public String getColor() {
             return "\u001B[32m";
         }
         @Override
@@ -41,9 +61,19 @@ public enum LogCode {
             return "AGREE";
         }
     },
+    CFP   {
+        @Override
+        public String getColor() {
+            return "\u001B[33m";
+        }
+        @Override
+        public String getName() {
+            return "CFP";
+        }
+    },
     INFORM   {
         @Override
-        public String getCode() {
+        public String getColor() {
             return "\u001B[34m";
         }
         @Override
@@ -53,7 +83,7 @@ public enum LogCode {
     },
     REQUEST {
         @Override
-        public String getCode() {
+        public String getColor() {
             return "\u001B[35m";
         }
         @Override
@@ -63,7 +93,7 @@ public enum LogCode {
     },
     PROPOSE   {
         @Override
-        public String getCode() {
+        public String getColor() {
             return "\u001B[36m";
         }
         @Override
@@ -71,27 +101,17 @@ public enum LogCode {
             return "PROPOSE";
         }
     },
-    CFP   {
+    REJECT_PROP {
         @Override
-        public String getCode() {
-            return "\u001B[33m";
+        public String getColor() {
+            return "\u001B[91m";
         }
         @Override
         public String getName() {
-            return "CFP";
-        }
-    },
-    REJECT_PROPOSAL  {
-        @Override
-        public String getCode() {
-            return "\u001B[38m";
-        }
-        @Override
-        public String getName() {
-            return "REJECT_PROPOSAL";
+            return "REJECT_PROP";
         }
     };
 
-    public abstract String getCode();
+    public abstract String getColor();
     public abstract String getName();
 }

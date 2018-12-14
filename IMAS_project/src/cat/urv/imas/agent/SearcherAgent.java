@@ -75,7 +75,7 @@ public class SearcherAgent extends BaseWorkerAgent {
                 battery = batterySize;
                 setBusy(PICK_UP_TIME);
                 assigned = null;
-                System.out.println("RECHARGUED");
+                log("Recharged with " + batterySize + " units");
             }
         }
     }
