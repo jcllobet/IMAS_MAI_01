@@ -321,7 +321,10 @@ public class SystemAgent extends BaseCoordinatorAgent {
 
         // Remove waste from map
         FieldCell field = (FieldCell)map[garbage.getRow()][garbage.getColumn()];
-        field.detectWaste();
-        field.removeWaste();
+
+        do {
+            field.detectWaste();
+            field.removeWaste();
+        } while (!field.isEmpty());
     }
 }

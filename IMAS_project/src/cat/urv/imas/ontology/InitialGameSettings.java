@@ -245,7 +245,6 @@ public class InitialGameSettings extends GameSettings {
         addElements(maxInitial, maxVisible);
     }
 
-    boolean k = true;
     public void addElements(int maxElements, int maxVisible) {
         CellType ctype = CellType.FIELD;
         int maxCells = getNumberOfCellsOfType(ctype);
@@ -287,18 +286,15 @@ public class InitialGameSettings extends GameSettings {
             visibleSet.add((Integer)initialCells[numberGenerator.nextInt(maxElements)]);
         }
 
-        if (k) {
-            k = false;
-            WasteType[] typesWaste = WasteType.values();
-            WasteType type;
-            int amount;
-            boolean visible;
-            for (int i : initialSet) {
-                type = typesWaste[numberGenerator.nextInt(typesWaste.length)];
-                amount = numberGenerator.nextInt(this.getMaxAmountOfWastes()) + 1;
-                visible = visibleSet.contains(i);
-                setElements(type, amount, visible, i);
-            }
+        WasteType[] typesWaste = WasteType.values();
+        WasteType type;
+        int amount;
+        boolean visible;
+        for (int i : initialSet) {
+            type = typesWaste[numberGenerator.nextInt(typesWaste.length)];
+            amount = numberGenerator.nextInt(this.getMaxAmountOfWastes()) + 1;
+            visible = visibleSet.contains(i);
+            setElements(type, amount, visible, i);
         }
     }
 

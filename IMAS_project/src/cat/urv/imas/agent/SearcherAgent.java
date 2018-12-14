@@ -90,7 +90,7 @@ public class SearcherAgent extends BaseWorkerAgent {
             for (int y = -1; y <= 1; ++y) {
                if (y !=0 || x != 0) {
                     currPos.set(getPosition().getRow() + y, getPosition().getColumn() + x);
-                    // TODO Dont look out of the map
+                    // TODO Important according to Jorge: Dont look out of the map
                     Cell cell = null;
                     try {
                         cell = game.getMap()[currPos.getRow()][currPos.getColumn()];
