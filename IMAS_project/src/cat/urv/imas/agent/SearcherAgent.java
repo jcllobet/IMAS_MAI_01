@@ -95,13 +95,7 @@ public class SearcherAgent extends BaseWorkerAgent {
             for (int y = -1; y <= 1; ++y) {
                if (y !=0 || x != 0) {
                     currPos.set(getPosition().getRow() + y, getPosition().getColumn() + x);
-                    // TODO Important according to Jorge: Dont look out of the map
-                    Cell cell = null;
-                    try {
-                        cell = game.getMap()[currPos.getRow()][currPos.getColumn()];
-                    } catch (Exception e) {
-                        System.out.println("Hello");
-                    }
+                    Cell cell = game.getMap()[currPos.getRow()][currPos.getColumn()];
                     if (cell.getCellType().equals(CellType.FIELD)) {
                         FieldCell field = (FieldCell) cell;
                         Map<WasteType, Integer> waste = field.detectWaste();
@@ -228,7 +222,7 @@ public class SearcherAgent extends BaseWorkerAgent {
                 } else {
                     move = Move.RIGHT;
                 }
-            }// TODO: Check all walls surrounding it
+            }
         }
         
         return move;

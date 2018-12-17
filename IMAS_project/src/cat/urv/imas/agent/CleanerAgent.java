@@ -80,7 +80,7 @@ public class CleanerAgent extends BaseWorkerAgent {
             if (dx <= 1 && dy <= 1) {
                 storage.clear();
                 log("Waste dumped");
-                // TODO setBusy(1);
+                // setBusy(1); just in case we want to wait for the dump
                 recycling = null;
                 recalculateTarget();
             }

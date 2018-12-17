@@ -43,8 +43,6 @@ import static cat.urv.imas.agent.UtilsAgents.searchAgentsType;
 
 /**
  * System agent that controls the GUI and loads initial configuration settings.
- * TODO: You have to decide the onthology and protocol when interacting among
- * the Coordinator agent.
  */
 public class SystemAgent extends BaseCoordinatorAgent {
 
@@ -248,14 +246,8 @@ public class SystemAgent extends BaseCoordinatorAgent {
         List<MovementMsg> oldMovements = new ArrayList<>();
         oldMovements.addAll(movements);
 
-        // Victor sabe como va esto TODO, Remove this, (by Rafa)
         for (MovementMsg msg : movements) {
-            Cell cellTo = null;
-            try {
-                cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()]; // TODO, Seriously
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Cell cellTo = map[msg.getTo().getRow()][msg.getTo().getColumn()];
             boolean alreadyOnMovements = false;
             boolean alreadyOnNewMovements = false;
             boolean isNotWall = cellTo.getCellType().equals(CellType.PATH);

@@ -57,6 +57,7 @@ public class PathCell extends Cell {
         // TODO: update condition to fit the restriction of
         //       allowing just a single agent working or
         //       any amount of agents moving through.
+        // This will never happen as one garbage is ONLY assigned to one Cleaner at a time
         return false;
     }
 

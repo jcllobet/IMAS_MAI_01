@@ -36,12 +36,9 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavior {
 
         try {
             if (msg.getType().equals(MessageContent.REMOVED_GARBAGE)) {
-                GarbagePosition garbage = (GarbagePosition)msg.getContentObject();
                 msg.removeReceiver(agent.getAID());
                 msg.addReceiver(agent.getParent());
                 agent.send(msg);
-                // TODO mandar hasta el system agent
-                // agent.removedGarbage(garbage);
             }
             else if (msg.getType().equals(MessageContent.NEW_GARBAGE)) {
                 GarbagePosition[] garbage = (GarbagePosition[])msg.getContentObject();
