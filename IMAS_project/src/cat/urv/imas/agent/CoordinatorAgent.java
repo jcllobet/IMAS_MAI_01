@@ -26,9 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The main Coordinator agent. 
- * TODO: This coordinator agent should get the game settings from the System
- * agent every round and share the necessary information to other coordinators.
+ * The main Coordinator agent.
  */
 public class CoordinatorAgent extends BaseCoordinatorAgent {
 

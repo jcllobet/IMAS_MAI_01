@@ -86,7 +86,7 @@ public class Position implements Serializable,Comparable {
         if (getRow() == other.getRow() && getColumn() == other.getColumn())
             return 0;
         if (getRow() > other.getRow())
-            return 1; // TODO
+            return 1;
         else
             return -1;
     }

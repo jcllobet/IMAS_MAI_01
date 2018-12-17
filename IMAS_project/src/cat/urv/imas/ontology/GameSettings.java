@@ -191,9 +191,12 @@ public class GameSettings implements java.io.Serializable {
     }
 
     public Cell[] detectFieldsWithWaste(int row, int col) {
-        //TODO: find all surrounding cells to (row,col) that are
-        //      buildings and have garbage on it.
-        //      Use: FieldCell.detectMetal() to do so.  FieldCell.detectWaste()
+        // Not used, already implemented in the Searcher
+        //
+        // find all surrounding cells to (row,col) that are
+        // buildings and have garbage on it.
+        // Use: FieldCell.detectMetal() to do so.  FieldCell.detectWaste()
+
         ArrayList<Cell> cells = new ArrayList<>();
         Map<WasteType, Integer> waste;
         for (int i = row - 1; i < row + 2; i++){
@@ -231,7 +234,6 @@ public class GameSettings implements java.io.Serializable {
     }
 
     public String toString() {
-        //TODO: show a human readable summary of the game settings.
         StringBuilder sb = new StringBuilder();
         sb.append("Game settings\n\n");
         sb.append("Title: " + String.valueOf(title) + "\n");
@@ -246,7 +248,6 @@ public class GameSettings implements java.io.Serializable {
     }
 
     public String getShortString() {
-        //TODO: list of agents
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<AgentType, List<Cell>> entry : agentList.entrySet()){
             sb.append(String.valueOf(entry.getValue().size())).append(" agents of type ");

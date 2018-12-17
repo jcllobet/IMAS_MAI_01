@@ -129,6 +129,7 @@ public class SystemAgent extends BaseCoordinatorAgent {
         // 2. Load game settings.
         setGame(InitialGameSettings.load("game.settings"));
         log("Initial configuration settings loaded");
+        log(getGame().toString());
         setMapUpdated(true);
         PathHelper.calculateAllPaths(getGame());
 
