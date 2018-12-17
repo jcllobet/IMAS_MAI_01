@@ -44,7 +44,7 @@ public abstract class BaseAgent extends Agent {
     private AID parent;
     private List<AID> children;
     private boolean waitingForMap;
-    private static long logNumber = 0;
+    protected final static int WAIT_TIME = 2000;
     
     /**
      * Type of this agent.
@@ -151,7 +151,6 @@ public abstract class BaseAgent extends Agent {
         else if (LOGS) {
             System.out.printf("[%-24s]: " + logCode.getColor() + "[%-11s]" + LogCode.RESET.getColor() + ": %s\n", getLocalName(), logCode.getName(), str);
         }
-        logNumber++;
     }
     
     /**

@@ -161,10 +161,6 @@ public class SystemAgent extends BaseCoordinatorAgent {
             AgentController searchCoordinatorAgent = cc.createNewAgent("SearcherCoordinatorAgent",
                     "cat.urv.imas.agent.SearcherCoordinatorAgent", null);
 
-            coordinatorAgent.start();
-            searchCoordinatorAgent.start();
-            cleanerCoordinatorAgent.start();
-
             int numSearchers = 0;
             int numCleaners = 0;
             for (Map.Entry<AgentType, List<Cell>> entry : this.getGame().getAgentList().entrySet()) {
@@ -176,22 +172,22 @@ public class SystemAgent extends BaseCoordinatorAgent {
                 }
             }
             // Create searchers
-            Integer[] args = new Integer[1];
             for (int i = 0; i < numSearchers; ++i) {
-                args[0] = i;
-                AgentController searcher = cc.createNewAgent("Searcher-" + i,
-                        "cat.urv.imas.agent.SearcherAgent", null);
+                AgentController searcher = cc.createNewAgent("Searcher-" + i,"cat.urv.imas.agent.SearcherAgent", null);
                 searcher.start();
             }
             // Create cleaners
             for (int i = 0; i < numCleaners; ++i) {
-                args[0] = i;
-                AgentController searcher = cc.createNewAgent("Cleaner-" + i,
-                        "cat.urv.imas.agent.CleanerAgent", null);
-                searcher.start();
+                AgentController cleaner = cc.createNewAgent("Cleaner-" + i,"cat.urv.imas.agent.CleanerAgent", null);
+                cleaner.start();
             }
             setWorkersAIDtoCells(AgentType.SEARCHER, numSearchers);
             setWorkersAIDtoCells(AgentType.CLEANER, numCleaners);
+
+            // Initialize the agents later, so no searcher can start searching for it's position before its set
+            coordinatorAgent.start();
+            searchCoordinatorAgent.start();
+            cleanerCoordinatorAgent.start();
 
         } catch (StaleProxyException e) {
             e.printStackTrace();

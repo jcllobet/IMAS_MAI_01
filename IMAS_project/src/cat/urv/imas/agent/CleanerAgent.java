@@ -40,6 +40,11 @@ public class CleanerAgent extends BaseWorkerAgent {
 
     @Override
     protected void setup() {
+        try {
+            Thread.sleep(WAIT_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         // Initialize
         setEnabledO2ACommunication(true, 1);
         registerToDF();
@@ -47,7 +52,6 @@ public class CleanerAgent extends BaseWorkerAgent {
         // Set parent and message
         setParent(UtilsAgents.searchAgentType(this, AgentType.CLEANER_COORDINATOR));
 
-        // Behaviors
         addBehaviour(new ListenerBehaviour(this));
         sendMapRequestToParent();
     }

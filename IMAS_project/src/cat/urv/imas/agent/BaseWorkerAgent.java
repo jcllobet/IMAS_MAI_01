@@ -66,12 +66,12 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         if (position == null) {
             position = new Position();
             if (!findInMap(map)) {
-                System.out.println("NOT FOUND !");
+                position = null;
+            } else {
+                onNewParameters(game);
+                maxBounds.set(map.length - 1, map[0].length - 1);
+                log("Position set " + position);
             }
-            findInMap(map);
-            onNewParameters(game);
-            maxBounds.set(map.length - 1, map[0].length - 1);
-            log("Position set " + position);
         } else {
             findInMap(map); // Returns false if not found
             onParametersUpdate(game);

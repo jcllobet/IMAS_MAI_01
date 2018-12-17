@@ -53,6 +53,11 @@ public class SearcherAgent extends BaseWorkerAgent {
 
     @Override
     protected void setup() {
+        try {
+            Thread.sleep(WAIT_TIME);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         setEnabledO2ACommunication(true, 1);
         registerToDF();
 
