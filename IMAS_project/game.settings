@@ -2,7 +2,7 @@
 <InitialGameSettings>
     <cleanerCapacity>12</cleanerCapacity>
     <maxAmountOfWastes>3</maxAmountOfWastes>
-    <newWasteProbability>40</newWasteProbability> <!-- 40 -->
+    <newWasteProbability>80</newWasteProbability> <!-- 40 -->
     <probabilityMunicipalWaste>40</probabilityMunicipalWaste> <!-- 40 -->
     <seed>1234567890</seed>
     <simulationSteps>100</simulationSteps>
