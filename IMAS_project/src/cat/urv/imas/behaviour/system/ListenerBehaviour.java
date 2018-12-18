@@ -48,7 +48,11 @@ public class ListenerBehaviour extends BaseListenerBehavior {
                 agent.log(LogCode.REQUEST, "from " + msg.getSender().getLocalName() + " and the map is updated");
                 msg.createReply().setPerformative(ACLMessage.AGREE);
 
-                agent.addElementsForThisSimulationStep();
+                try {
+                    agent.addElementsForThisSimulationStep();
+                } catch (Error e) {
+                    agent.onAddError(); // Dont add elements if there is no space
+                }
                 agent.sendMap(msg.getSender());
             }
         }

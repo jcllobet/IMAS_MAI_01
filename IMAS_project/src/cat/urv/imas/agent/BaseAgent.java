@@ -39,7 +39,7 @@ import java.util.List;
  * It gathers common attributes and functionality from all agents.
  */
 public abstract class BaseAgent extends Agent {
-    private final static boolean LOGS = false;
+    private final static boolean LOGS = true;
     private AID parent;
     private List<AID> children;
     private boolean waitingForMap;

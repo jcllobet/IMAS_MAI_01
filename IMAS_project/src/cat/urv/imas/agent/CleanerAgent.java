@@ -25,6 +25,14 @@ public class CleanerAgent extends BaseWorkerAgent {
     private int MUNICIPAL = 1;
     private int INDUSTRIAL = 3;
 
+    // STATS
+    private int totalCollectedMun;
+    private int totalCollectedInd;
+    private int totalRecycledMun;
+    private int totalRecycledInd;
+    private int timesRecycled;
+    private int steps;
+
     public CleanerAgent() {
         super(AgentType.CLEANER, CellType.RECYCLING_POINT_CENTER);
         assigned = null;
@@ -32,6 +40,14 @@ public class CleanerAgent extends BaseWorkerAgent {
         storage = new HashMap<>();
         assignedGarbages = new HashMap<>();
         recycling = null;
+
+        // STATS
+        totalCollectedMun = 0;
+        totalCollectedInd = 0;
+        totalRecycledMun = 0;
+        totalRecycledInd = 0;
+        timesRecycled = 0;
+        steps = 0;
     }
 
     public GarbagePosition getAssigned() {
@@ -73,13 +89,23 @@ public class CleanerAgent extends BaseWorkerAgent {
 
     @Override
     protected void onParametersUpdate(GameSettings game) {
+        // STATS
+        steps++;
+
         if (recycling != null) {
             int dy = Math.abs(getPosition().getRow() - recycling.getRow());
             int dx = Math.abs(getPosition().getColumn() - recycling.getColumn());
 
             if (dx <= 1 && dy <= 1) {
+                // STATS
+                timesRecycled++;
+                for (Map.Entry<WasteType, Integer> entry : storage.entrySet()) {
+                    if (entry.getKey().equals(WasteType.MUNICIPAL)) totalRecycledMun += entry.getValue();
+                    if (entry.getKey().equals(WasteType.INDUSTRIAL)) totalRecycledInd += entry.getValue();
+                }
+
+                log("Waste dumped " + freeStorage());
                 storage.clear();
-                log("Waste dumped");
                 // setBusy(1); just in case we want to wait for the dump
                 recycling = null;
                 recalculateTarget();
@@ -99,6 +125,11 @@ public class CleanerAgent extends BaseWorkerAgent {
                         ACLMessage msg = generateInformMsg(getParent(), FIPANames.InteractionProtocol.FIPA_REQUEST, MessageContent.REMOVED_GARBAGE);
                         msg.setContentObject(assigned);
                         assignedGarbages.remove(assigned);
+
+                        // STATS
+                        if (assigned.getType().equals(WasteType.MUNICIPAL)) totalCollectedMun += storageNeeded;
+                        if (assigned.getType().equals(WasteType.INDUSTRIAL)) totalCollectedInd += storageNeeded;
+
                         recalculateTarget();
                         send(msg);
                     } else {
@@ -191,5 +222,18 @@ public class CleanerAgent extends BaseWorkerAgent {
         for (Map.Entry<GarbagePosition, Integer> entry : assignedGarbages.entrySet()) {
             assignedGarbages.replace(entry.getKey(), getPathing().pathSize(getPosition(), entry.getKey().getPosition()));
         }
+    }
+
+    @Override
+    protected void takeDown() {
+        // PRINT STATS
+        String txt = "";
+        txt += String.format("Total G collected (M/I): %3d/%3d | ", totalCollectedMun, totalCollectedInd);
+        txt += String.format("Total G recycled (M/I): %3d/%3d | ", totalRecycledMun, totalRecycledInd);
+        txt += String.format("Avg G collected (M/I) per turn: %.2f/%.2f | ", totalCollectedMun / (double)steps, totalCollectedInd / (double)steps);
+        txt += String.format("Avg G recycled (M/I) per turn: %.2f/%.2f | ", totalRecycledMun / (double)steps, totalRecycledInd / (double)steps);
+        txt += String.format("Times recycled: %3d | ", timesRecycled);
+        log(txt);
+        super.takeDown();
     }
 }

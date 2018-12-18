@@ -30,8 +30,16 @@ public class SearcherAgent extends BaseWorkerAgent {
     private Move fixedMove;
     private boolean tripStarted;
     private Position assigned;
-
     private int PICK_UP_TIME = 5;
+
+    // STATS
+    private int totalFound;
+    private int timesRecharged;
+    private int usedBattery;
+    private int rechargedTimes;
+    private int totalBattery;
+    private int steps;
+
 
     public SearcherAgent() {
         super(AgentType.SEARCHER, CellType.BATTERIES_CHARGE_POINT);
@@ -40,6 +48,14 @@ public class SearcherAgent extends BaseWorkerAgent {
         this.batterySize = 0;
         this.battery = batterySize;
         this.assigned = null;
+
+        // STATS
+        totalFound = 0;
+        timesRecharged = 0;
+        usedBattery = 0;
+        rechargedTimes = 0;
+        totalBattery = 0;
+        steps = 0;
     }
 
 
@@ -69,9 +85,17 @@ public class SearcherAgent extends BaseWorkerAgent {
 
     @Override
     protected void onParametersUpdate(GameSettings game) {
+        // STATS
+        steps++;
+        totalBattery += battery;
+        // -----
+
         updateVision(game);
         if (battery > 0 && !getPrevious().equals(getPosition())) {
             battery--;
+
+            // STATS
+            usedBattery++;
         }
         if (assigned != null) {
             int dy = Math.abs(getPosition().getRow() - assigned.getRow());
@@ -81,6 +105,9 @@ public class SearcherAgent extends BaseWorkerAgent {
                 setBusy(PICK_UP_TIME);
                 assigned = null;
                 log("Recharged with " + batterySize + " units");
+
+                // STATS
+                timesRecharged++;
             }
         }
     }
@@ -140,6 +167,8 @@ public class SearcherAgent extends BaseWorkerAgent {
 
         if (!locatedGarbage.isEmpty()) {
             sendGarbageListToParent(locatedGarbage);
+            // STATS
+            totalFound += locatedGarbage.size();
         }
     }
 
@@ -226,5 +255,17 @@ public class SearcherAgent extends BaseWorkerAgent {
         }
         
         return move;
+    }
+
+    @Override
+    protected void takeDown() {
+        // PRINT STATS
+        String txt = "";
+        txt += String.format("Total G found: %3d | ", totalFound);
+        txt += String.format("Used battery: %3d | ", usedBattery);
+        txt += String.format("Times recharged: %3d | ", timesRecharged);
+        txt += String.format("Average battery per turn: %3d | ", totalBattery / steps);
+        log(txt);
+        super.takeDown();
     }
 }

@@ -63,12 +63,19 @@ public class SystemAgent extends BaseCoordinatorAgent {
      */
     private AgentController[] agents;
     private int steps;
+    private int addErrors;
+
+    // STATS
+    private int uniqueGarbageDetected;
+    // Other stats can be deduced from other logs from other agents
 
     /**
      * Builds the System agent.
      */
     public SystemAgent() {
         super(AgentType.SYSTEM);
+        uniqueGarbageDetected = 0;
+        addErrors = 0;
     }
 
     /**
@@ -134,7 +141,7 @@ public class SystemAgent extends BaseCoordinatorAgent {
         registerToDF();
 
         // 2. Load game settings.
-        setGame(InitialGameSettings.load("game.settings"));
+        setGame(InitialGameSettings.load("game.evaluation.firstdate.settings"));
         log("Initial configuration settings loaded");
         log(getGame().toString());
         steps = getGame().getSimulationSteps();
@@ -314,13 +321,21 @@ public class SystemAgent extends BaseCoordinatorAgent {
         return false;
     }
 
+    private void printStats() {
+        log(String.format("Total unique G discovered: %3d | Avg unique G discovered per turn: %.2f", uniqueGarbageDetected, uniqueGarbageDetected / (float)getGame().getSimulationSteps()));
+        log(String.format("The number of times no more garbage could be added to the map because it was full was: %d", addErrors));
+    }
+
     private void shutdown() {
         log("System shutdown, steps done: " + getGame().getSimulationSteps());
+        printStats();
         try {
             for (AgentController agent : agents) {
                 agent.kill();
+                Thread.sleep(100); // Wait, so they are probably killed in order
             }
-        } catch (StaleProxyException e) {}
+        } catch (StaleProxyException | InterruptedException e) {}
+        log(getGame().toString());
     }
 
     private void move(MovementMsg msg) {
@@ -356,7 +371,17 @@ public class SystemAgent extends BaseCoordinatorAgent {
 
         for (GarbagePosition pos : garbage) {
             FieldCell field = (FieldCell)map[pos.getRow()][pos.getColumn()];
+
+            // STATS
+            if (!field.isDetected()) {
+                uniqueGarbageDetected++;
+            }
+
             field.detectWaste();
         }
+    }
+
+    public void onAddError() {
+        addErrors++;
     }
 }

@@ -94,7 +94,9 @@ public class Agents implements java.io.Serializable {
     public String getMapMessage() {
         StringBuilder string = new StringBuilder("|");
         for (AgentType type : AgentType.values()) {
-            string.append(type.getShortString()).append(":").append(agents.get(type).size()).append("|");
+            try {
+                string.append(type.getShortString()).append(":").append(agents.get(type).size()).append("|");
+            } catch (NullPointerException e) {}
         }
         string.append("|");
         return string.toString();

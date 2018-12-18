@@ -55,6 +55,11 @@ public class FieldCell extends Cell {
         waste = new HashMap();
     }
 
+    // Used ONLY for the stats
+    public boolean isDetected() {
+        return found;
+    }
+
     /**
      * Detects waste on this field.
      * @return the waste on it
