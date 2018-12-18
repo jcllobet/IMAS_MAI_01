@@ -8,7 +8,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 
 public class BaseListenerBehavior extends CyclicBehaviour {
-    public static final Integer RETRY_TIME_MS = 100;
+    public static final Integer RETRY_TIME_MS = 50;
 
     private ACLMessage msg;
     private BaseAgent baseAgent;

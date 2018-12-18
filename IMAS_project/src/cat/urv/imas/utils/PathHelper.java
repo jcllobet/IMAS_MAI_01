@@ -7,18 +7,26 @@ import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.ontology.InfoAgent;
 import javafx.geometry.Pos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PathHelper {
-    static int mapWidth = 0;
-    static Position[][] movements = null;
-    static List<Position> walls;
-    static Position maxBounds = null;
+public class PathHelper implements Serializable {
+    private int mapWidth;
+    private Position[][] movements;
+    private List<Position> walls;
+    private Position maxBounds;
 
-    private static Position nearest(Position wall) {
+    public PathHelper() {
+        mapWidth = 0;
+        movements = null;
+        walls = null;
+        maxBounds = null;
+    }
+
+    private Position nearest(Position wall) {
         int[][] allsides_dir  = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 },  //Sides
                 { 1, 1 }, { 1, -1 }, { -1, -1 }, { -1, 1 }}; //Diagonal
 
@@ -33,7 +41,7 @@ public class PathHelper {
         return wall;
     }
 
-    public static Integer pathSize(Position start, Position end) {
+    public Integer pathSize(Position start, Position end) {
         end = nearest(end);
         Integer size = 0;
         while (start != null && end != null && !start.equals(end)) {
@@ -45,13 +53,13 @@ public class PathHelper {
         return size;
     }
 
-    public static Position nextPath(Position start, Position end) {
+    public Position nextPath(Position start, Position end) {
         end = nearest(end);
         return movements[getIndex(start.getRow(), start.getColumn(), mapWidth)]
                         [getIndex(end.getRow(), end.getColumn(), mapWidth)];
     }
 
-    public static  void calculateAllPaths(GameSettings game) {
+    public void calculateAllPaths(GameSettings game) {
         Cell[][] map = game.getMap();
         assert(map[0].length > 0);
 
@@ -97,7 +105,7 @@ public class PathHelper {
         System.out.println();
     }
 
-    private static void percentage(int i, int j, int max) {
+    private void percentage(int i, int j, int max) {
         final int WIDTH = 40;
         int completed = i * max + j;
         int total = max * max - 1;
@@ -118,30 +126,30 @@ public class PathHelper {
         }
     }
 
-    private static String repeat(int count, String with) {
+    private String repeat(int count, String with) {
         return new String(new char[count]).replace("\0", with);
     }
 
-    private static int getCol(int index, int width) {
+    private int getCol(int index, int width) {
         return index - getRow(index, width) * width;
     }
 
-    private static int getRow(int index, int width) {
+    private int getRow(int index, int width) {
         return index / width;
     }
 
-    private static int getIndex(int row, int col, int width) {
+    private int getIndex(int row, int col, int width) {
         return row * width + col;
     }
 
-    private static boolean isValidPos(Position pos, List<Position> walls, Position maxBounds){
+    private boolean isValidPos(Position pos, List<Position> walls, Position maxBounds){
         return  pos.getRow()    > 0    &&
                 pos.getColumn() > 0 &&
                 pos.getRow()    < maxBounds.getRow()    &&
                 pos.getColumn() < maxBounds.getColumn() && !walls.contains(pos);
     }
 
-    private static List<Position> calculatePath(Position start, Position endPosition, List<Position> walls, Position maxBounds) {
+    private List<Position> calculatePath(Position start, Position endPosition, List<Position> walls, Position maxBounds) {
         List<Position> visitedPoints = new ArrayList<>();
         LinkedList<Position> nextToVisit = new LinkedList<>();
         int[][] manhattan_dir  = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 }};
@@ -170,7 +178,7 @@ public class PathHelper {
         return Collections.emptyList();
     }
 
-    private static List<Position> backtrackPath(Position cur) {
+    private List<Position> backtrackPath(Position cur) {
         List<Position> path = new ArrayList<>();
         Position iter = cur;
 

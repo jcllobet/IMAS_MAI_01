@@ -120,7 +120,7 @@ public class CleanerAgent extends BaseWorkerAgent {
         Position best = null;
 
         for (Position pos : getPointsOfInterest()) {
-            Integer size = PathHelper.pathSize(getPosition(), pos);
+            Integer size = getPathing().pathSize(getPosition(), pos);
             if (size < min) {
                 min = size;
                 best = pos;
@@ -143,9 +143,9 @@ public class CleanerAgent extends BaseWorkerAgent {
             stuck = 0;
         }
         else if (recycling == null) {
-            newPos = PathHelper.nextPath(getPosition(), assigned.getPosition());
+            newPos = getPathing().nextPath(getPosition(), assigned.getPosition());
         } else {
-            newPos = PathHelper.nextPath(getPosition(), recycling);
+            newPos = getPathing().nextPath(getPosition(), recycling);
         }
 
         sendNewPosToParent(newPos);
@@ -168,7 +168,7 @@ public class CleanerAgent extends BaseWorkerAgent {
 
     public void accept(GarbagePosition garbage) {
         //assigned = garbage;
-        assignedGarbages.put(garbage, PathHelper.pathSize(getPosition(), garbage.getPosition()));
+        assignedGarbages.put(garbage, getPathing().pathSize(getPosition(), garbage.getPosition()));
         recalculateTarget();
     }
 
@@ -189,7 +189,7 @@ public class CleanerAgent extends BaseWorkerAgent {
 
     private void updateDistances(HashMap<GarbagePosition, Integer> assignedGarbages) {
         for (Map.Entry<GarbagePosition, Integer> entry : assignedGarbages.entrySet()) {
-            assignedGarbages.replace(entry.getKey(), PathHelper.pathSize(getPosition(), entry.getKey().getPosition()));
+            assignedGarbages.replace(entry.getKey(), getPathing().pathSize(getPosition(), entry.getKey().getPosition()));
         }
     }
 }

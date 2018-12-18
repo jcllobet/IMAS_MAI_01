@@ -156,7 +156,7 @@ public class SearcherAgent extends BaseWorkerAgent {
 
         if (assigned != null) {
             startPoint = null;
-            newPos = PathHelper.nextPath(getPosition(), assigned);
+            newPos = getPathing().nextPath(getPosition(), assigned);
         }
         else if (nextMove != null) {
             newPos = Movement.givenMove(nextMove, getPosition());
@@ -173,7 +173,7 @@ public class SearcherAgent extends BaseWorkerAgent {
         Position best = null;
 
         for (Position pos : getPointsOfInterest()) {
-            Integer size = PathHelper.pathSize(getPosition(), pos);
+            Integer size = getPathing().pathSize(getPosition(), pos);
             if (size < min) {
                 min = size;
                 best = pos;
