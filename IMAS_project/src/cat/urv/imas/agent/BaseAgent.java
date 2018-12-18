@@ -44,7 +44,7 @@ public abstract class BaseAgent extends Agent {
     private AID parent;
     private List<AID> children;
     private boolean waitingForMap;
-    protected final static int WAIT_TIME = 2000;
+    protected final static int WAIT_TIME = 1000;
     
     /**
      * Type of this agent.

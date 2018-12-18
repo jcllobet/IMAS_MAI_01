@@ -28,7 +28,13 @@ import cat.urv.imas.ontology.GameSettings;
 import cat.urv.imas.gui.GraphicInterface;
 import cat.urv.imas.ontology.MessageContent;
 import cat.urv.imas.utils.*;
+import jade.content.lang.Codec;
+import jade.content.lang.sl.SLCodec;
+import jade.content.onto.Ontology;
+import jade.content.onto.basic.Action;
 import jade.core.*;
+import jade.domain.JADEAgentManagement.JADEManagementOntology;
+import jade.domain.JADEAgentManagement.ShutdownPlatform;
 import jade.lang.acl.ACLMessage;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
@@ -55,7 +61,8 @@ public class SystemAgent extends BaseCoordinatorAgent {
      * The Coordinator agent with which interacts sharing game settings every
      * round.
      */
-    private AID coordinatorAgent;
+    private AgentController[] agents;
+    private int steps;
 
     /**
      * Builds the System agent.
@@ -130,6 +137,7 @@ public class SystemAgent extends BaseCoordinatorAgent {
         setGame(InitialGameSettings.load("game.settings"));
         log("Initial configuration settings loaded");
         log(getGame().toString());
+        steps = getGame().getSimulationSteps();
         setMapUpdated(true);
         PathHelper.calculateAllPaths(getGame());
 
@@ -138,9 +146,6 @@ public class SystemAgent extends BaseCoordinatorAgent {
 
         // 4. Create other agents
         createAgents();
-
-        // search CoordinatorAgent (is a blocking method, so we will obtain always a correct AID)
-        this.coordinatorAgent = UtilsAgents.searchAgentType(this, AgentType.COORDINATOR);
 
         this.addBehaviour(new ListenerBehaviour(this));
     }
@@ -170,15 +175,22 @@ public class SystemAgent extends BaseCoordinatorAgent {
                     numCleaners = entry.getValue().size();
                 }
             }
+            int k = 0;
+            agents = new AgentController[numSearchers + numCleaners + 3];
+            agents[k++] = coordinatorAgent;
+            agents[k++] = cleanerCoordinatorAgent;
+            agents[k++] = searchCoordinatorAgent;
             // Create searchers
             for (int i = 0; i < numSearchers; ++i) {
                 AgentController searcher = cc.createNewAgent("Searcher-" + i,"cat.urv.imas.agent.SearcherAgent", null);
                 searcher.start();
+                agents[k++] = searcher;
             }
             // Create cleaners
             for (int i = 0; i < numCleaners; ++i) {
                 AgentController cleaner = cc.createNewAgent("Cleaner-" + i,"cat.urv.imas.agent.CleanerAgent", null);
                 cleaner.start();
+                agents[k++] = cleaner;
             }
             setWorkersAIDtoCells(AgentType.SEARCHER, numSearchers);
             setWorkersAIDtoCells(AgentType.CLEANER, numCleaners);
@@ -242,6 +254,10 @@ public class SystemAgent extends BaseCoordinatorAgent {
     }
 
     public void updateMap(List<MovementMsg> movements) {
+        if (!advanceStep()) {
+            return;
+        }
+
         Cell[][] map = getGame().getMap();
         List<MovementMsg> newMovements = new ArrayList<>();
         List<MovementMsg> oldMovements = new ArrayList<>();
@@ -287,6 +303,24 @@ public class SystemAgent extends BaseCoordinatorAgent {
         updateGUI();
         ACLMessage updateMsg = new InformMsg(MessageContent.MAP_UPDATED);
         informToAllChildren(updateMsg);
+    }
+
+    private boolean advanceStep() {
+        if (steps > 0) {
+            steps--;
+            return true;
+        }
+        shutdown();
+        return false;
+    }
+
+    private void shutdown() {
+        log("System shutdown, steps done: " + getGame().getSimulationSteps());
+        try {
+            for (AgentController agent : agents) {
+                agent.kill();
+            }
+        } catch (StaleProxyException e) {}
     }
 
     private void move(MovementMsg msg) {

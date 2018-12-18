@@ -88,13 +88,18 @@ public class BaseListenerBehavior extends CyclicBehaviour {
                     onRefuse();
                     break;
                 case ACLMessage.INFORM:
-                    InformMsg infMsg = (InformMsg)msg;
-                    getBaseAgent().log(LogCode.INFORM, "from " + msg.getSender().getLocalName());
-                    if (infMsg.getType().equals(MessageContent.CHILD_REQUEST)) {
-                        getBaseAgent().addChild(msg.getSender());
-                        getBaseAgent().log("Added " + msg.getSender().getLocalName() + " as child");
-                    } else {
-                        onInform(infMsg);
+                    try {
+                        InformMsg infMsg = (InformMsg) msg;
+                        getBaseAgent().log(LogCode.INFORM, "from " + msg.getSender().getLocalName());
+                        if (infMsg.getType().equals(MessageContent.CHILD_REQUEST)) {
+                            getBaseAgent().addChild(msg.getSender());
+                            getBaseAgent().log("Added " + msg.getSender().getLocalName() + " as child");
+                        } else {
+                            onInform(infMsg);
+                        }
+                    } catch (ClassCastException e) {
+                        // This only happens if a non custom inform message was received
+                        System.out.println(msg.getContent());
                     }
                     break;
                 default:
