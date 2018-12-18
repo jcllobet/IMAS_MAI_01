@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class SearcherAgent extends BaseWorkerAgent {
     private List<GarbagePosition> locatedGarbage;
-    private int ALPHA = 10;
+    private int ALPHA = 5;
     private int batterySize;
     private int battery;
     private Move nextMove;

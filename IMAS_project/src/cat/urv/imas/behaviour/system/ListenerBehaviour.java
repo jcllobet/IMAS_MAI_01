@@ -62,6 +62,10 @@ public class ListenerBehaviour extends BaseListenerBehavior {
                 GarbagePosition garbage = (GarbagePosition)msg.getContentObject();
                 agent.removedGarbage(garbage);
             }
+            else if (msg.getType().equals(MessageContent.NEW_GARBAGE)) {
+                GarbagePosition[] garbage = (GarbagePosition[])msg.getContentObject();
+                agent.setAsFound(garbage);
+            }
             else if (msg.getType().equals(MessageContent.NEW_POS)) {
                 List<MovementMsg> movements = Arrays.asList((MovementMsg[])msg.getContentObject());
                 agent.updateMap(movements);

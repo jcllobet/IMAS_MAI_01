@@ -342,12 +342,21 @@ public class SystemAgent extends BaseCoordinatorAgent {
     public void removedGarbage(GarbagePosition garbage) {
         Cell[][] map = getGame().getMap();
 
-        // Remove waste from map
         FieldCell field = (FieldCell)map[garbage.getRow()][garbage.getColumn()];
 
+        // Remove ALL waste. The cleaner will have to wait a fixed number of steps, according to the PDF
         do {
             field.detectWaste();
             field.removeWaste();
         } while (!field.isEmpty());
+    }
+
+    public void setAsFound(GarbagePosition[] garbage) {
+        Cell[][] map = getGame().getMap();
+
+        for (GarbagePosition pos : garbage) {
+            FieldCell field = (FieldCell)map[pos.getRow()][pos.getColumn()];
+            field.detectWaste();
+        }
     }
 }

@@ -43,6 +43,7 @@ public class ListenerBehaviour extends BaseCoordinatorListenerBehavior {
             else if (msg.getType().equals(MessageContent.NEW_GARBAGE)) {
                 GarbagePosition[] garbage = (GarbagePosition[])msg.getContentObject();
                 agent.sendGarbageListTo(Arrays.asList(garbage), agent.getCleanerCoordinator());
+                agent.sendGarbageListTo(Arrays.asList(garbage), agent.getParent());
             }
             else if (msg.getType().equals(MessageContent.MAP_UPDATED)) {
                 agent.informToAllChildren(msg);
