@@ -46,8 +46,6 @@ public class GameSettings implements java.io.Serializable {
      * Seed for random numbers.
      */
     private long seed = 0;
-
-    private PathHelper pathing;
     
     /**
      * Total number of simulation steps.
@@ -60,14 +58,6 @@ public class GameSettings implements java.io.Serializable {
     
     
     protected int maxAmountOfWastes = 10;
-
-    public GameSettings() {
-        pathing = new PathHelper();
-    }
-
-    public PathHelper getPathing() {
-        return pathing;
-    }
 
     public int getMaxAmountOfWastes() {
         return this.maxAmountOfWastes;
@@ -292,9 +282,5 @@ public class GameSettings implements java.io.Serializable {
             }
         }
         return max;
-    }
-
-    public void calculateAllPaths() {
-        pathing.calculateAllPaths(this);
     }
 }

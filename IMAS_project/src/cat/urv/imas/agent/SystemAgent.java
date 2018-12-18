@@ -145,7 +145,7 @@ public class SystemAgent extends BaseCoordinatorAgent {
         log("Initial configuration settings loaded");
         log(getGame().toString());
         steps = getGame().getSimulationSteps();
-        getGame().calculateAllPaths();
+        PathHelper.calculateAllPaths(getGame());
         setMapUpdated(true);
 
         // 3. Load GUI

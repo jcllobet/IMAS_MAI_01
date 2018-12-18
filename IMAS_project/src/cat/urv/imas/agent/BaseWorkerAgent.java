@@ -27,7 +27,6 @@ public abstract class BaseWorkerAgent extends BaseAgent {
     private List<Position> pointsOfInterest;
     private CellType interestType;
     private int busy;
-    private PathHelper pathing;
 
 
     public BaseWorkerAgent(AgentType type, CellType interestType) {
@@ -50,10 +49,6 @@ public abstract class BaseWorkerAgent extends BaseAgent {
         // Additional setting of parameters
     }
 
-    public PathHelper getPathing() {
-        return pathing;
-    }
-
     public abstract void computeNewPos();
 
     public Position getPrevious() {
@@ -70,7 +65,6 @@ public abstract class BaseWorkerAgent extends BaseAgent {
             if (!findInMap(map)) {
                 position = null;
             } else {
-                pathing = game.getPathing();
                 maxBounds.set(map.length - 1, map[0].length - 1);
                 log("Position set " + position);
                 onNewParameters(game);
