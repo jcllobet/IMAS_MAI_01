@@ -141,7 +141,7 @@ public class SystemAgent extends BaseCoordinatorAgent {
         registerToDF();
 
         // 2. Load game settings.
-        setGame(InitialGameSettings.load("game.evaluation.firstdate.settings"));
+        setGame(InitialGameSettings.load("game.settings"));
         log("Initial configuration settings loaded");
         log(getGame().toString());
         steps = getGame().getSimulationSteps();
